@@ -1,0 +1,34 @@
+{
+    "name": "babdev/money-bundle",
+    "type": "symfony-bundle",
+    "description": "Bundle integrating the Money for PHP library with Symfony",
+    "keywords": ["money", "moneyphp", "currency", "symfony"],
+    "license": "MIT",
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "moneyphp/money": "^3.3",
+        "symfony/config": "^4.4 || ^5.1",
+        "symfony/dependency-injection": "^4.4 || ^5.1",
+        "symfony/http-kernel": "^4.4 || ^5.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.17.3",
+        "matthiasnoback/symfony-dependency-injection-test": "^4.2.1",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^0.12.64",
+        "phpstan/phpstan-phpunit": "^0.12.17",
+        "phpstan/phpstan-symfony": "^0.12.12",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "BabDev\\MoneyBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BabDev\\MoneyBundle\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev"
+}
