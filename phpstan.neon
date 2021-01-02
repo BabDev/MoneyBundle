@@ -1,0 +1,9 @@
+parameters:
+  level: 7
+  paths:
+    - %currentWorkingDirectory%/src
+    - %currentWorkingDirectory%/tests
+  reportUnmatchedIgnoredErrors: false
+  checkMissingIterableValueType: false
+  checkGenericClassInNonGenericObjectType: false
+  treatPhpDocTypesAsCertain: false
