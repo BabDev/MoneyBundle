@@ -64,7 +64,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
 
     public function supportsDenormalization($data, string $type, string $format = null): bool
     {
-        return $type === Money::class;
+        return Money::class === $type;
     }
 
     public function hasCacheableSupportsMethod(): bool

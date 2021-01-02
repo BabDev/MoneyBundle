@@ -18,15 +18,15 @@ final class MoneyHandler implements SubscribingHandlerInterface
         return [
             [
                 'direction' => GraphNavigatorInterface::DIRECTION_SERIALIZATION,
-                'format'    => 'json',
-                'type'      => Money::class,
-                'method'    => 'serializeMoneyToJson',
+                'format' => 'json',
+                'type' => Money::class,
+                'method' => 'serializeMoneyToJson',
             ],
             [
                 'direction' => GraphNavigatorInterface::DIRECTION_DESERIALIZATION,
-                'format'    => 'json',
-                'type'      => Money::class,
-                'method'    => 'deserializeMoneyFromJson',
+                'format' => 'json',
+                'type' => Money::class,
+                'method' => 'deserializeMoneyFromJson',
             ],
         ];
     }
