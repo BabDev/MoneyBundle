@@ -6,4 +6,5 @@ This bundle is inspired by the [JKMoneyBundle](https://github.com/kucharovic/mon
 
 The bundle includes:
 
+- Database schema allowing `Money\Money` objects to be used with the [Doctrine ORM](https://www.doctrine-project.org/projects/orm.html)
 - Serializing and deserializing `Money\Money` objects using the [Symfony Serializer component](https://symfony.com/doc/current/components/serializer.html) or the [JMS Serializer](https://jmsyst.com/libs/serializer)

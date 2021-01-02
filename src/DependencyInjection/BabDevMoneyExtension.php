@@ -2,13 +2,15 @@
 
 namespace BabDev\MoneyBundle\DependencyInjection;
 
+use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-final class BabDevMoneyExtension extends Extension
+final class BabDevMoneyExtension extends Extension implements PrependExtensionInterface
 {
     public function getAlias(): string
     {
@@ -28,6 +30,26 @@ final class BabDevMoneyExtension extends Extension
 
         if (interface_exists(NormalizerInterface::class)) {
             $loader->load('serializer.xml');
+        }
+    }
+
+    public function prepend(ContainerBuilder $container): void
+    {
+        if ($container->hasExtension('doctrine') && class_exists(UnitOfWork::class)) {
+            $container->prependExtensionConfig(
+                'doctrine',
+                [
+                    'orm' => [
+                        'mappings' => [
+                            'BabDevMoneyBundle' => [
+                                'type' => 'xml',
+                                'prefix' => 'Money',
+                                'dir' => 'config/doctrine',
+                            ],
+                        ],
+                    ],
+                ]
+            );
         }
     }
 }
