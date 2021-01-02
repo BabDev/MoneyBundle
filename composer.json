@@ -13,12 +13,20 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.17.3",
+        "jms/serializer": "^3.0",
+        "jms/serializer-bundle": "^3.0",
         "matthiasnoback/symfony-dependency-injection-test": "^4.2.1",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^0.12.64",
         "phpstan/phpstan-phpunit": "^0.12.17",
         "phpstan/phpstan-symfony": "^0.12.12",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "symfony/polyfill-php80": "^1.15",
+        "symfony/serializer": "^4.4 || ^5.1"
+    },
+    "suggest": {
+        "jms/serializer-bundle": "To use the Money\\Money class with the JMS Serializer",
+        "symfony/serializer": "To use the Money\\Money class with the Symfony Serializer"
     },
     "autoload": {
         "psr-4": {
