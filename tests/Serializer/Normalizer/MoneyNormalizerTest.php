@@ -35,6 +35,8 @@ final class MoneyNormalizerTest extends TestCase
     }
 
     /**
+     * @param mixed $data
+     *
      * @dataProvider dataSupportsNormalization
      */
     public function testSupportsNormalization($data, bool $supported): void
@@ -80,6 +82,8 @@ final class MoneyNormalizerTest extends TestCase
     }
 
     /**
+     * @param mixed $data
+     *
      * @dataProvider dataSupportsDenormalization
      */
     public function testSupportsDenormalization($data, string $type, bool $supported): void
