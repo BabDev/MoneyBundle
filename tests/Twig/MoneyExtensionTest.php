@@ -25,7 +25,23 @@ final class MoneyExtensionTest extends TestCase
     {
         $this->formatterFactory = $this->createMock(FormatterFactoryInterface::class);
 
-        $this->extension = new MoneyExtension($this->formatterFactory);
+        $this->extension = new MoneyExtension($this->formatterFactory, 'USD');
+    }
+
+    public function testMoneyIsCreatedWithDefaultCurrency(): void
+    {
+        $this->assertEquals(
+            Money::USD(100),
+            $this->extension->createMoney(100)
+        );
+    }
+
+    public function testMoneyIsCreatedWithCustomCurrency(): void
+    {
+        $this->assertEquals(
+            Money::EUR(100),
+            $this->extension->createMoney('100', 'EUR')
+        );
     }
 
     public function testMoneyIsFormatted(): void

@@ -8,6 +8,7 @@
         <!-- Twig Extension -->
         <service id="money.twig_extension" class="BabDev\MoneyBundle\Twig\MoneyExtension" public="false">
             <argument type="service" id="money.factory.formatter" />
+            <argument>%babdev_money.default_currency%</argument>
             <tag name="twig.extension" />
         </service>
     </services>

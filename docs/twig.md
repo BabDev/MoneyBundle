@@ -1,6 +1,10 @@
 # Twig
 
-The MoneyBundle provides support for rendering `Money` instances using a [Twig](https://twig.symfony.com/) filter (note, the `TwigBundle` must be installed to automatically enable the Twig extension).
+The MoneyBundle provides support for creating rendering `Money` instances within [Twig](https://twig.symfony.com/) (note, the `TwigBundle` must be installed to automatically enable the Twig extension).
+
+## Filters
+
+### `money` Filter
 
 When rendering a Twig template, you can use the `money` filter with a `Money` instance to format the object into a string for display. [Most of the formatters](https://moneyphp.org/en/stable/features/formatting.html) from the Money library are available using the `$format` parameter of the filter (the aggregate formatter is not supported).
 
@@ -20,4 +24,20 @@ Below is an advanced example of rendering the `$tax_due` property, passing addit
 
 ```twig
 {{ invoice.tax_due|money('decimal', 'de', {fraction_digits: 0}) }}
+```
+
+## Functions
+
+### `money` Function
+
+When rendering a Twig template, you can use the `money` function to create a `Money` instance to use in a template.
+
+You must provide an amount compatible with the `Money` class' constructor (i.e. an amount expressed in cents). The function also has an optional currency argument, and if omitted will use the default currency set in your application's configuration.
+
+```twig
+{# Creates a new Money instance in the default currency #}
+{% set total = money(0) %}
+
+{# Creates a new Money instance in the specified currency #}
+{% set total = money(0, 'EUR') %}
 ```
