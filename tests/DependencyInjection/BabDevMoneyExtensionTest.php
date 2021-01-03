@@ -12,7 +12,7 @@ use Symfony\Bundle\TwigBundle\TwigBundle;
 
 final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 {
-    public function testContainerIsLoaded(): void
+    public function testContainerIsLoadedWithDefaultConfiguration(): void
     {
         $this->container->setParameter(
             'kernel.bundles',
@@ -23,6 +23,22 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
         $this->load();
 
+        $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
+        $this->assertContainerBuilderHasService('money.serializer.normalizer');
+    }
+
+    public function testContainerIsLoadedWithCustomConfiguration(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
+            ]
+        );
+
+        $this->load(['default_currency' => 'EUR']);
+
+        $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'EUR');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
     }
 
@@ -42,6 +58,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
         $this->load();
 
+        $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
 
         $doctrineConfig = $this->container->getExtensionConfig('doctrine');
@@ -61,6 +78,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
         $this->load();
 
+        $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
         $this->assertContainerBuilderHasService('money.serializer.handler');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
     }
@@ -77,6 +95,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
         $this->load();
 
+        $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.twig_extension');
     }

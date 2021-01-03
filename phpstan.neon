@@ -3,6 +3,11 @@ parameters:
   paths:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
+  ignoreErrors:
+    -
+      message: '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::end\(\)\./'
+      path: %currentWorkingDirectory%/src/DependencyInjection/Configuration.php
+
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false
