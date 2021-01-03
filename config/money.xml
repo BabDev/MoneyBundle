@@ -10,6 +10,11 @@
             <argument>%kernel.default_locale%</argument>
         </service>
         <service id="BabDev\MoneyBundle\Factory\FormatterFactoryInterface" alias="money.factory.formatter" />
+
+        <service id="money.factory.parser" class="BabDev\MoneyBundle\Factory\ParserFactory" public="false">
+            <argument>%kernel.default_locale%</argument>
+        </service>
+        <service id="BabDev\MoneyBundle\Factory\ParserFactoryInterface" alias="money.factory.parser" />
     </services>
 
 </container>
