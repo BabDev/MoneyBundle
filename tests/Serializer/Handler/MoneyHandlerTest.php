@@ -3,50 +3,69 @@
 namespace BabDev\MoneyBundle\Tests\Serializer\Handler;
 
 use BabDev\MoneyBundle\Serializer\Handler\MoneyHandler;
-use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use JMS\Serializer\Visitor\SerializationVisitorInterface;
+use JMS\Serializer\EventDispatcher\EventDispatcher;
+use JMS\Serializer\Handler\HandlerRegistry;
+use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\SerializerInterface;
 use Money\Money;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class MoneyHandlerTest extends TestCase
 {
     public function testSerializeMoneyToJson(): void
     {
-        $expectedResultArray = [
-            'amount' => '100',
-            'currency' => 'USD',
-        ];
+        $this->assertJsonStringEqualsJsonString(
+            '{"amount":"1000","currency":"USD"}',
+            $this->createSerializer()->serialize(Money::USD(1000), 'json')
+        );
+    }
 
-        /** @var MockObject&SerializationContext $context */
-        $context = $this->createMock(SerializationContext::class);
+    public function testSerializeMoneyToXml(): void
+    {
+        $expectedXml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<money>
+  <amount>1000</amount>
+  <currency>USD</currency>
+</money>
 
-        /** @var MockObject&SerializationVisitorInterface $visitor */
-        $visitor = $this->createMock(SerializationVisitorInterface::class);
-        $visitor->expects($this->once())
-            ->method('visitArray')
-            ->with($this->isType('array'), [])
-            ->willReturn($expectedResultArray);
+XML;
 
-        $this->assertEquals(
-            $expectedResultArray,
-            (new MoneyHandler())->serializeMoneyToJson($visitor, Money::USD(1000), [], $context)
+        $this->assertXmlStringEqualsXmlString(
+            $expectedXml,
+            $this->createSerializer()->serialize(Money::USD(1000), 'xml')
         );
     }
 
     public function testDeserializeMoneyFromJson(): void
     {
-        /** @var MockObject&DeserializationContext $context */
-        $context = $this->createMock(DeserializationContext::class);
-
-        /** @var MockObject&DeserializationVisitorInterface $visitor */
-        $visitor = $this->createMock(DeserializationVisitorInterface::class);
-
         $this->assertEquals(
             Money::USD(1000),
-            (new MoneyHandler())->deserializeMoneyFromJson($visitor, ['amount' => '1000', 'currency' => 'USD'], [], $context)
+            $this->createSerializer()->deserialize('{"amount":"1000","currency":"USD"}', Money::class, 'json')
         );
+    }
+
+    public function testDeserializeMoneyFromXml(): void
+    {
+        $generatedXml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<money>
+  <amount>1000</amount>
+  <currency>USD</currency>
+</money>
+
+XML;
+        $this->assertEquals(
+            Money::USD(1000),
+            $this->createSerializer()->deserialize($generatedXml, Money::class, 'xml')
+        );
+    }
+
+    private function createSerializer(): SerializerInterface
+    {
+        $registry = new HandlerRegistry();
+        $registry->registerSubscribingHandler(new MoneyHandler());
+
+        return SerializerBuilder::create($registry, new EventDispatcher())->build();
     }
 }
