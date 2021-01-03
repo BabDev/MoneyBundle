@@ -24,6 +24,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
+        $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
     }
 
@@ -39,6 +40,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->load(['default_currency' => 'EUR']);
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'EUR');
+        $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
     }
 
@@ -59,6 +61,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
+        $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
 
         $doctrineConfig = $this->container->getExtensionConfig('doctrine');
@@ -79,6 +82,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
+        $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.handler');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
     }
@@ -96,6 +100,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
+        $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.twig_extension');
     }

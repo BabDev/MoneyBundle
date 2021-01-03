@@ -5,6 +5,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- Factory Services -->
+        <service id="money.factory.formatter" class="BabDev\MoneyBundle\Factory\FormatterFactory" public="false">
+            <argument>%kernel.default_locale%</argument>
+        </service>
+        <service id="BabDev\MoneyBundle\Factory\FormatterFactoryInterface" alias="money.factory.formatter" />
     </services>
 
 </container>

@@ -2,13 +2,20 @@
 
 namespace BabDev\MoneyBundle\Tests\Twig;
 
+use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Twig\MoneyExtension;
-use Money\Currencies\BitcoinCurrencies;
 use Money\Money;
+use Money\MoneyFormatter;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class MoneyExtensionTest extends TestCase
 {
+    /**
+     * @var MockObject&FormatterFactoryInterface
+     */
+    private $formatterFactory;
+
     /**
      * @var MoneyExtension
      */
@@ -16,48 +23,26 @@ final class MoneyExtensionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->extension = new MoneyExtension('en_US');
+        $this->formatterFactory = $this->createMock(FormatterFactoryInterface::class);
+
+        $this->extension = new MoneyExtension($this->formatterFactory);
     }
 
-    public function testMoneyIsFormattedAsBitcoin(): void
+    public function testMoneyIsFormatted(): void
     {
-        $this->assertSame(BitcoinCurrencies::SYMBOL.'0.00000100', $this->extension->formatMoney(Money::XBT(100), 'bitcoin'));
-    }
+        $money = Money::USD(100);
 
-    public function testMoneyIsFormattedAsDecimal(): void
-    {
-        $this->assertSame('1.00', $this->extension->formatMoney(Money::USD(100), 'decimal'));
-    }
+        /** @var MockObject&MoneyFormatter $formatter */
+        $formatter = $this->createMock(MoneyFormatter::class);
+        $formatter->expects($this->once())
+            ->method('format')
+            ->with($money)
+            ->willReturn('$1.00');
 
-    /**
-     * @requires extension intl
-     */
-    public function testMoneyIsFormattedAsIntlLocalizedDecimal(): void
-    {
-        $this->assertSame('$1.00', $this->extension->formatMoney(Money::USD(100), 'intl_localized_decimal'));
-    }
+        $this->formatterFactory->expects($this->once())
+            ->method('createFormatter')
+            ->willReturn($formatter);
 
-    /**
-     * @requires extension intl
-     */
-    public function testMoneyIsFormattedAsIntlMoney(): void
-    {
-        $this->assertSame('$1.00', $this->extension->formatMoney(Money::USD(100), 'intl_money'));
-    }
-
-    /**
-     * @requires extension intl
-     */
-    public function testMoneyIsFormattedAsIntlMoneyWithCustomOptions(): void
-    {
-        $this->assertSame('1', $this->extension->formatMoney(Money::EUR(100), 'intl_money', 'en', ['fraction_digits' => 0, 'style' => MoneyExtension::STYLE_DECIMAL]));
-    }
-
-    public function testMoneyIsNotFormattedWhenAnUnsupportedFormatIsGiven(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unsupported format "unsupported", allowed formats: [bitcoin, decimal, intl_localized_decimal, intl_money]');
-
-        $this->assertSame('1', $this->extension->formatMoney(Money::EUR(100), 'unsupported'));
+        $this->assertSame('$1.00', $this->extension->formatMoney($money));
     }
 }

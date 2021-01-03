@@ -7,7 +7,7 @@
     <services>
         <!-- Twig Extension -->
         <service id="money.twig_extension" class="BabDev\MoneyBundle\Twig\MoneyExtension" public="false">
-            <argument>%kernel.default_locale%</argument>
+            <argument type="service" id="money.factory.formatter" />
             <tag name="twig.extension" />
         </service>
     </services>
