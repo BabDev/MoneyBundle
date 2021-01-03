@@ -1,3 +1,5 @@
 - [Introduction](/open-source/packages/moneybundle/docs/1.x/intro)
 - [Installation & Setup](/open-source/packages/moneybundle/docs/1.x/installation)
+- [Doctrine](/open-source/packages/moneybundle/docs/1.x/doctrine)
 - [Serializer](/open-source/packages/moneybundle/docs/1.x/serializer)
+- [Twig](/open-source/packages/moneybundle/docs/1.x/twig)

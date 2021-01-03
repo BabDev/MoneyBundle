@@ -24,6 +24,10 @@ final class BabDevMoneyExtension extends Extension implements PrependExtensionIn
 
         $bundles = $container->getParameter('kernel.bundles');
 
+        if (isset($bundles['TwigBundle'])) {
+            $loader->load('twig.xml');
+        }
+
         if (isset($bundles['JMSSerializerBundle'])) {
             $loader->load('jms_serializer.xml');
         }

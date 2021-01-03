@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Symfony\Bundle\TwigBundle\TwigBundle;
 
 final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 {
@@ -62,6 +63,22 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasService('money.serializer.handler');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
+    }
+
+    public function testContainerIsLoadedWhenTwigBundleIsInstalled(): void
+    {
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
+                'TwigBundle' => TwigBundle::class,
+            ]
+        );
+
+        $this->load();
+
+        $this->assertContainerBuilderHasService('money.serializer.normalizer');
+        $this->assertContainerBuilderHasService('money.twig_extension');
     }
 
     protected function getContainerExtensions(): array
