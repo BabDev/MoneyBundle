@@ -3,3 +3,4 @@
 - [Doctrine](/open-source/packages/moneybundle/docs/1.x/doctrine)
 - [Serializer](/open-source/packages/moneybundle/docs/1.x/serializer)
 - [Twig](/open-source/packages/moneybundle/docs/1.x/twig)
+- [Validator](/open-source/packages/moneybundle/docs/1.x/validator)

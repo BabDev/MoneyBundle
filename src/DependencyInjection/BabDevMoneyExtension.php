@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class BabDevMoneyExtension extends Extension implements PrependExtensionInterface
 {
@@ -37,6 +38,10 @@ final class BabDevMoneyExtension extends Extension implements PrependExtensionIn
 
         if (interface_exists(NormalizerInterface::class)) {
             $loader->load('serializer.xml');
+        }
+
+        if (interface_exists(ValidatorInterface::class)) {
+            $loader->load('validator.xml');
         }
     }
 

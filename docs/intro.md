@@ -9,3 +9,4 @@ The bundle includes:
 - Database schema allowing `Money` objects to be used with the [Doctrine ORM](https://www.doctrine-project.org/projects/orm.html)
 - Serializing and deserializing `Money` objects using the [Symfony Serializer component](https://symfony.com/doc/current/components/serializer.html) or the [JMS Serializer](https://jmsyst.com/libs/serializer)
 - A [Twig](https://twig.symfony.com/) filter to render formatted `Money` objects
+- Comparing `Money` object values using the [Symfony Validator component](https://symfony.com/doc/current/components/validator.html)

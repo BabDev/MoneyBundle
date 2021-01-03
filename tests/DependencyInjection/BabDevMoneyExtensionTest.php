@@ -26,6 +26,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
         $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
+        $this->assertContainerBuilderHasService('money.validator.greater_than');
     }
 
     public function testContainerIsLoadedWithCustomConfiguration(): void
@@ -42,6 +43,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'EUR');
         $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
+        $this->assertContainerBuilderHasService('money.validator.greater_than');
     }
 
     public function testContainerIsLoadedWhenDoctrineBundleIsInstalled(): void
@@ -63,6 +65,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
         $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
+        $this->assertContainerBuilderHasService('money.validator.greater_than');
 
         $doctrineConfig = $this->container->getExtensionConfig('doctrine');
 
@@ -85,6 +88,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.handler');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
+        $this->assertContainerBuilderHasService('money.validator.greater_than');
     }
 
     public function testContainerIsLoadedWhenTwigBundleIsInstalled(): void
@@ -103,6 +107,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.twig_extension');
+        $this->assertContainerBuilderHasService('money.validator.greater_than');
     }
 
     protected function getContainerExtensions(): array
