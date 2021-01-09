@@ -8,6 +8,18 @@ parameters:
       message: '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::end\(\)\./'
       path: %currentWorkingDirectory%/src/DependencyInjection/Configuration.php
 
+    - '/Parameter #1 \$value \(Money\\Money\|null\) of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::transform\(\) should be compatible with parameter \$value \(float\|int\) of method Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer::transform\(\)/'
+    - '/Return type \(Money\\Money\|null\) of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::reverseTransform\(\) should be compatible with return type \(float\|int\) of method Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer::reverseTransform\(\)/'
+
+    # Ignore errors from tests validating runtime type checks
+    -
+      message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::transform\(\) expects Money\\Money\|null, string given\./'
+      path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+    -
+      message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::reverseTransform\(\) expects string, int given\./'
+      path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
   reportUnmatchedIgnoredErrors: false
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false

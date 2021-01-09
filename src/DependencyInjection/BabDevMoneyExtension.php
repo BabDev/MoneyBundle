@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -34,6 +35,10 @@ final class BabDevMoneyExtension extends Extension implements PrependExtensionIn
 
         if (isset($bundles['JMSSerializerBundle'])) {
             $loader->load('jms_serializer.xml');
+        }
+
+        if (interface_exists(FormInterface::class)) {
+            $loader->load('form.xml');
         }
 
         if (interface_exists(NormalizerInterface::class)) {
