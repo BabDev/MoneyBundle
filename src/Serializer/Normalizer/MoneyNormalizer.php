@@ -20,7 +20,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
      *
      * @throws InvalidArgumentException when the object given is not a supported type for the normalizer
      */
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         if (!$object instanceof Money) {
             throw new InvalidArgumentException(sprintf('The object must be an instance of "%s".', Money::class));
@@ -32,7 +32,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
         ];
     }
 
-    public function supportsNormalization($data, $format = null): bool
+    public function supportsNormalization($data, string $format = null): bool
     {
         return $data instanceof Money;
     }
