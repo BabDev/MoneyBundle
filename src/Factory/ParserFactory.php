@@ -55,7 +55,6 @@ final class ParserFactory implements ParserFactoryInterface
 
                 $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
                 $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
-                $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $fractionDigits);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
                 return new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies());

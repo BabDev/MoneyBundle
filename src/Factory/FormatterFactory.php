@@ -56,7 +56,6 @@ final class FormatterFactory implements FormatterFactoryInterface
 
                 $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
                 $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
-                $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $fractionDigits);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
                 return new IntlLocalizedDecimalFormatter($numberFormatter, new ISOCurrencies());
