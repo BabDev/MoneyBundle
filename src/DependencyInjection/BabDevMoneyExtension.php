@@ -61,7 +61,7 @@ final class BabDevMoneyExtension extends Extension implements PrependExtensionIn
                             'BabDevMoneyBundle' => [
                                 'type' => 'xml',
                                 'prefix' => 'Money',
-                                'dir' => 'config/doctrine',
+                                'dir' => '../config/doctrine',
                             ],
                         ],
                     ],
