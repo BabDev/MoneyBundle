@@ -4,10 +4,10 @@ namespace BabDev\MoneyBundle\Tests\Validator\Constraints;
 
 use BabDev\MoneyBundle\Factory\FormatterFactory;
 use BabDev\MoneyBundle\Factory\ParserFactory;
+use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyEqualTo;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyEqualToValidator;
 use Money\Money;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 
 final class MoneyEqualToValidatorTest extends AbstractMoneyComparisonValidatorTestCase
@@ -17,7 +17,7 @@ final class MoneyEqualToValidatorTest extends AbstractMoneyComparisonValidatorTe
         return new MoneyEqualToValidator(new FormatterFactory('en'), new ParserFactory('en'), 'USD');
     }
 
-    protected function createConstraint(?array $options = null): Constraint
+    protected function createConstraint(?array $options = null): AbstractMoneyComparison
     {
         return new MoneyEqualTo($options);
     }

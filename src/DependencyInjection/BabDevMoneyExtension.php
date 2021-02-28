@@ -27,6 +27,7 @@ final class BabDevMoneyExtension extends Extension implements PrependExtensionIn
         $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('money.php');
 
+        /** @var array<string, class-string> $bundles */
         $bundles = $container->getParameter('kernel.bundles');
 
         if (isset($bundles['TwigBundle'])) {

@@ -8,6 +8,14 @@ parameters:
       message: '/Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::end\(\)\./'
       path: %currentWorkingDirectory%/src/DependencyInjection/Configuration.php
 
+    -
+      message: '/Strict comparison using === between null and float\|int will always evaluate to false\./'
+      path: %currentWorkingDirectory%/src/Form/DataTransformer/MoneyToLocalizedStringTransformer.php
+
+    -
+      message: '/Parameter #2 \$locale of function setlocale expects string\|null, string\|false given\./'
+      path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
     - '/Parameter #1 \$value \(Money\\Money\|null\) of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::transform\(\) should be compatible with parameter \$value \(float\|int\) of method Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer::transform\(\)/'
     - '/Return type \(Money\\Money\|null\) of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::reverseTransform\(\) should be compatible with return type \(float\|int\) of method Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer::reverseTransform\(\)/'
 

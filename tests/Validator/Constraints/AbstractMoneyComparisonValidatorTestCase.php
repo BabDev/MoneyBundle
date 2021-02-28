@@ -2,8 +2,8 @@
 
 namespace BabDev\MoneyBundle\Tests\Validator\Constraints;
 
+use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
 use Money\Money;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
  */
 abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValidatorTestCase
 {
-    abstract protected function createConstraint(?array $options = null): Constraint;
+    abstract protected function createConstraint(?array $options = null): AbstractMoneyComparison;
 
     protected function createValueObject(?Money $value): object
     {
@@ -75,6 +75,9 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
+     * @param Money|float|int|string|null $dirtyValue
+     * @param Money|float|int|string|null $comparisonValue
+     *
      * @dataProvider provideValidComparisons
      */
     public function testValidComparisonToValue($dirtyValue, $comparisonValue): void
@@ -85,6 +88,8 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
+     * @param Money|float|int|string|null $comparedValue
+     *
      * @dataProvider provideValidComparisonsToPropertyPath
      */
     public function testValidComparisonToPropertyPath($comparedValue): void
@@ -118,9 +123,12 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
+     * @param Money|float|int|string|null $dirtyValue
+     * @param Money|float|int|string|null $comparedValue
+     *
      * @dataProvider provideInvalidComparisons
      */
-    public function testInvalidComparisonToValue($dirtyValue, $dirtyValueAsString, $comparedValue, $comparedValueString, string $comparedValueType): void
+    public function testInvalidComparisonToValue($dirtyValue, string $dirtyValueAsString, $comparedValue, string $comparedValueString, string $comparedValueType): void
     {
         $constraint = $this->createConstraint(['value' => $comparedValue]);
         $constraint->message = 'Constraint Message';
@@ -156,9 +164,11 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
+     * @param Money|float|int|string|null $dirtyValue
+     *
      * @dataProvider provideComparisonsToNullValueAtPropertyPath
      */
-    public function testCompareWithNullValueAtPropertyAt($dirtyValue, $dirtyValueAsString, bool $isValid): void
+    public function testCompareWithNullValueAtPropertyAt($dirtyValue, string $dirtyValueAsString, bool $isValid): void
     {
         $constraint = $this->createConstraint(['propertyPath' => 'value']);
         $constraint->message = 'Constraint Message';

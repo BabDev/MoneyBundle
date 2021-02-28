@@ -2,6 +2,7 @@
 
 namespace BabDev\MoneyBundle\Validator\Constraints;
 
+use Money\Money;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
 use Symfony\Component\Validator\Constraint;
@@ -17,6 +18,9 @@ abstract class AbstractMoneyComparison extends Constraint
 {
     public ?string $message = null;
 
+    /**
+     * @var Money|float|int|string|null
+     */
     public $value;
 
     public ?string $currency = null;
