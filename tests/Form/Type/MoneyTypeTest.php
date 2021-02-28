@@ -122,6 +122,7 @@ final class MoneyTypeTest extends TypeTestCase
         $this->assertSame('12345.60', $form->createView()->vars['value']);
         $this->assertSame('number', $form->createView()->vars['type']);
     }
+
     protected function getExtensions(): array
     {
         return array_merge(

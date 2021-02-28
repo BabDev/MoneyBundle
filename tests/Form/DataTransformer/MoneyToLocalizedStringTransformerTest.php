@@ -20,12 +20,12 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->previousLocale = setlocale(LC_ALL, '0');
+        $this->previousLocale = setlocale(\LC_ALL, '0');
     }
 
     protected function tearDown(): void
     {
-        setlocale(LC_ALL, $this->previousLocale);
+        setlocale(\LC_ALL, $this->previousLocale);
     }
 
     public function testTransform(): void

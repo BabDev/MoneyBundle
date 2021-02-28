@@ -59,7 +59,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
      *
      * @return Money|null
      *
-     * @throws TransformationFailedException if the given value is not a string or if the value can not be transformed.
+     * @throws TransformationFailedException if the given value is not a string or if the value can not be transformed
      */
     public function reverseTransform($value)
     {
