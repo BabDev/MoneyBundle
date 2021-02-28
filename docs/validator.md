@@ -82,7 +82,7 @@ class Invoice
 
 ### Attributes
 
-<div class="docs-note">Attribute support requires PHP 8 and version 5.2 or newer of the Symfony Validator component.</div>
+<div class="docs-note">Attribute support requires PHP 8.</div>
 
 ```php
 <?php
