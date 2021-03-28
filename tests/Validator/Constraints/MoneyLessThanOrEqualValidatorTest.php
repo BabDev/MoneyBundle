@@ -17,7 +17,10 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         return new MoneyLessThanOrEqualValidator(new FormatterFactory('en'), new ParserFactory('en'), 'USD');
     }
 
-    protected function createConstraint(?array $options = null): AbstractMoneyComparison
+    /**
+     * @param mixed $options The value to compare or a set of options
+     */
+    protected function createConstraint($options = null): AbstractMoneyComparison
     {
         return new MoneyLessThanOrEqual($options);
     }
