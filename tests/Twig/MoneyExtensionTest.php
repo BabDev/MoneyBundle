@@ -8,6 +8,8 @@ use Money\Money;
 use Money\MoneyFormatter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 final class MoneyExtensionTest extends TestCase
 {
@@ -26,6 +28,22 @@ final class MoneyExtensionTest extends TestCase
         $this->formatterFactory = $this->createMock(FormatterFactoryInterface::class);
 
         $this->extension = new MoneyExtension($this->formatterFactory, 'USD');
+    }
+
+    public function testExtensionRegistersFilters(): void
+    {
+        $this->assertContainsOnlyInstancesOf(
+            TwigFilter::class,
+            $this->extension->getFilters()
+        );
+    }
+
+    public function testExtensionRegistersFunctions(): void
+    {
+        $this->assertContainsOnlyInstancesOf(
+            TwigFunction::class,
+            $this->extension->getFunctions()
+        );
     }
 
     public function testMoneyIsCreatedWithDefaultCurrency(): void
