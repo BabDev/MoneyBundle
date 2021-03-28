@@ -2,6 +2,8 @@
 
 namespace BabDev\MoneyBundle\Factory;
 
+use BabDev\MoneyBundle\Factory\Exception\MissingDependencyException;
+use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use Money\MoneyParser;
 
 interface ParserFactoryInterface
@@ -10,8 +12,8 @@ interface ParserFactoryInterface
     public const STYLE_DECIMAL = 'decimal';
 
     /**
-     * @throws \InvalidArgumentException if an unsupported format was requested
-     * @throws \RuntimeException         if a dependency for a parser is not available
+     * @throws UnsupportedFormatException if an unsupported format was requested
+     * @throws MissingDependencyException if a dependency for a parser is not available
      */
     public function createParser(string $format, ?string $locale, array $options): MoneyParser;
 }

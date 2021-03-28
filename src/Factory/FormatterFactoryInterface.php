@@ -2,6 +2,8 @@
 
 namespace BabDev\MoneyBundle\Factory;
 
+use BabDev\MoneyBundle\Factory\Exception\MissingDependencyException;
+use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use Money\MoneyFormatter;
 
 interface FormatterFactoryInterface
@@ -10,8 +12,8 @@ interface FormatterFactoryInterface
     public const STYLE_DECIMAL = 'decimal';
 
     /**
-     * @throws \InvalidArgumentException if an unsupported format was requested
-     * @throws \RuntimeException         if a dependency for a formatter is not available
+     * @throws UnsupportedFormatException if an unsupported format was requested
+     * @throws MissingDependencyException if a dependency for a formatter is not available
      */
     public function createFormatter(string $format, ?string $locale, array $options): MoneyFormatter;
 }

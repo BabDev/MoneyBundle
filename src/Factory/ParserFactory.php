@@ -2,6 +2,8 @@
 
 namespace BabDev\MoneyBundle\Factory;
 
+use BabDev\MoneyBundle\Factory\Exception\MissingDependencyException;
+use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use Money\Currencies\ISOCurrencies;
 use Money\MoneyParser;
 use Money\Parser\BitcoinMoneyParser;
@@ -29,8 +31,8 @@ final class ParserFactory implements ParserFactoryInterface
     }
 
     /**
-     * @throws \InvalidArgumentException if an unsupported format was requested
-     * @throws \RuntimeException         if a dependency for a parser is not available
+     * @throws UnsupportedFormatException if an unsupported format was requested
+     * @throws MissingDependencyException if a dependency for a parser is not available
      */
     public function createParser(string $format, ?string $locale = null, array $options = []): MoneyParser
     {
@@ -45,7 +47,7 @@ final class ParserFactory implements ParserFactoryInterface
 
             case 'intl_localized_decimal':
                 if (!class_exists(\NumberFormatter::class)) {
-                    throw new \RuntimeException(sprintf('The "intl_localized_decimal" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
+                    throw new MissingDependencyException(sprintf('The "intl_localized_decimal" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
                 }
 
                 $formatterLocale = $locale ?: $this->defaultLocale;
@@ -61,7 +63,7 @@ final class ParserFactory implements ParserFactoryInterface
 
             case 'intl_money':
                 if (!class_exists(\NumberFormatter::class)) {
-                    throw new \RuntimeException(sprintf('The "intl_money" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
+                    throw new MissingDependencyException(sprintf('The "intl_money" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
                 }
 
                 $formatterLocale = $locale ?: $this->defaultLocale;
@@ -76,7 +78,7 @@ final class ParserFactory implements ParserFactoryInterface
                 return new IntlMoneyParser($numberFormatter, new ISOCurrencies());
 
             default:
-                throw new \InvalidArgumentException(sprintf('Unsupported format "%s", allowed formats: [%s]', $format, implode(', ', array_keys(self::PARSER_MAP))));
+                throw new UnsupportedFormatException(array_keys(self::PARSER_MAP), sprintf('Unsupported format "%s"', $format));
         }
     }
 }

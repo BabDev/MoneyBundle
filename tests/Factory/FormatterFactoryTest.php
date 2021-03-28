@@ -2,6 +2,7 @@
 
 namespace BabDev\MoneyBundle\Tests\Factory;
 
+use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Factory\FormatterFactory;
 use Money\Formatter\BitcoinMoneyFormatter;
 use Money\Formatter\DecimalMoneyFormatter;
@@ -49,8 +50,8 @@ final class FormatterFactoryTest extends TestCase
 
     public function testFormatterIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unsupported format "unsupported", allowed formats: [bitcoin, decimal, intl_localized_decimal, intl_money]');
+        $this->expectException(UnsupportedFormatException::class);
+        $this->expectExceptionMessage('Unsupported format "unsupported"');
 
         $this->factory->createFormatter('unsupported');
     }
