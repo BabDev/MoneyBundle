@@ -4,7 +4,9 @@ namespace BabDev\MoneyBundle\Tests\Validator\Constraints;
 
 use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
 use Money\Money;
+use Money\Number;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 /**
@@ -114,12 +116,52 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     {
         $constraint = $this->createConstraint(['propertyPath' => 'foo']);
 
-        $this->expectException(ConstraintDefinitionException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Invalid property path "foo" provided to "%s" constraint', \get_class($constraint)));
 
         $this->setObject($this->createValueObject(Money::USD(500)));
 
         $this->validator->validate(500, $constraint);
+    }
+
+    public function testInvalidValueAsArray(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not convert value of type "array" to a "%s" instance for comparison.', Money::class));
+
+        $this->validator->validate(500, $this->createConstraint(['value' => ['amount' => '500', 'currency' => 'USD']]));
+    }
+
+    public function testInvalidValueAsNonMoneyObject(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not convert value of type "%s" to a "%s" instance for comparison.', \stdClass::class, Money::class));
+
+        $this->validator->validate(500, $this->createConstraint(['value' => new \stdClass()]));
+    }
+
+    public function testInvalidValueAsBadlyFormattedString(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not convert value "." to a "%s" instance for comparison.', Money::class));
+
+        $this->validator->validate(500, $this->createConstraint(['value' => '.']));
+    }
+
+    public function testInvalidValueAsNonNumericString(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Number::class));
+
+        $this->validator->validate(500, $this->createConstraint(['value' => 'INVALID']));
+    }
+
+    public function testInvalidValueAsBadlyFormattedFloat(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Could not convert value "500.4925" to a "%s" instance for comparison.', Money::class));
+
+        $this->validator->validate(500, $this->createConstraint(['value' => 500.4925]));
     }
 
     /**

@@ -13,7 +13,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
@@ -54,7 +54,7 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             try {
                 $comparedValue = $this->getPropertyAccessor()->getValue($object, $path);
             } catch (NoSuchPropertyException $e) {
-                throw new ConstraintDefinitionException(sprintf('Invalid property path "%s" provided to "%s" constraint: ', $path, get_debug_type($constraint)).$e->getMessage(), 0, $e);
+                throw new InvalidArgumentException(sprintf('Invalid property path "%s" provided to "%s" constraint: ', $path, get_debug_type($constraint)).$e->getMessage(), 0, $e);
             }
         } else {
             $comparedValue = $constraint->value;
@@ -97,7 +97,7 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         }
 
         if (\is_object($value) || \is_array($value)) {
-            throw new ConstraintDefinitionException(sprintf('Could not convert value of type "%s" to a "%s" instance for comparison.', get_debug_type($value), Money::class));
+            throw new InvalidArgumentException(sprintf('Could not convert value of type "%s" to a "%s" instance for comparison.', get_debug_type($value), Money::class));
         }
 
         // First try to parse (assuming formatted input) then fall back to treating as a number
@@ -105,20 +105,20 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             try {
                 return $this->parserFactory->createParser($constraint->parserFormat, $constraint->locale, $this->createFactoryOptions($constraint))->parse($value, new Currency($constraint->currency ?: $this->defaultCurrency));
             } catch (ParserException $exception) {
-                throw new ConstraintDefinitionException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Number::class));
+                throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class));
             }
         }
 
         try {
             $number = Number::fromNumber($value);
         } catch (\InvalidArgumentException $exception) {
-            throw new ConstraintDefinitionException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Number::class));
+            throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Number::class));
         }
 
         try {
             return new Money((string) $number, new Currency($constraint->currency ?: $this->defaultCurrency));
         } catch (\InvalidArgumentException $exception) {
-            throw new ConstraintDefinitionException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class));
+            throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class));
         }
     }
 
