@@ -84,8 +84,6 @@ final class ProductForm extends AbstractType
 
 The `MoneyType` form type largely accepts the same options as the form type from the Form component:
 
-The following options may be passed through a route generator factory when using the `BabDev\PagerfantaBundle\RouteGenerator\RouterAwareRouteGenerator` in order to customize the generated URLs:
-
 - `currency` - Specifies the currency that the money is being specified in. Unlike the Form component, this must be provided as a `Money\Currency` instance instead of a string. If not specified, the default currency from the `babdev_money.default_currency` configuration node is used.
 - `grouping` - This value is used internally as the `NumberFormatter::GROUPING_USED` value when using PHP's `NumberFormatter` class. This should be a boolean value and defaults to false. Note, this option cannot be used with the `html5` option.
 - `rounding_mode` - If a submitted number needs to be rounded (based on the `scale` option), you have several configurable options for that rounding. This should be one of the `NumberFormatter::ROUNDING_*` constants and defaults to `NumberFormatter::ROUND_HALFUP`.
