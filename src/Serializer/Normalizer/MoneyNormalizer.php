@@ -69,6 +69,6 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
 
     public function hasCacheableSupportsMethod(): bool
     {
-        return __CLASS__ === static::class;
+        return true;
     }
 }
