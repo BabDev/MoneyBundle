@@ -20,6 +20,7 @@ abstract class AbstractMoneyComparison extends Constraint
 
     /**
      * @var Money|float|int|string|null
+     * @phpstan-var Money|float|int|numeric-string|null
      */
     public $value;
 

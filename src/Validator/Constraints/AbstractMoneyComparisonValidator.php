@@ -89,6 +89,7 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
 
     /**
      * @param Money|float|int|string|null $value
+     * @phpstan-param Money|float|int|numeric-string|null $value
      */
     private function ensureMoneyObject(AbstractMoneyComparison $constraint, $value): ?Money
     {
@@ -110,7 +111,11 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         }
 
         try {
-            $number = Number::fromNumber($value);
+            if (\is_float($value)) {
+                $number = Number::fromFloat($value);
+            } else {
+                $number = Number::fromNumber($value);
+            }
         } catch (\InvalidArgumentException $exception) {
             throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Number::class));
         }

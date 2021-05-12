@@ -52,7 +52,10 @@ final class MoneyHandler implements SubscribingHandlerInterface
 
     public function deserializeMoneyFromXml(XmlDeserializationVisitor $visitor, \SimpleXMLElement $moneyAsXml, array $type, DeserializationContext $context): Money
     {
-        return new Money((string) $moneyAsXml->amount, new Currency((string) $moneyAsXml->currency));
+        /** @phpstan-var numeric-string $amount */
+        $amount = (string) $moneyAsXml->amount;
+
+        return new Money($amount, new Currency((string) $moneyAsXml->currency));
     }
 
     /**

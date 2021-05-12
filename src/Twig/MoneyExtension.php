@@ -42,6 +42,7 @@ final class MoneyExtension extends AbstractExtension
 
     /**
      * @param string|int $amount
+     * @phpstan-param numeric-string|int $amount
      */
     public function createMoney($amount, ?string $currency = null): Money
     {

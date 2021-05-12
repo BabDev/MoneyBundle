@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 (????-??-??)
+
+- Add support for `moneyphp/money` 4.0
+
 ## 1.1.0 (2021-04-25)
 
 - Use localized exceptions for the factories
