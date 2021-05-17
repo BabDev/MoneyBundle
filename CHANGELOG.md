@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 (????-??-??)
+## 1.2.0 (2021-05-17)
 
 - Add support for `moneyphp/money` 4.0
 
