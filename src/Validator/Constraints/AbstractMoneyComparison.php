@@ -2,6 +2,7 @@
 
 namespace BabDev\MoneyBundle\Validator\Constraints;
 
+use BabDev\MoneyBundle\Format;
 use Money\Money;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
@@ -25,8 +26,17 @@ abstract class AbstractMoneyComparison extends Constraint
     public $value;
 
     public ?string $currency = null;
+
+    /**
+     * @phpstan-var Format::*
+     */
     public string $formatterFormat = 'intl_money';
+
+    /**
+     * @phpstan-var Format::*
+     */
     public string $parserFormat = 'decimal';
+
     public int $fractionDigits = 2;
     public bool $groupingUsed = true;
     public ?string $locale = null;

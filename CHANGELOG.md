@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 (2021-??-??)
+
+- Add an enum class with the supported format codes
+
 ## 1.2.0 (2021-05-17)
 
 - Add support for `moneyphp/money` 4.0

@@ -4,6 +4,7 @@ namespace BabDev\MoneyBundle\Form\DataTransformer;
 
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
+use BabDev\MoneyBundle\Format;
 use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Money;
@@ -49,7 +50,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
             throw new TransformationFailedException(sprintf('Expected an instance of "%s", "%s" given.', Money::class, get_debug_type($value)));
         }
 
-        $formatter = $this->formatterFactory->createFormatter('decimal', $this->locale, []);
+        $formatter = $this->formatterFactory->createFormatter(Format::DECIMAL, $this->locale, []);
 
         return parent::transform((float) $formatter->format($value));
     }
@@ -69,7 +70,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
             return null;
         }
 
-        $parser = $this->parserFactory->createParser('decimal', $this->locale, []);
+        $parser = $this->parserFactory->createParser(Format::DECIMAL, $this->locale, []);
 
         try {
             return $parser->parse(sprintf('%.53f', $value), $this->currency);

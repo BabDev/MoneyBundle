@@ -4,6 +4,7 @@ namespace BabDev\MoneyBundle\Tests\Factory;
 
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Factory\FormatterFactory;
+use BabDev\MoneyBundle\Format;
 use Money\Formatter\BitcoinMoneyFormatter;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Formatter\IntlLocalizedDecimalFormatter;
@@ -24,12 +25,12 @@ final class FormatterFactoryTest extends TestCase
 
     public function testBitcoinFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(BitcoinMoneyFormatter::class, $this->factory->createFormatter('bitcoin'));
+        $this->assertInstanceOf(BitcoinMoneyFormatter::class, $this->factory->createFormatter(Format::BITCOIN));
     }
 
     public function testDecimalFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(DecimalMoneyFormatter::class, $this->factory->createFormatter('decimal'));
+        $this->assertInstanceOf(DecimalMoneyFormatter::class, $this->factory->createFormatter(Format::DECIMAL));
     }
 
     /**
@@ -37,7 +38,7 @@ final class FormatterFactoryTest extends TestCase
      */
     public function testIntlLocalizedDecimalFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(IntlLocalizedDecimalFormatter::class, $this->factory->createFormatter('intl_localized_decimal'));
+        $this->assertInstanceOf(IntlLocalizedDecimalFormatter::class, $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL));
     }
 
     /**
@@ -45,7 +46,7 @@ final class FormatterFactoryTest extends TestCase
      */
     public function testIntlMoneyFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(IntlMoneyFormatter::class, $this->factory->createFormatter('intl_money'));
+        $this->assertInstanceOf(IntlMoneyFormatter::class, $this->factory->createFormatter(Format::INTL_MONEY));
     }
 
     public function testFormatterIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void

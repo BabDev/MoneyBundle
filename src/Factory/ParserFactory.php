@@ -4,6 +4,7 @@ namespace BabDev\MoneyBundle\Factory;
 
 use BabDev\MoneyBundle\Factory\Exception\MissingDependencyException;
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
+use BabDev\MoneyBundle\Format;
 use Money\Currencies\ISOCurrencies;
 use Money\MoneyParser;
 use Money\Parser\BitcoinMoneyParser;
@@ -17,10 +18,10 @@ final class ParserFactory implements ParserFactoryInterface
      * @var array<string, class-string>
      */
     private const PARSER_MAP = [
-        'bitcoin' => BitcoinMoneyParser::class,
-        'decimal' => DecimalMoneyParser::class,
-        'intl_localized_decimal' => IntlLocalizedDecimalParser::class,
-        'intl_money' => IntlMoneyParser::class,
+        Format::BITCOIN => BitcoinMoneyParser::class,
+        Format::DECIMAL => DecimalMoneyParser::class,
+        Format::INTL_LOCALIZED_DECIMAL => IntlLocalizedDecimalParser::class,
+        Format::INTL_MONEY => IntlMoneyParser::class,
     ];
 
     private string $defaultLocale;
@@ -31,21 +32,23 @@ final class ParserFactory implements ParserFactoryInterface
     }
 
     /**
+     * @phpstan-param Format::* $format
+     *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a parser is not available
      */
     public function createParser(string $format, ?string $locale = null, array $options = []): MoneyParser
     {
         switch ($format) {
-            case 'bitcoin':
+            case Format::BITCOIN:
                 $fractionDigits = (int) ($options['fraction_digits'] ?? 8);
 
                 return new BitcoinMoneyParser($fractionDigits);
 
-            case 'decimal':
+            case Format::DECIMAL:
                 return new DecimalMoneyParser(new ISOCurrencies());
 
-            case 'intl_localized_decimal':
+            case Format::INTL_LOCALIZED_DECIMAL:
                 if (!class_exists(\NumberFormatter::class)) {
                     throw new MissingDependencyException(sprintf('The "intl_localized_decimal" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
                 }
@@ -61,7 +64,7 @@ final class ParserFactory implements ParserFactoryInterface
 
                 return new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies());
 
-            case 'intl_money':
+            case Format::INTL_MONEY:
                 if (!class_exists(\NumberFormatter::class)) {
                     throw new MissingDependencyException(sprintf('The "intl_money" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
                 }

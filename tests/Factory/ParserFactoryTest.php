@@ -4,6 +4,7 @@ namespace BabDev\MoneyBundle\Tests\Factory;
 
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Factory\ParserFactory;
+use BabDev\MoneyBundle\Format;
 use Money\Parser\BitcoinMoneyParser;
 use Money\Parser\DecimalMoneyParser;
 use Money\Parser\IntlLocalizedDecimalParser;
@@ -24,12 +25,12 @@ final class ParserFactoryTest extends TestCase
 
     public function testBitcoinParserIsCreated(): void
     {
-        $this->assertInstanceOf(BitcoinMoneyParser::class, $this->factory->createParser('bitcoin'));
+        $this->assertInstanceOf(BitcoinMoneyParser::class, $this->factory->createParser(Format::BITCOIN));
     }
 
     public function testDecimalParserIsCreated(): void
     {
-        $this->assertInstanceOf(DecimalMoneyParser::class, $this->factory->createParser('decimal'));
+        $this->assertInstanceOf(DecimalMoneyParser::class, $this->factory->createParser(Format::DECIMAL));
     }
 
     /**
@@ -37,7 +38,7 @@ final class ParserFactoryTest extends TestCase
      */
     public function testIntlLocalizedDecimalParserIsCreated(): void
     {
-        $this->assertInstanceOf(IntlLocalizedDecimalParser::class, $this->factory->createParser('intl_localized_decimal'));
+        $this->assertInstanceOf(IntlLocalizedDecimalParser::class, $this->factory->createParser(Format::INTL_LOCALIZED_DECIMAL));
     }
 
     /**
@@ -45,7 +46,7 @@ final class ParserFactoryTest extends TestCase
      */
     public function testIntlMoneyParserIsCreated(): void
     {
-        $this->assertInstanceOf(IntlMoneyParser::class, $this->factory->createParser('intl_money'));
+        $this->assertInstanceOf(IntlMoneyParser::class, $this->factory->createParser(Format::INTL_MONEY));
     }
 
     public function testParserIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void

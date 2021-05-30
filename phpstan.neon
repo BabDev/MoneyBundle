@@ -21,6 +21,14 @@ parameters:
 
     # Ignore errors from tests validating runtime type checks
     -
+      message: "/Parameter \\#1 \\$format of method BabDev\\\\MoneyBundle\\\\Factory\\\\FormatterFactory::createFormatter\\(\\) expects 'aggregate'\\|'bitcoin'\\|'decimal'\\|'intl_localized…'\\|'intl_money', 'unsupported' given\\./"
+      path: %currentWorkingDirectory%/tests/Factory/FormatterFactoryTest.php
+
+    -
+      message: "/Parameter \\#1 \\$format of method BabDev\\\\MoneyBundle\\\\Factory\\\\ParserFactory::createParser\\(\\) expects 'aggregate'\\|'bitcoin'\\|'decimal'\\|'intl_localized…'\\|'intl_money', 'unsupported' given\\./"
+      path: %currentWorkingDirectory%/tests/Factory/ParserFactoryTest.php
+
+    -
       message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::transform\(\) expects Money\\Money\|null, string given\./'
       path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 

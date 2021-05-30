@@ -3,6 +3,7 @@
 namespace BabDev\MoneyBundle\Twig;
 
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
+use BabDev\MoneyBundle\Format;
 use Money\Currency;
 use Money\Money;
 use Twig\Extension\AbstractExtension;
@@ -49,6 +50,9 @@ final class MoneyExtension extends AbstractExtension
         return new Money($amount, new Currency($currency ?: $this->defaultCurrency));
     }
 
+    /**
+     * @phpstan-param Format::* $format
+     */
     public function formatMoney(Money $money, string $format = 'intl_money', ?string $locale = null, array $options = []): string
     {
         return $this->formatterFactory->createFormatter($format, $locale, $options)->format($money);
