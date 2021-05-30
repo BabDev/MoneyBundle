@@ -7,6 +7,7 @@ use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Format;
 use Money\Currencies\BitcoinCurrencies;
 use Money\Currencies\ISOCurrencies;
+use Money\Formatter\AggregateMoneyFormatter;
 use Money\Formatter\BitcoinMoneyFormatter;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Formatter\IntlLocalizedDecimalFormatter;
@@ -41,6 +42,9 @@ final class FormatterFactory implements FormatterFactoryInterface
     public function createFormatter(string $format, ?string $locale = null, array $options = []): MoneyFormatter
     {
         switch ($format) {
+            case Format::AGGREGATE:
+                throw new UnsupportedFormatException(array_keys(self::FORMAT_MAP), sprintf('The "%s" class is not supported by "%s".', AggregateMoneyFormatter::class, self::class));
+
             case Format::BITCOIN:
                 $fractionDigits = (int) ($options['fraction_digits'] ?? 8);
 

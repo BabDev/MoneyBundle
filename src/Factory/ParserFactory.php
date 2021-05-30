@@ -7,6 +7,7 @@ use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Format;
 use Money\Currencies\ISOCurrencies;
 use Money\MoneyParser;
+use Money\Parser\AggregateMoneyParser;
 use Money\Parser\BitcoinMoneyParser;
 use Money\Parser\DecimalMoneyParser;
 use Money\Parser\IntlLocalizedDecimalParser;
@@ -40,6 +41,9 @@ final class ParserFactory implements ParserFactoryInterface
     public function createParser(string $format, ?string $locale = null, array $options = []): MoneyParser
     {
         switch ($format) {
+            case Format::AGGREGATE:
+                throw new UnsupportedFormatException(array_keys(self::PARSER_MAP), sprintf('The "%s" class is not supported by "%s".', AggregateMoneyParser::class, self::class));
+
             case Format::BITCOIN:
                 $fractionDigits = (int) ($options['fraction_digits'] ?? 8);
 

@@ -5,6 +5,7 @@ namespace BabDev\MoneyBundle\Tests\Factory;
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Factory\FormatterFactory;
 use BabDev\MoneyBundle\Format;
+use Money\Formatter\AggregateMoneyFormatter;
 use Money\Formatter\BitcoinMoneyFormatter;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Formatter\IntlLocalizedDecimalFormatter;
@@ -21,6 +22,14 @@ final class FormatterFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->factory = new FormatterFactory('en_US');
+    }
+
+    public function testAggregateFormatterIsNotSupported(): void
+    {
+        $this->expectException(UnsupportedFormatException::class);
+        $this->expectExceptionMessage(sprintf('The "%s" class is not supported by "%s".', AggregateMoneyFormatter::class, FormatterFactory::class));
+
+        $this->factory->createFormatter(Format::AGGREGATE);
     }
 
     public function testBitcoinFormatterIsCreated(): void
