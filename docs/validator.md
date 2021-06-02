@@ -63,6 +63,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 
 /**
+ * @ORM\Entity()
  * @ORM\Table()
  */
 class Invoice
@@ -93,17 +94,12 @@ use BabDev\MoneyBundle\Validator\Constraints as MoneyAssert;
 use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 
-/**
- * @ORM\Table()
- */
+#[ORM\Entity]
+#[ORM\Table]
 class Invoice
 {
-    /**
-     * @ORM\Embedded(class="Money\Money")
-     */
-    #[MoneyAssert\MoneyGreaterThanOrEqual(
-        value: 0,
-    )]
+    #[ORM\Embedded(class: Money::class]
+    #[MoneyAssert\MoneyGreaterThanOrEqual(value: 0)]
     public Money $tax_due;
 
     public function __construct()
@@ -126,6 +122,7 @@ use Money\Money;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
+ * @ORM\Entity()
  * @ORM\Table()
  */
 class Invoice

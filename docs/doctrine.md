@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 
 /**
+ * @ORM\Entity()
  * @ORM\Table()
  */
 class Invoice
