@@ -14,6 +14,8 @@
     },
     "require-dev": {
         "doctrine/doctrine-bundle": "^1.12 || ^2.0",
+        "doctrine/mongodb-odm": "^2.0",
+        "doctrine/mongodb-odm-bundle": "^4.0",
         "doctrine/orm": "^2.7",
         "friendsofphp/php-cs-fixer": "^3.0",
         "jms/serializer": "^3.2",
@@ -34,6 +36,8 @@
     },
     "conflict": {
         "doctrine/doctrine-bundle": "<1.12",
+        "doctrine/mongodb-odm": "<2.0",
+        "doctrine/mongodb-odm-bundle": "<4.0",
         "doctrine/orm": "<2.7",
         "jms/serializer": "<3.2",
         "symfony/form": "<5.2",
@@ -43,6 +47,7 @@
     },
     "suggest": {
         "ext/intl": "To use the intl Money\\MoneyFormatter instances",
+        "doctrine/mongodb-odm": "To use the Money\\Money class with the Doctrine MongoDB ODM",
         "doctrine/orm": "To use the Money\\Money class with the Doctrine ORM",
         "jms/serializer-bundle": "To use the Money\\Money class with the JMS Serializer",
         "symfony/form": "To use the Money\\Money class with the Symfony Form component",
