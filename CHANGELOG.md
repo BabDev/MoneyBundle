@@ -3,6 +3,7 @@
 ## 1.3.0 (2021-??-??)
 
 - Add an enum class with the supported format codes
+- Register ORM mappings through a compiler pass
 
 ## 1.2.0 (2021-05-17)
 

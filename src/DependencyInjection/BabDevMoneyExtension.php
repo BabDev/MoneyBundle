@@ -2,17 +2,15 @@
 
 namespace BabDev\MoneyBundle\DependencyInjection;
 
-use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-final class BabDevMoneyExtension extends Extension implements PrependExtensionInterface
+final class BabDevMoneyExtension extends Extension
 {
     public function getAlias(): string
     {
@@ -48,26 +46,6 @@ final class BabDevMoneyExtension extends Extension implements PrependExtensionIn
 
         if (interface_exists(ValidatorInterface::class)) {
             $loader->load('validator.php');
-        }
-    }
-
-    public function prepend(ContainerBuilder $container): void
-    {
-        if ($container->hasExtension('doctrine') && class_exists(UnitOfWork::class)) {
-            $container->prependExtensionConfig(
-                'doctrine',
-                [
-                    'orm' => [
-                        'mappings' => [
-                            'BabDevMoneyBundle' => [
-                                'type' => 'xml',
-                                'prefix' => 'Money',
-                                'dir' => '../config/doctrine',
-                            ],
-                        ],
-                    ],
-                ]
-            );
         }
     }
 }

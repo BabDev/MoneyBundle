@@ -4,8 +4,6 @@ namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 
 use BabDev\MoneyBundle\BabDevMoneyBundle;
 use BabDev\MoneyBundle\DependencyInjection\BabDevMoneyExtension;
-use Doctrine\Bundle\DoctrineBundle\DependencyInjection\DoctrineExtension;
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Symfony\Bundle\TwigBundle\TwigBundle;
@@ -46,33 +44,6 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('money.form.type.money');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.validator.greater_than');
-    }
-
-    public function testContainerIsLoadedWhenDoctrineBundleIsInstalled(): void
-    {
-        $this->container->registerExtension(new DoctrineExtension());
-
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
-                'DoctrineBundle' => DoctrineBundle::class,
-            ]
-        );
-
-        $this->container->setParameter('kernel.debug', false);
-
-        $this->load();
-
-        $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
-        $this->assertContainerBuilderHasService('money.factory.formatter');
-        $this->assertContainerBuilderHasService('money.form.type.money');
-        $this->assertContainerBuilderHasService('money.serializer.normalizer');
-        $this->assertContainerBuilderHasService('money.validator.greater_than');
-
-        $doctrineConfig = $this->container->getExtensionConfig('doctrine');
-
-        $this->assertArrayHasKey('BabDevMoneyBundle', $doctrineConfig[0]['orm']['mappings']);
     }
 
     public function testContainerIsLoadedWhenJMSSerializerBundleIsInstalled(): void
