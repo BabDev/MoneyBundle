@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 (2021-??-??)
+## 1.3.0 (2021-06-10)
 
 - Add an enum class with the supported format codes
 - Add support for Doctrine MongoDB ODM
