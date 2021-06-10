@@ -14,7 +14,7 @@ final class MoneyHandlerTest extends TestCase
 {
     public function testSerializeMoneyToJson(): void
     {
-        $this->assertJsonStringEqualsJsonString(
+        self::assertJsonStringEqualsJsonString(
             '{"amount":"1000","currency":"USD"}',
             $this->createSerializer()->serialize(Money::USD(1000), 'json')
         );
@@ -23,15 +23,15 @@ final class MoneyHandlerTest extends TestCase
     public function testSerializeMoneyToXml(): void
     {
         $expectedXml = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<money>
-  <amount>1000</amount>
-  <currency>USD</currency>
-</money>
+            <?xml version="1.0" encoding="UTF-8"?>
+            <money>
+              <amount>1000</amount>
+              <currency>USD</currency>
+            </money>
 
-XML;
+            XML;
 
-        $this->assertXmlStringEqualsXmlString(
+        self::assertXmlStringEqualsXmlString(
             $expectedXml,
             $this->createSerializer()->serialize(Money::USD(1000), 'xml')
         );
@@ -39,7 +39,7 @@ XML;
 
     public function testDeserializeMoneyFromJson(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             Money::USD(1000),
             $this->createSerializer()->deserialize('{"amount":"1000","currency":"USD"}', Money::class, 'json')
         );
@@ -48,14 +48,14 @@ XML;
     public function testDeserializeMoneyFromXml(): void
     {
         $generatedXml = <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<money>
-  <amount>1000</amount>
-  <currency>USD</currency>
-</money>
+            <?xml version="1.0" encoding="UTF-8"?>
+            <money>
+              <amount>1000</amount>
+              <currency>USD</currency>
+            </money>
 
-XML;
-        $this->assertEquals(
+            XML;
+        self::assertEquals(
             Money::USD(1000),
             $this->createSerializer()->deserialize($generatedXml, Money::class, 'xml')
         );

@@ -32,7 +32,7 @@ final class MoneyExtensionTest extends TestCase
 
     public function testExtensionRegistersFilters(): void
     {
-        $this->assertContainsOnlyInstancesOf(
+        self::assertContainsOnlyInstancesOf(
             TwigFilter::class,
             $this->extension->getFilters()
         );
@@ -40,7 +40,7 @@ final class MoneyExtensionTest extends TestCase
 
     public function testExtensionRegistersFunctions(): void
     {
-        $this->assertContainsOnlyInstancesOf(
+        self::assertContainsOnlyInstancesOf(
             TwigFunction::class,
             $this->extension->getFunctions()
         );
@@ -48,7 +48,7 @@ final class MoneyExtensionTest extends TestCase
 
     public function testMoneyIsCreatedWithDefaultCurrency(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             Money::USD(100),
             $this->extension->createMoney(100)
         );
@@ -56,7 +56,7 @@ final class MoneyExtensionTest extends TestCase
 
     public function testMoneyIsCreatedWithCustomCurrency(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             Money::EUR(100),
             $this->extension->createMoney('100', 'EUR')
         );
@@ -68,15 +68,15 @@ final class MoneyExtensionTest extends TestCase
 
         /** @var MockObject&MoneyFormatter $formatter */
         $formatter = $this->createMock(MoneyFormatter::class);
-        $formatter->expects($this->once())
+        $formatter->expects(self::once())
             ->method('format')
             ->with($money)
             ->willReturn('$1.00');
 
-        $this->formatterFactory->expects($this->once())
+        $this->formatterFactory->expects(self::once())
             ->method('createFormatter')
             ->willReturn($formatter);
 
-        $this->assertSame('$1.00', $this->extension->formatMoney($money));
+        self::assertSame('$1.00', $this->extension->formatMoney($money));
     }
 }

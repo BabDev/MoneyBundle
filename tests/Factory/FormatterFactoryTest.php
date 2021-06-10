@@ -34,12 +34,12 @@ final class FormatterFactoryTest extends TestCase
 
     public function testBitcoinFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(BitcoinMoneyFormatter::class, $this->factory->createFormatter(Format::BITCOIN));
+        self::assertInstanceOf(BitcoinMoneyFormatter::class, $this->factory->createFormatter(Format::BITCOIN));
     }
 
     public function testDecimalFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(DecimalMoneyFormatter::class, $this->factory->createFormatter(Format::DECIMAL));
+        self::assertInstanceOf(DecimalMoneyFormatter::class, $this->factory->createFormatter(Format::DECIMAL));
     }
 
     /**
@@ -47,7 +47,7 @@ final class FormatterFactoryTest extends TestCase
      */
     public function testIntlLocalizedDecimalFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(IntlLocalizedDecimalFormatter::class, $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL));
+        self::assertInstanceOf(IntlLocalizedDecimalFormatter::class, $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL));
     }
 
     /**
@@ -55,7 +55,7 @@ final class FormatterFactoryTest extends TestCase
      */
     public function testIntlMoneyFormatterIsCreated(): void
     {
-        $this->assertInstanceOf(IntlMoneyFormatter::class, $this->factory->createFormatter(Format::INTL_MONEY));
+        self::assertInstanceOf(IntlMoneyFormatter::class, $this->factory->createFormatter(Format::INTL_MONEY));
     }
 
     public function testFormatterIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void

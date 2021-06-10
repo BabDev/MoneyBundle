@@ -37,7 +37,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new MoneyToLocalizedStringTransformer(new FormatterFactory('de_AT'), new ParserFactory('de_AT'), new Currency('EUR'), null);
 
-        $this->assertEquals('1,23', $transformer->transform(Money::EUR(123)));
+        self::assertEquals('1,23', $transformer->transform(Money::EUR(123)));
     }
 
     public function testTransformExpectsMoney(): void
@@ -52,7 +52,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     {
         $transformer = new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'));
 
-        $this->assertSame('', $transformer->transform(null));
+        self::assertSame('', $transformer->transform(null));
     }
 
     public function testReverseTransform(): void
@@ -64,7 +64,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         $transformer = new MoneyToLocalizedStringTransformer(new FormatterFactory('de_AT'), new ParserFactory('de_AT'), new Currency('EUR'), null);
 
-        $this->assertEquals(Money::EUR(123), $transformer->reverseTransform('1,23'));
+        self::assertEquals(Money::EUR(123), $transformer->reverseTransform('1,23'));
     }
 
     public function testReverseTransformExpectsString(): void
@@ -79,6 +79,6 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     {
         $transformer = new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'));
 
-        $this->assertNull($transformer->reverseTransform(''));
+        self::assertNull($transformer->reverseTransform(''));
     }
 }

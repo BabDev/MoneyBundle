@@ -44,7 +44,6 @@ final class FormatterFactory implements FormatterFactoryInterface
         switch ($format) {
             case Format::AGGREGATE:
                 throw new UnsupportedFormatException(array_keys(self::FORMAT_MAP), sprintf('The "%s" class is not supported by "%s".', AggregateMoneyFormatter::class, self::class));
-
             case Format::BITCOIN:
                 $fractionDigits = (int) ($options['fraction_digits'] ?? 8);
 

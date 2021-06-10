@@ -14,7 +14,7 @@ final class MoneyNormalizerTest extends TestCase
 {
     public function testNormalize(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             ['amount' => '100', 'currency' => 'USD'],
             (new MoneyNormalizer())->normalize(new Money(100, new Currency('USD')))
         );
@@ -41,12 +41,12 @@ final class MoneyNormalizerTest extends TestCase
      */
     public function testSupportsNormalization($data, bool $supported): void
     {
-        $this->assertSame($supported, (new MoneyNormalizer())->supportsNormalization($data));
+        self::assertSame($supported, (new MoneyNormalizer())->supportsNormalization($data));
     }
 
     public function testDenormalize(): void
     {
-        $this->assertEquals(
+        self::assertEquals(
             new Money(100, new Currency('USD')),
             (new MoneyNormalizer())->denormalize(['amount' => '100', 'currency' => 'USD'], Money::class)
         );
@@ -88,11 +88,11 @@ final class MoneyNormalizerTest extends TestCase
      */
     public function testSupportsDenormalization($data, string $type, bool $supported): void
     {
-        $this->assertSame($supported, (new MoneyNormalizer())->supportsDenormalization($data, $type));
+        self::assertSame($supported, (new MoneyNormalizer())->supportsDenormalization($data, $type));
     }
 
     public function testHasCacheableSupportsMethod(): void
     {
-        $this->assertTrue((new MoneyNormalizer())->hasCacheableSupportsMethod());
+        self::assertTrue((new MoneyNormalizer())->hasCacheableSupportsMethod());
     }
 }

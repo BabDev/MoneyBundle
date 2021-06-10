@@ -58,7 +58,7 @@ final class MoneyTypeTest extends TypeTestCase
         $view = $this->factory->create(MoneyType::class, null, ['currency' => $currency])
             ->createView();
 
-        $this->assertSame($expected, $view->vars['money_pattern']);
+        self::assertSame($expected, $view->vars['money_pattern']);
     }
 
     public function testSubmitNull(): void
@@ -66,9 +66,9 @@ final class MoneyTypeTest extends TypeTestCase
         $form = $this->factory->create(MoneyType::class);
         $form->submit(null);
 
-        $this->assertNull($form->getData());
-        $this->assertNull($form->getNormData());
-        $this->assertSame('', $form->getViewData());
+        self::assertNull($form->getData());
+        self::assertNull($form->getNormData());
+        self::assertSame('', $form->getViewData());
     }
 
     public function testSubmitNullUsesDefaultEmptyData(): void
@@ -78,9 +78,9 @@ final class MoneyTypeTest extends TypeTestCase
         $form = $this->factory->create(MoneyType::class, null, ['empty_data' => '10.00']);
         $form->submit(null);
 
-        $this->assertSame('10.00', $form->getViewData());
-        $this->assertEquals($expected, $form->getNormData());
-        $this->assertEquals($expected, $form->getData());
+        self::assertSame('10.00', $form->getViewData());
+        self::assertEquals($expected, $form->getNormData());
+        self::assertEquals($expected, $form->getData());
     }
 
     public function testSubmitValue(): void
@@ -88,9 +88,9 @@ final class MoneyTypeTest extends TypeTestCase
         $form = $this->factory->create(MoneyType::class);
         $form->submit('12345.67');
 
-        $this->assertEquals(Money::USD(1234567), $form->getData());
-        $this->assertEquals(Money::USD(1234567), $form->getNormData());
-        $this->assertSame('12345.67', $form->getViewData());
+        self::assertEquals(Money::USD(1234567), $form->getData());
+        self::assertEquals(Money::USD(1234567), $form->getNormData());
+        self::assertSame('12345.67', $form->getViewData());
     }
 
     public function testDefaultFormattingWithDefaultRounding(): void
@@ -98,7 +98,7 @@ final class MoneyTypeTest extends TypeTestCase
         $form = $this->factory->create(MoneyType::class, null, ['scale' => 0]);
         $form->setData(Money::USD(1234554));
 
-        $this->assertSame('12346', $form->createView()->vars['value']);
+        self::assertSame('12346', $form->createView()->vars['value']);
     }
 
     public function testDefaultFormattingWithSpecifiedRounding(): void
@@ -106,7 +106,7 @@ final class MoneyTypeTest extends TypeTestCase
         $form = $this->factory->create(MoneyType::class, null, ['scale' => 0, 'rounding_mode' => \NumberFormatter::ROUND_DOWN]);
         $form->setData(Money::USD(1234554));
 
-        $this->assertSame('12345', $form->createView()->vars['value']);
+        self::assertSame('12345', $form->createView()->vars['value']);
     }
 
     public function testHtml5EnablesSpecificFormatting(): void
@@ -119,8 +119,8 @@ final class MoneyTypeTest extends TypeTestCase
         $form = $this->factory->create(MoneyType::class, null, ['currency' => new Currency('EUR'), 'html5' => true, 'scale' => 2]);
         $form->setData(Money::EUR(1234560));
 
-        $this->assertSame('12345.60', $form->createView()->vars['value']);
-        $this->assertSame('number', $form->createView()->vars['type']);
+        self::assertSame('12345.60', $form->createView()->vars['value']);
+        self::assertSame('number', $form->createView()->vars['type']);
     }
 
     protected function getExtensions(): array

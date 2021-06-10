@@ -34,12 +34,12 @@ final class ParserFactoryTest extends TestCase
 
     public function testBitcoinParserIsCreated(): void
     {
-        $this->assertInstanceOf(BitcoinMoneyParser::class, $this->factory->createParser(Format::BITCOIN));
+        self::assertInstanceOf(BitcoinMoneyParser::class, $this->factory->createParser(Format::BITCOIN));
     }
 
     public function testDecimalParserIsCreated(): void
     {
-        $this->assertInstanceOf(DecimalMoneyParser::class, $this->factory->createParser(Format::DECIMAL));
+        self::assertInstanceOf(DecimalMoneyParser::class, $this->factory->createParser(Format::DECIMAL));
     }
 
     /**
@@ -47,7 +47,7 @@ final class ParserFactoryTest extends TestCase
      */
     public function testIntlLocalizedDecimalParserIsCreated(): void
     {
-        $this->assertInstanceOf(IntlLocalizedDecimalParser::class, $this->factory->createParser(Format::INTL_LOCALIZED_DECIMAL));
+        self::assertInstanceOf(IntlLocalizedDecimalParser::class, $this->factory->createParser(Format::INTL_LOCALIZED_DECIMAL));
     }
 
     /**
@@ -55,7 +55,7 @@ final class ParserFactoryTest extends TestCase
      */
     public function testIntlMoneyParserIsCreated(): void
     {
-        $this->assertInstanceOf(IntlMoneyParser::class, $this->factory->createParser(Format::INTL_MONEY));
+        self::assertInstanceOf(IntlMoneyParser::class, $this->factory->createParser(Format::INTL_MONEY));
     }
 
     public function testParserIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void
