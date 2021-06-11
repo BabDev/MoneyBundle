@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 (2021-06-11)
+
+- Fix mapping paths for Doctrine integrations
+
 ## 1.3.0 (2021-06-10)
 
 - Add an enum class with the supported format codes
