@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.0 (????-??-??)
+
+- Add support for Symfony 6
+
 ## 1.4.0 (2021-08-01)
 
 - Fix field name for Doctrine MongoDB ODM embeddable
