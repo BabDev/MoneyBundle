@@ -26,7 +26,7 @@ final class MoneyTypeTest extends TypeTestCase
     protected function setUp(): void
     {
         // we test against different locales, so we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this);
 
         parent::setUp();
 
@@ -112,7 +112,7 @@ final class MoneyTypeTest extends TypeTestCase
     public function testHtml5EnablesSpecificFormatting(): void
     {
         // Since we test against "de_CH", we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this);
 
         \Locale::setDefault('de_CH');
 
