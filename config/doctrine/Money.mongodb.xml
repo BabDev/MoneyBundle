@@ -5,6 +5,6 @@
 >
     <embedded-document name="Money\Money">
         <field name="amount" type="string" />
-        <embed-one field="address" target-document="Money\Currency" />
+        <embed-one field="currency" target-document="Money\Currency" />
     </embedded-document>
 </doctrine-mongo-mapping>

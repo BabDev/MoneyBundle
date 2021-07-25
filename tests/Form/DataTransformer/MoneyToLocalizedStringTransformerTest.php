@@ -31,7 +31,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function testTransform(): void
     {
         // Since we test against "de_AT", we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this);
 
         \Locale::setDefault('de_AT');
 
@@ -58,7 +58,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function testReverseTransform(): void
     {
         // Since we test against "de_AT", we need the full implementation
-        IntlTestHelper::requireFullIntl($this, false);
+        IntlTestHelper::requireFullIntl($this);
 
         \Locale::setDefault('de_AT');
 
