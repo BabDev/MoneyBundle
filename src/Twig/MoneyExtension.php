@@ -13,8 +13,15 @@ use Twig\TwigFunction;
 final class MoneyExtension extends AbstractExtension
 {
     private FormatterFactoryInterface $formatterFactory;
+
+    /**
+     * @phpstan-var non-empty-string
+     */
     private string $defaultCurrency;
 
+    /**
+     * @phpstan-param non-empty-string $defaultCurrency
+     */
     public function __construct(FormatterFactoryInterface $formatterFactory, string $defaultCurrency)
     {
         $this->formatterFactory = $formatterFactory;
@@ -44,6 +51,7 @@ final class MoneyExtension extends AbstractExtension
     /**
      * @param string|int $amount
      * @phpstan-param numeric-string|int $amount
+     * @phpstan-param non-empty-string|null $currency
      */
     public function createMoney($amount, ?string $currency = null): Money
     {
@@ -53,7 +61,7 @@ final class MoneyExtension extends AbstractExtension
     /**
      * @phpstan-param Format::* $format
      */
-    public function formatMoney(Money $money, string $format = 'intl_money', ?string $locale = null, array $options = []): string
+    public function formatMoney(Money $money, string $format = Format::INTL_MONEY, ?string $locale = null, array $options = []): string
     {
         return $this->formatterFactory->createFormatter($format, $locale, $options)->format($money);
     }

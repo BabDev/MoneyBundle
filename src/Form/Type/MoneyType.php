@@ -30,6 +30,9 @@ final class MoneyType extends AbstractType
      */
     private static array $patterns = [];
 
+    /**
+     * @phpstan-param non-empty-string $defaultCurrency
+     */
     public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, string $defaultCurrency)
     {
         $this->formatterFactory = $formatterFactory;

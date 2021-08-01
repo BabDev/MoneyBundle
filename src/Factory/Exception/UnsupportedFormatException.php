@@ -2,15 +2,19 @@
 
 namespace BabDev\MoneyBundle\Factory\Exception;
 
+use BabDev\MoneyBundle\Format;
+
 final class UnsupportedFormatException extends \InvalidArgumentException
 {
     /**
      * @var string[]
+     * @phpstan-var array<Format::*>
      */
     private array $formats;
 
     /**
      * @param string[] $formats
+     * @phpstan-param array<Format::*> $formats
      */
     public function __construct(array $formats, string $message = '', int $code = 0, ?\Throwable $previous = null)
     {
@@ -21,6 +25,7 @@ final class UnsupportedFormatException extends \InvalidArgumentException
 
     /**
      * @return string[]
+     * @phpstan-return array<Format::*>
      */
     public function getFormats(): array
     {

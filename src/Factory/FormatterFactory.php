@@ -17,7 +17,8 @@ use Money\MoneyFormatter;
 final class FormatterFactory implements FormatterFactoryInterface
 {
     /**
-     * @var array<string, class-string>
+     * @var array<string, class-string<MoneyFormatter>>
+     * @phpstan-var array<Format::*, class-string<MoneyFormatter>>
      */
     private const FORMAT_MAP = [
         Format::BITCOIN => BitcoinMoneyFormatter::class,

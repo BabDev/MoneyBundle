@@ -25,9 +25,17 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
 {
     private FormatterFactoryInterface $formatterFactory;
     private ParserFactoryInterface $parserFactory;
+
+    /**
+     * @phpstan-var non-empty-string
+     */
     private string $defaultCurrency;
+
     private ?PropertyAccessorInterface $propertyAccessor;
 
+    /**
+     * @phpstan-param non-empty-string $defaultCurrency
+     */
     public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, string $defaultCurrency, ?PropertyAccessorInterface $propertyAccessor = null)
     {
         $this->formatterFactory = $formatterFactory;
@@ -60,13 +68,14 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             $comparedValue = $constraint->value;
         }
 
+        /** @var Money $firstValue */
         $firstValue = $this->ensureMoneyObject($constraint, $value);
         $secondValue = $this->ensureMoneyObject($constraint, $comparedValue);
 
         if (!$this->compareValues($firstValue, $secondValue)) {
             $violationBuilder = $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', null !== $firstValue ? $this->formatterFactory->createFormatter($constraint->formatterFormat, $constraint->locale, $this->createFactoryOptions($constraint))->format($firstValue) : $value)
-                ->setParameter('{{ compared_value }}', null !== $secondValue ? $this->formatterFactory->createFormatter($constraint->formatterFormat, $constraint->locale, $this->createFactoryOptions($constraint))->format($secondValue) : $secondValue)
+                ->setParameter('{{ value }}', $this->formatterFactory->createFormatter($constraint->formatterFormat, $constraint->locale, $this->createFactoryOptions($constraint))->format($firstValue))
+                ->setParameter('{{ compared_value }}', null !== $secondValue ? $this->formatterFactory->createFormatter($constraint->formatterFormat, $constraint->locale, $this->createFactoryOptions($constraint))->format($secondValue) : 'N/A')
                 ->setParameter('{{ compared_value_type }}', $this->formatTypeOf($comparedValue))
                 ->setCode($this->getErrorCode());
 

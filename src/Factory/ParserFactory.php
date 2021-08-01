@@ -16,7 +16,8 @@ use Money\Parser\IntlMoneyParser;
 final class ParserFactory implements ParserFactoryInterface
 {
     /**
-     * @var array<string, class-string>
+     * @var array<string, class-string<MoneyParser>>
+     * @phpstan-var array<Format::*, class-string<MoneyParser>>
      */
     private const PARSER_MAP = [
         Format::BITCOIN => BitcoinMoneyParser::class,

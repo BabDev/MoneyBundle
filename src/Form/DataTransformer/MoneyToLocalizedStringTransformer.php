@@ -75,7 +75,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
         try {
             return $parser->parse(sprintf('%.53f', $value), $this->currency);
         } catch (ParserException $e) {
-            throw new TransformationFailedException($e->getMessage());
+            throw new TransformationFailedException($e->getMessage(), 0, $e);
         }
     }
 }

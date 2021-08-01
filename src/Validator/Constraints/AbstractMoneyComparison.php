@@ -25,17 +25,20 @@ abstract class AbstractMoneyComparison extends Constraint
      */
     public $value;
 
+    /**
+     * @phpstan-var non-empty-string|null
+     */
     public ?string $currency = null;
 
     /**
      * @phpstan-var Format::*
      */
-    public string $formatterFormat = 'intl_money';
+    public string $formatterFormat = Format::INTL_MONEY;
 
     /**
      * @phpstan-var Format::*
      */
-    public string $parserFormat = 'decimal';
+    public string $parserFormat = Format::DECIMAL;
 
     public int $fractionDigits = 2;
     public bool $groupingUsed = true;

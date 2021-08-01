@@ -15,7 +15,7 @@ use Money\Money;
 
 final class MoneyHandler implements SubscribingHandlerInterface
 {
-    public static function getSubscribingMethods()
+    public static function getSubscribingMethods(): array
     {
         return [
             [
@@ -55,11 +55,14 @@ final class MoneyHandler implements SubscribingHandlerInterface
         /** @phpstan-var numeric-string $amount */
         $amount = (string) $moneyAsXml->amount;
 
-        return new Money($amount, new Currency((string) $moneyAsXml->currency));
+        /** @phpstan-var non-empty-string $currency */
+        $currency = (string) $moneyAsXml->currency;
+
+        return new Money($amount, new Currency($currency));
     }
 
     /**
-     * @return array|\ArrayObject
+     * @return array<string, string>|\ArrayObject<string, string>
      */
     public function serializeMoneyToJson(SerializationVisitorInterface $visitor, Money $money, array $type, SerializationContext $context)
     {
