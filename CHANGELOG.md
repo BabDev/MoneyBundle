@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0 (2021-08-01)
+
+- Fix field name for Doctrine MongoDB ODM embeddable
+- Drop support for Symfony 5.2 (Branch is EOL)
+
 ## 1.3.1 (2021-06-11)
 
 - Fix mapping paths for Doctrine integrations
