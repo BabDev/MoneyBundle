@@ -11,3 +11,11 @@ The bundle includes:
 - A [Twig](https://twig.symfony.com/) integration to create and render formatted `Money` objects
 - A form type for the [Symfony Form component](https://symfony.com/doc/current/components/form.html) to process `Money` objects
 - Comparing `Money` object values using the [Symfony Validator component](https://symfony.com/doc/current/components/validator.html)
+
+## Support Matrix
+
+The below table shows the supported PHP and Symfony versions for this bundle.
+
+| Version | Status             | PHP Versions | Symfony Versions  |
+| ------- | ------------------ | ------------ | ----------------- |
+| 1.x     | Actively Supported | 7.4+         | 4.4, 5.3-5.4      |
