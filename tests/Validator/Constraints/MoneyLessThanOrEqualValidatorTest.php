@@ -25,7 +25,7 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         return new MoneyLessThanOrEqual($options);
     }
 
-    protected function getErrorCode(): ?string
+    protected function getErrorCode(): string
     {
         return MoneyLessThanOrEqual::TOO_HIGH_ERROR;
     }

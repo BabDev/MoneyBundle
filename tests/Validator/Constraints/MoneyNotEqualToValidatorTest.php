@@ -25,7 +25,7 @@ final class MoneyNotEqualToValidatorTest extends AbstractMoneyComparisonValidato
         return new MoneyNotEqualTo($options);
     }
 
-    protected function getErrorCode(): ?string
+    protected function getErrorCode(): string
     {
         return MoneyNotEqualTo::IS_EQUAL_ERROR;
     }

@@ -26,6 +26,10 @@ parameters:
       path: %currentWorkingDirectory%/tests/Factory/ParserFactoryTest.php
 
     -
+      message: '/Parameter #4 \$scaleOrTransformer of class BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer constructor expects int\|Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer\|null, string given\./'
+      path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+    -
       message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::transform\(\) expects Money\\Money\|null, string given\./'
       path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 

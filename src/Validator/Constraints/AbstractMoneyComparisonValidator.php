@@ -44,6 +44,9 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         $this->propertyAccessor = $propertyAccessor;
     }
 
+    /**
+     * @param mixed $value
+     */
     public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof AbstractMoneyComparison) {

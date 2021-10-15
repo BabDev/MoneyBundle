@@ -38,9 +38,9 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         };
     }
 
-    protected function getErrorCode(): ?string
+    protected function getErrorCode(): string
     {
-        return null;
+        return '';
     }
 
     abstract public function provideValidComparisons(): \Generator;
