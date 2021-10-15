@@ -8,6 +8,8 @@ use BabDev\MoneyBundle\Format;
 use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Money;
+use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 
@@ -16,16 +18,28 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStrin
  *
  * Class is based on \Symfony\Component\Form\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer
  */
-final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransformer
+final class MoneyToLocalizedStringTransformer implements DataTransformerInterface
 {
     private FormatterFactoryInterface $formatterFactory;
     private ParserFactoryInterface $parserFactory;
     private Currency $currency;
     private ?string $locale;
+    private NumberToLocalizedStringTransformer $numberTransformer;
 
-    public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, Currency $currency, ?int $scale = 2, ?bool $grouping = true, ?int $roundingMode = \NumberFormatter::ROUND_HALFUP, string $locale = null)
+    /**
+     * @param NumberToLocalizedStringTransformer|int|null $scaleOrTransformer
+     */
+    public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, Currency $currency, $scaleOrTransformer = 2, ?bool $grouping = true, ?int $roundingMode = \NumberFormatter::ROUND_HALFUP, string $locale = null)
     {
-        parent::__construct($scale, $grouping, $roundingMode, $locale);
+        if ($scaleOrTransformer instanceof NumberToLocalizedStringTransformer) {
+            $this->numberTransformer = $scaleOrTransformer;
+        } elseif (\is_int($scaleOrTransformer) || null === $scaleOrTransformer) {
+            trigger_deprecation('babdev/money-bundle', '1.5', 'Passing an integer or null as the fourth argument to the "%s" constructor is deprecated. In 2.0, a "%s" instance will be required.', self::class, NumberToLocalizedStringTransformer::class);
+
+            $this->numberTransformer = new NumberToLocalizedStringTransformer($scaleOrTransformer, $grouping, $roundingMode, $locale);
+        } else {
+            throw new InvalidArgumentException(sprintf('The fourth argument to the %s constructor must be an instance of %s, an integer, or null; %s given', self::class, NumberToLocalizedStringTransformer::class, get_debug_type($scaleOrTransformer)));
+        }
 
         $this->formatterFactory = $formatterFactory;
         $this->parserFactory = $parserFactory;
@@ -52,19 +66,17 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
 
         $formatter = $this->formatterFactory->createFormatter(Format::DECIMAL, $this->locale, []);
 
-        return parent::transform((float) $formatter->format($value));
+        return $this->numberTransformer->transform((float) $formatter->format($value));
     }
 
     /**
      * @param string $value Localized money string
      *
-     * @return Money|null
-     *
      * @throws TransformationFailedException if the given value is not a string or if the value can not be transformed
      */
-    public function reverseTransform($value)
+    public function reverseTransform($value): ?Money
     {
-        $value = parent::reverseTransform($value);
+        $value = $this->numberTransformer->reverseTransform($value);
 
         if (null === $value) {
             return null;

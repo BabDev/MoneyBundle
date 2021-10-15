@@ -3,6 +3,8 @@
 ## 1.5.0 (????-??-??)
 
 - Add support for Symfony 6
+- *Minor B/C Break* `BabDev\MoneyBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer` no longer extends from `Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer`
+- Deprecated passing `Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer` constructor arguments into `BabDev\MoneyBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer`, as of 2.0 the decorated transformer will be required instead 
 
 ## 1.4.0 (2021-08-01)
 

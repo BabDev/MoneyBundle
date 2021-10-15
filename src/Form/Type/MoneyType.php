@@ -8,6 +8,7 @@ use BabDev\MoneyBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer;
 use Money\Currency;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\LogicException;
+use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -49,10 +50,12 @@ final class MoneyType extends AbstractType
                 $this->formatterFactory,
                 $this->parserFactory,
                 $options['currency'],
-                $options['scale'],
-                $options['grouping'],
-                $options['rounding_mode'],
-                $options['html5'] ? 'en' : null
+                new NumberToLocalizedStringTransformer(
+                    $options['scale'],
+                    $options['grouping'],
+                    $options['rounding_mode'],
+                    $options['html5'] ? 'en' : null
+                )
             ))
         ;
     }
