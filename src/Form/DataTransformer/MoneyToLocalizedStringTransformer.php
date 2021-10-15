@@ -40,7 +40,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
      *
      * @throws TransformationFailedException if the given value is not a Money instance or if the value can not be transformed
      */
-    public function transform($value)
+    public function transform($value): string
     {
         if (null === $value) {
             return '';
