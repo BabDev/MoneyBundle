@@ -17,6 +17,10 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStrin
  * Transforms between a normalized format and a localized money string.
  *
  * Class is based on \Symfony\Component\Form\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer
+ *
+ * @template T of Money
+ * @template R of string
+ * @implements DataTransformerInterface<T, R>
  */
 final class MoneyToLocalizedStringTransformer implements DataTransformerInterface
 {
@@ -71,6 +75,8 @@ final class MoneyToLocalizedStringTransformer implements DataTransformerInterfac
 
     /**
      * @param string $value Localized money string
+     *
+     * @phpstan-return Money|null
      *
      * @throws TransformationFailedException if the given value is not a string or if the value can not be transformed
      */

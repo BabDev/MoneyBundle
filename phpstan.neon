@@ -30,11 +30,11 @@ parameters:
       path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 
     -
-      message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::transform\(\) expects Money\\Money\|null, string given\./'
+      message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer<Money\\Money,string>::transform\(\) expects Money\\Money\|null, string given\./'
       path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 
     -
-      message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer::reverseTransform\(\) expects string, int given\./'
+      message: '/Parameter #1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer<Money\\Money,string>::reverseTransform\(\) expects string, int given\./'
       path: %currentWorkingDirectory%/tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 
   checkMissingIterableValueType: false
