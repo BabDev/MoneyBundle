@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.0 (????-??-??)
+## 1.5.0 (2021-11-09)
 
 - Add support for Symfony 6
 - *Minor B/C Break* `BabDev\MoneyBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer` no longer extends from `Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer`
