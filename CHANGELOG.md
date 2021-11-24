@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.6.0 (2021-11-23)
+
+- Moved the Doctrine mapping files for Symfony 5.4 compatibility
+
 ## 1.5.0 (2021-11-09)
 
 - Add support for Symfony 6
