@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.4, 8.0]
+        php: [7.4, 8.0, 8.1]
         symfony: [5.3.*]
         composer-flags: ['--prefer-stable']
         can-fail: [false]
@@ -28,12 +28,6 @@ jobs:
             extensions: 'curl, iconv, mbstring, mongodb, pdo, pdo_sqlite, sqlite, zip'
             can-fail: true
             has-mongodb: true
-          - php: 8.1
-            symfony: 5.3.*
-            composer-flags: '--ignore-platform-req=php'
-            extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
-            can-fail: true
-            has-mongodb: false
           - php: 8.0
             symfony: 6.0.*@dev
             composer-flags: ''
@@ -52,7 +46,7 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer:v2,flex
           extensions: ${{ matrix.extensions }}
-          coverage: pcov
+          coverage: none
 
       - name: Remove MongoDB
         if: matrix.has-mongodb == false
