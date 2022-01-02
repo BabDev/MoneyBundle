@@ -5,10 +5,6 @@ parameters:
     - %currentWorkingDirectory%/tests
   ignoreErrors:
     -
-      message: '/Parameter #1 \$configuration of method Symfony\\Component\\DependencyInjection\\Extension\\Extension::processConfiguration\(\) expects Symfony\\Component\\Config\\Definition\\ConfigurationInterface, Symfony\\Component\\Config\\Definition\\ConfigurationInterface\|null given\./'
-      path: %currentWorkingDirectory%/src/DependencyInjection/BabDevMoneyExtension.php
-
-    -
       message: '/Parameter #1 \$message of method Symfony\\Component\\Validator\\Context\\ExecutionContextInterface::buildViolation\(\) expects string, string\|null given\./'
       path: %currentWorkingDirectory%/src/Validator/Constraints/AbstractMoneyComparisonValidator.php
 
