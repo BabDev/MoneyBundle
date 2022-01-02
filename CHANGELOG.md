@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.0 (2022-??-??)
+
+- Drop support for Symfony 5.3
+
 ## 1.6.1 (2021-11-30)
 
 - Allow v3 of `symfony/deprecation-contracts`

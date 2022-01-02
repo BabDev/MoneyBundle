@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ['7.4', '8.0', '8.1']
-        symfony: ['5.3.*', '5.4.*']
+        symfony: ['5.4.*', '6.0.*']
         composer-flags: ['--prefer-stable']
         can-fail: [false]
         has-mongodb: [true]
@@ -22,11 +22,9 @@ jobs:
             extensions: 'curl, iconv, mbstring, mongodb, pdo, pdo_sqlite, sqlite, zip'
             can-fail: false
             has-mongodb: true
-          - php: '8.0'
+        exclude:
+          - php: '7.4'
             symfony: '6.0.*'
-            composer-flags: ''
-            can-fail: false
-            has-mongodb: false
 
     name: "PHP ${{ matrix.php }} - Symfony ${{ matrix.symfony }}${{ matrix.composer-flags != '' && format(' - Composer {0}', matrix.composer-flags) || '' }}"
 
