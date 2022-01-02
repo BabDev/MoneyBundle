@@ -1,0 +1,67 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$currency of static method BabDev\\\\MoneyBundle\\\\Form\\\\Type\\\\MoneyType\\:\\:getPattern\\(\\) expects Money\\\\Currency, mixed given\\.$#"
+			count: 1
+			path: src/Form/Type/MoneyType.php
+
+		-
+			message: "#^Parameter \\#1 \\$scale of class Symfony\\\\Component\\\\Form\\\\Extension\\\\Core\\\\DataTransformer\\\\NumberToLocalizedStringTransformer constructor expects int\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Form/Type/MoneyType.php
+
+		-
+			message: "#^Parameter \\#2 \\$grouping of class Symfony\\\\Component\\\\Form\\\\Extension\\\\Core\\\\DataTransformer\\\\NumberToLocalizedStringTransformer constructor expects bool\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Form/Type/MoneyType.php
+
+		-
+			message: "#^Parameter \\#3 \\$currency of class BabDev\\\\MoneyBundle\\\\Form\\\\DataTransformer\\\\MoneyToLocalizedStringTransformer constructor expects Money\\\\Currency, mixed given\\.$#"
+			count: 1
+			path: src/Form/Type/MoneyType.php
+
+		-
+			message: "#^Parameter \\#3 \\$roundingMode of class Symfony\\\\Component\\\\Form\\\\Extension\\\\Core\\\\DataTransformer\\\\NumberToLocalizedStringTransformer constructor expects int\\|null, mixed given\\.$#"
+			count: 1
+			path: src/Form/Type/MoneyType.php
+
+		-
+			message: "#^Parameter \\#1 \\$message of method Symfony\\\\Component\\\\Validator\\\\Context\\\\ExecutionContextInterface\\:\\:buildViolation\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/Validator/Constraints/AbstractMoneyComparisonValidator.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method BabDev\\\\MoneyBundle\\\\Validator\\\\Constraints\\\\AbstractMoneyComparisonValidator\\:\\:ensureMoneyObject\\(\\) expects float\\|int\\|Money\\\\Money\\|numeric\\-string\\|null, mixed given\\.$#"
+			count: 2
+			path: src/Validator/Constraints/AbstractMoneyComparisonValidator.php
+
+		-
+			message: "#^Parameter \\#1 \\$format of method BabDev\\\\MoneyBundle\\\\Factory\\\\FormatterFactory\\:\\:createFormatter\\(\\) expects 'aggregate'\\|'bitcoin'\\|'decimal'\\|'intl_localized…'\\|'intl_money', 'unsupported' given\\.$#"
+			count: 1
+			path: tests/Factory/FormatterFactoryTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$format of method BabDev\\\\MoneyBundle\\\\Factory\\\\ParserFactory\\:\\:createParser\\(\\) expects 'aggregate'\\|'bitcoin'\\|'decimal'\\|'intl_localized…'\\|'intl_money', 'unsupported' given\\.$#"
+			count: 1
+			path: tests/Factory/ParserFactoryTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method BabDev\\\\MoneyBundle\\\\Form\\\\DataTransformer\\\\MoneyToLocalizedStringTransformer\\<Money\\\\Money,string\\>\\:\\:reverseTransform\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method BabDev\\\\MoneyBundle\\\\Form\\\\DataTransformer\\\\MoneyToLocalizedStringTransformer\\<Money\\\\Money,string\\>\\:\\:transform\\(\\) expects Money\\\\Money\\|null, string given\\.$#"
+			count: 1
+			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$locale of function setlocale expects string\\|null, string\\|false given\\.$#"
+			count: 1
+			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
+		-
+			message: "#^Parameter \\#4 \\$scaleOrTransformer of class BabDev\\\\MoneyBundle\\\\Form\\\\DataTransformer\\\\MoneyToLocalizedStringTransformer constructor expects int\\|Symfony\\\\Component\\\\Form\\\\Extension\\\\Core\\\\DataTransformer\\\\NumberToLocalizedStringTransformer\\|null, string given\\.$#"
+			count: 1
+			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
+
