@@ -2,23 +2,14 @@
 
 namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 
-use BabDev\MoneyBundle\BabDevMoneyBundle;
 use BabDev\MoneyBundle\DependencyInjection\BabDevMoneyExtension;
-use JMS\SerializerBundle\JMSSerializerBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
-use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 {
     public function testContainerIsLoadedWithDefaultConfiguration(): void
     {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
-            ]
-        );
-
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
@@ -30,13 +21,6 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWithCustomConfiguration(): void
     {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
-            ]
-        );
-
         $this->load(['default_currency' => 'EUR']);
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'EUR');
@@ -48,14 +32,6 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWhenJMSSerializerBundleIsInstalled(): void
     {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
-                'JMSSerializerBundle' => JMSSerializerBundle::class,
-            ]
-        );
-
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
@@ -68,14 +44,6 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWhenTwigBundleIsInstalled(): void
     {
-        $this->container->setParameter(
-            'kernel.bundles',
-            [
-                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
-                'TwigBundle' => TwigBundle::class,
-            ]
-        );
-
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
@@ -86,6 +54,9 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('money.validator.greater_than');
     }
 
+    /**
+     * @return ExtensionInterface[]
+     */
     protected function getContainerExtensions(): array
     {
         return [
