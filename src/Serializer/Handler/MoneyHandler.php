@@ -3,6 +3,7 @@
 namespace BabDev\MoneyBundle\Serializer\Handler;
 
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\SerializationContext;
@@ -45,11 +46,21 @@ final class MoneyHandler implements SubscribingHandlerInterface
         ];
     }
 
+    /**
+     * @throws InvalidArgumentException if a {@see Money} instance could not be created from the serialized data
+     */
     public function deserializeMoneyFromJson(DeserializationVisitorInterface $visitor, array $moneyAsArray, array $type, DeserializationContext $context): Money
     {
-        return new Money($moneyAsArray['amount'], new Currency($moneyAsArray['currency']));
+        try {
+            return new Money($moneyAsArray['amount'], new Currency($moneyAsArray['currency']));
+        } catch (\Exception $exception) {
+            throw new InvalidArgumentException('Could not deserialize Money data.', $exception->getCode(), $exception);
+        }
     }
 
+    /**
+     * @throws InvalidArgumentException if a {@see Money} instance could not be created from the serialized data
+     */
     public function deserializeMoneyFromXml(XmlDeserializationVisitor $visitor, \SimpleXMLElement $moneyAsXml, array $type, DeserializationContext $context): Money
     {
         /** @phpstan-var numeric-string $amount */
@@ -58,7 +69,11 @@ final class MoneyHandler implements SubscribingHandlerInterface
         /** @phpstan-var non-empty-string $currency */
         $currency = (string) $moneyAsXml->currency;
 
-        return new Money($amount, new Currency($currency));
+        try {
+            return new Money($amount, new Currency($currency));
+        } catch (\Exception $exception) {
+            throw new InvalidArgumentException('Could not deserialize Money data.', $exception->getCode(), $exception);
+        }
     }
 
     /**
