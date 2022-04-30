@@ -22,6 +22,12 @@ jobs:
             extensions: 'curl, iconv, mbstring, mongodb, pdo, pdo_sqlite, sqlite, zip'
             can-fail: false
             has-mongodb: true
+          - php: '8.1'
+            symfony: '6.1.*@beta'
+            composer-flags: '--prefer-stable'
+            extensions: 'curl, iconv, mbstring, mongodb, pdo, pdo_sqlite, sqlite, zip'
+            can-fail: false
+            has-mongodb: true
         exclude:
           - php: '7.4'
             symfony: '6.0.*'
