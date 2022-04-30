@@ -3,6 +3,7 @@
 namespace BabDev\MoneyBundle\Tests\Validator\Constraints;
 
 use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
+use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparisonValidator;
 use Money\Money;
 use Money\Number;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
@@ -13,6 +14,8 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
  * Provides a base class for the validation of property comparisons.
  *
  * Class is based on \Symfony\Component\Validator\Tests\Constraints\AbstractComparisonValidatorTestCase
+ *
+ * @extends ConstraintValidatorTestCase<AbstractMoneyComparisonValidator>
  */
 abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValidatorTestCase
 {
