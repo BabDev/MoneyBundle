@@ -22,7 +22,7 @@
         "jms/serializer-bundle": "^3.0 || ^4.0",
         "matthiasnoback/symfony-dependency-injection-test": "^4.3",
         "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan": "1.6.3",
+        "phpstan/phpstan": "1.6.8",
         "phpstan/phpstan-phpunit": "1.1.1",
         "phpstan/phpstan-symfony": "1.1.8",
         "phpunit/phpunit": "^9.5",
