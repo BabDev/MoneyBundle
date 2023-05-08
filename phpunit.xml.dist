@@ -3,7 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         colors="true"
         bootstrap="tests/bootstrap.php"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
 >
     <testsuites>
         <testsuite name="BabDevMoneyBundle Test Suite">
@@ -22,6 +22,6 @@
     </listeners>
 
     <php>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=2"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=3"/>
     </php>
 </phpunit>

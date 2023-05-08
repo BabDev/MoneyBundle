@@ -63,6 +63,16 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
         return Money::class === $type;
     }
 
+    /**
+     * @return array<class-string, true>
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            Money::class => true,
+        ];
+    }
+
     public function hasCacheableSupportsMethod(): bool
     {
         return true;
