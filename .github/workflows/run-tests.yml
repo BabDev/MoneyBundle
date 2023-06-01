@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ['7.4', '8.0', '8.1', '8.2']
-        symfony: ['5.4.*', '6.0.*', '6.1.*', '6.2.*', '6.3.*']
+        symfony: ['5.4.*', '6.3.*']
         composer-flags: ['--prefer-stable']
         can-fail: [false]
         has-mongodb: [true]
@@ -24,17 +24,7 @@ jobs:
             has-mongodb: true
         exclude:
           - php: '7.4'
-            symfony: '6.0.*'
-          - php: '7.4'
-            symfony: '6.1.*'
-          - php: '7.4'
-            symfony: '6.2.*'
-          - php: '7.4'
             symfony: '6.3.*'
-          - php: '8.0'
-            symfony: '6.1.*'
-          - php: '8.0'
-            symfony: '6.2.*'
           - php: '8.0'
             symfony: '6.3.*'
 
