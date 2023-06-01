@@ -18,4 +18,4 @@ The below table shows the supported PHP and Symfony versions for this bundle.
 
 | Version | Status             | PHP Versions | Symfony Versions |
 |---------|--------------------|--------------|------------------|
-| 1.x     | Actively Supported | 7.4+         | 5.4, 6.0-6.1     |
+| 1.x     | Actively Supported | 7.4+         | 5.4, 6.0-6.3     |
