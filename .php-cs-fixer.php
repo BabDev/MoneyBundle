@@ -12,6 +12,9 @@ return (new PhpCsFixer\Config())
         'fopen_flags' => false,
         'linebreak_after_opening_tag' => false,
         'no_superfluous_phpdoc_tags' => ['remove_inheritdoc' => true],
+        'nullable_type_declaration_for_default_null_value' => [
+            'use_nullable_type_declaration' => true,
+        ],
         'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
     ])
     ->setRiskyAllowed(true)

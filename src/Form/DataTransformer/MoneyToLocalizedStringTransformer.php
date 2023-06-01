@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStrin
  *
  * @template T of Money
  * @template R of string
+ *
  * @implements DataTransformerInterface<T, R>
  */
 final class MoneyToLocalizedStringTransformer implements DataTransformerInterface
@@ -35,7 +36,7 @@ final class MoneyToLocalizedStringTransformer implements DataTransformerInterfac
      *
      * @throws InvalidArgumentException if an invalid constructor parameter is provided
      */
-    public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, Currency $currency, $scaleOrTransformer = 2, ?bool $grouping = true, ?int $roundingMode = \NumberFormatter::ROUND_HALFUP, string $locale = null)
+    public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, Currency $currency, $scaleOrTransformer = 2, ?bool $grouping = true, ?int $roundingMode = \NumberFormatter::ROUND_HALFUP, ?string $locale = null)
     {
         if ($scaleOrTransformer instanceof NumberToLocalizedStringTransformer) {
             $this->numberTransformer = $scaleOrTransformer;

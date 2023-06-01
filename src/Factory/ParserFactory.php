@@ -17,6 +17,7 @@ final class ParserFactory implements ParserFactoryInterface
 {
     /**
      * @var array<string, class-string<MoneyParser>>
+     *
      * @phpstan-var array<Format::*, class-string<MoneyParser>>
      */
     private const PARSER_MAP = [

@@ -21,6 +21,7 @@ abstract class AbstractMoneyComparison extends Constraint
 
     /**
      * @var Money|float|int|string|null
+     *
      * @phpstan-var Money|float|int|numeric-string|null
      */
     public $value;
@@ -56,7 +57,7 @@ abstract class AbstractMoneyComparison extends Constraint
      * @param string[]                          $groups       An array of validation groups
      * @param mixed                             $payload      Domain-specific data attached to a constraint
      */
-    public function __construct($value = null, $propertyPath = null, ?string $message = null, array $options = [], array $groups = null, $payload = null)
+    public function __construct($value = null, $propertyPath = null, ?string $message = null, array $options = [], ?array $groups = null, $payload = null)
     {
         if (\is_array($value)) {
             $options = array_merge($value, $options);

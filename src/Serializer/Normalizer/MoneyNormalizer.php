@@ -18,7 +18,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
      *
      * @throws InvalidArgumentException when the object given is not a supported type for the normalizer
      */
-    public function normalize($object, string $format = null, array $context = []): array
+    public function normalize($object, ?string $format = null, array $context = []): array
     {
         if (!$object instanceof Money) {
             throw new InvalidArgumentException(sprintf('The object must be an instance of "%s".', Money::class));
@@ -30,7 +30,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
         ];
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Money;
     }
@@ -41,7 +41,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
      * @throws InvalidArgumentException Occurs when the arguments are not coherent or not supported
      * @throws UnexpectedValueException Occurs when the item cannot be hydrated with the given data
      */
-    public function denormalize($data, string $type, string $format = null, array $context = []): Money
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): Money
     {
         if (!\is_array($data)) {
             throw new InvalidArgumentException(sprintf('Data expected to be an array, "%s" given.', get_debug_type($data)));
@@ -58,7 +58,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
         }
     }
 
-    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
         return Money::class === $type;
     }

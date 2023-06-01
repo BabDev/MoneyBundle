@@ -101,6 +101,7 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
 
     /**
      * @param Money|float|int|string|null $value
+     *
      * @phpstan-param Money|float|int|numeric-string|null $value
      */
     private function ensureMoneyObject(AbstractMoneyComparison $constraint, $value): ?Money

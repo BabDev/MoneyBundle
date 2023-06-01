@@ -76,10 +76,10 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     {
         $this->expectException(ConstraintDefinitionException::class);
         $this->expectExceptionMessage('requires only one of the "value" or "propertyPath" options to be set, not both.');
-        $this->createConstraint(([
+        $this->createConstraint([
             'value' => 'value',
             'propertyPath' => 'propertyPath',
-        ]));
+        ]);
     }
 
     /**
