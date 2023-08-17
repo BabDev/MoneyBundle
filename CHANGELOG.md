@@ -4,6 +4,7 @@
 
 - Drop support for Symfony 6.0-6.2
 - Enable XSD mapping validation when used with a version of DoctrineBundle that supports it
+- Raise minimum supported versions for a number of optional dependencies; these match the lowest tested versions
 
 ## 1.8.0 (2023-05-31)
 
