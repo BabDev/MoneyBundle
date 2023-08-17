@@ -17,9 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class MoneyCalculatorController extends AbstractController
 {
-    /**
-     * @Route("/api/money/add", name="app_api_add_money", methods={"POST"})
-     */
+    #[Route(path: '/api/money/add', name: 'app_api_add_money', methods: ['POST'])]
     public function apiAddValues(Request $request): JsonResponse
     {
         $firstValue = $request->request->getInt('first_value');

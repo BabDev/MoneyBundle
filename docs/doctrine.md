@@ -6,6 +6,8 @@ When used with an application where the [Doctrine MongoDB ODM](https://www.doctr
 
 All that is required is to define a field on your document as an embedded field with the `Money\Money` type, such as the below example document:
 
+<div class="docs-note docs-note--tip">The below example uses PHP 8 Attributes, but you can use any of the ODM's mapping drivers in your application.</div>
+
 ```php
 <?php
 
@@ -14,14 +16,10 @@ namespace App\Document;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Money\Money;
 
-/**
- * @ODM\Document()
- */
+#[ODM\Document]
 class Invoice
 {
-    /**
-     * @ODM\EmbedOne(targetDocument="Money\Money")
-     */
+    #[ODM\EmbedOne(targetDocument: Money::class)]
     public Money $tax_due;
 
     public function __construct()
@@ -37,6 +35,8 @@ When used with an application where the [Doctrine ORM](https://www.doctrine-proj
 
 All that is required is to define a field on your entity as an embedded field with the `Money\Money` type, such as the below example entity:
 
+<div class="docs-note docs-note--tip">The below example uses PHP 8 Attributes, but you can use any of the ORM's mapping drivers in your application.</div>
+
 ```php
 <?php
 
@@ -45,15 +45,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Money\Money;
 
-/**
- * @ORM\Entity()
- * @ORM\Table()
- */
+#[ORM\Entity]
 class Invoice
 {
-    /**
-     * @ORM\Embedded(class="Money\Money")
-     */
+    #[ORM\Embedded(class: Money::class)]
     public Money $tax_due;
 
     public function __construct()
