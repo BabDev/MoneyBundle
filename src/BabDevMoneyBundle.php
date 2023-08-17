@@ -26,7 +26,7 @@ final class BabDevMoneyBundle extends Bundle
 
         // Register ORM mappings if DoctrineBundle and the ORM are installed
         if (class_exists(DoctrineBundle::class) && class_exists(EntityManager::class)) {
-            $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money']));
+            $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], false, [], true));
         }
     }
 
