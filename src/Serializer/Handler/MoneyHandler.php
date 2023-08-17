@@ -6,9 +6,9 @@ use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\GraphNavigatorInterface;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\DeserializationVisitorInterface;
-use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use JMS\Serializer\XmlDeserializationVisitor;
 use JMS\Serializer\XmlSerializationVisitor;
 use Money\Currency;
@@ -79,7 +79,7 @@ final class MoneyHandler implements SubscribingHandlerInterface
     /**
      * @return array<string, string>|\ArrayObject<string, string>
      */
-    public function serializeMoneyToJson(SerializationVisitorInterface $visitor, Money $money, array $type, SerializationContext $context)
+    public function serializeMoneyToJson(JsonSerializationVisitor $visitor, Money $money, array $type, SerializationContext $context)
     {
         return $visitor->visitArray(
             [
