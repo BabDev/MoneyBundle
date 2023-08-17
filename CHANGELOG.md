@@ -1,8 +1,9 @@
 # Changelog
 
-## 1.9.0 (????-??-??)
+## 1.9.0 (2023-08-17)
 
 - Drop support for Symfony 6.0-6.2
+- Enable XSD mapping validation when used with a version of DoctrineBundle that supports it
 
 ## 1.8.0 (2023-05-31)
 
