@@ -115,7 +115,7 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         }
 
         // First try to parse (assuming formatted input) then fall back to treating as a number
-        if (\is_string($value) && false !== strpos($value, '.')) {
+        if (\is_string($value) && str_contains($value, '.')) {
             try {
                 return $this->parserFactory->createParser($constraint->parserFormat, $constraint->locale, $this->createFactoryOptions($constraint))->parse($value, new Currency($constraint->currency ?: $this->defaultCurrency));
             } catch (ParserException $exception) {
