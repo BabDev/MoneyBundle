@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
@@ -13,14 +13,12 @@ return static function (ContainerConfigurator $container): void {
     $container->services()
         ->set('money.validator.abstract')
             ->abstract()
-            ->args(
-                [
-                    service('money.factory.formatter'),
-                    service('money.factory.parser'),
-                    param('babdev_money.default_currency'),
-                    service('property_accessor'),
-                ]
-            )
+            ->args([
+                service('money.factory.formatter'),
+                service('money.factory.parser'),
+                param('babdev_money.default_currency'),
+                service('property_accessor'),
+            ])
 
         ->set('money.validator.equal_to', MoneyEqualToValidator::class)
             ->parent('money.validator.abstract')

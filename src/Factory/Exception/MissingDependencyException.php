@@ -2,6 +2,4 @@
 
 namespace BabDev\MoneyBundle\Factory\Exception;
 
-final class MissingDependencyException extends \RuntimeException
-{
-}
+final class MissingDependencyException extends \RuntimeException {}
