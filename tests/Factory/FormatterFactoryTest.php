@@ -14,10 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 final class FormatterFactoryTest extends TestCase
 {
-    /**
-     * @var FormatterFactory
-     */
-    private $factory;
+    private FormatterFactory $factory;
 
     protected function setUp(): void
     {

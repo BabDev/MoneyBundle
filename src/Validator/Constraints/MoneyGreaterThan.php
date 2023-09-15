@@ -14,14 +14,14 @@ class MoneyGreaterThan extends AbstractMoneyComparison
 {
     public const TOO_LOW_ERROR = '11c8f681-95b7-47ee-ad9a-d28dfdbb8443';
 
-    /**
-     * Maps error codes to the names of their constants.
-     *
-     * @var array<string, string>
-     */
-    protected static $errorNames = [
+    protected const ERROR_NAMES = [
         self::TOO_LOW_ERROR => 'TOO_LOW_ERROR',
     ];
+
+    /**
+     * @deprecated to be removed when dropping support for Symfony 6.1 and older
+     */
+    protected static $errorNames = self::ERROR_NAMES;
 
     public ?string $message = 'This value should be greater than {{ compared_value }}.';
 }

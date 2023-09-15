@@ -56,7 +56,7 @@ parameters:
 			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$locale of function setlocale expects string\\|null, string\\|false given\\.$#"
+			message: "#^Parameter \\#2 \\$locale of function setlocale expects string\\|null, bool\\|string given\\.$#"
 			count: 1
 			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 

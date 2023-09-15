@@ -32,7 +32,7 @@ final class BabDevMoneyBundle extends Bundle
 
     public function getContainerExtension(): ?ExtensionInterface
     {
-        if (null === $this->extension) {
+        if (!isset($this->extension)) {
             $this->extension = new BabDevMoneyExtension();
         }
 

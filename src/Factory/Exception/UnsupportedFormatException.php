@@ -7,28 +7,23 @@ use BabDev\MoneyBundle\Format;
 final class UnsupportedFormatException extends \InvalidArgumentException
 {
     /**
-     * @var string[]
+     * @param list<string> $formats
      *
-     * @phpstan-var array<Format::*>
+     * @phpstan-param list<Format::*> $formats
      */
-    private array $formats;
-
-    /**
-     * @param string[] $formats
-     *
-     * @phpstan-param array<Format::*> $formats
-     */
-    public function __construct(array $formats, string $message = '', int $code = 0, ?\Throwable $previous = null)
-    {
+    public function __construct(
+        private readonly array $formats,
+        string $message = '',
+        int $code = 0,
+        ?\Throwable $previous = null,
+    ) {
         parent::__construct($message, $code, $previous);
-
-        $this->formats = $formats;
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      *
-     * @phpstan-return array<Format::*>
+     * @phpstan-return list<Format::*>
      */
     public function getFormats(): array
     {

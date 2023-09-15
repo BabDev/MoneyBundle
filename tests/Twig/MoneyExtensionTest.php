@@ -16,12 +16,9 @@ final class MoneyExtensionTest extends TestCase
     /**
      * @var MockObject&FormatterFactoryInterface
      */
-    private $formatterFactory;
+    private MockObject $formatterFactory;
 
-    /**
-     * @var MoneyExtension
-     */
-    private $extension;
+    private MoneyExtension $extension;
 
     protected function setUp(): void
     {
@@ -32,34 +29,22 @@ final class MoneyExtensionTest extends TestCase
 
     public function testExtensionRegistersFilters(): void
     {
-        self::assertContainsOnlyInstancesOf(
-            TwigFilter::class,
-            $this->extension->getFilters()
-        );
+        self::assertContainsOnlyInstancesOf(TwigFilter::class, $this->extension->getFilters());
     }
 
     public function testExtensionRegistersFunctions(): void
     {
-        self::assertContainsOnlyInstancesOf(
-            TwigFunction::class,
-            $this->extension->getFunctions()
-        );
+        self::assertContainsOnlyInstancesOf(TwigFunction::class, $this->extension->getFunctions());
     }
 
     public function testMoneyIsCreatedWithDefaultCurrency(): void
     {
-        self::assertEquals(
-            Money::USD(100),
-            $this->extension->createMoney(100)
-        );
+        self::assertEquals(Money::USD(100), $this->extension->createMoney(100));
     }
 
     public function testMoneyIsCreatedWithCustomCurrency(): void
     {
-        self::assertEquals(
-            Money::EUR(100),
-            $this->extension->createMoney('100', 'EUR')
-        );
+        self::assertEquals(Money::EUR(100), $this->extension->createMoney('100', 'EUR'));
     }
 
     public function testMoneyIsFormatted(): void

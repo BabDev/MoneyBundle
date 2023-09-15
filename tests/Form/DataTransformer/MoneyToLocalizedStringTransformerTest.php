@@ -15,10 +15,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
 
 final class MoneyToLocalizedStringTransformerTest extends TestCase
 {
-    /**
-     * @var false|string
-     */
-    private $previousLocale;
+    private string|bool $previousLocale;
 
     protected function setUp(): void
     {

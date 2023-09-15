@@ -7,11 +7,10 @@ use Money\Money;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
-use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterface, CacheableSupportsMethodInterface
+final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterface
 {
     /**
      * @param mixed $object Object to normalize
@@ -71,10 +70,5 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
         return [
             Money::class => true,
         ];
-    }
-
-    public function hasCacheableSupportsMethod(): bool
-    {
-        return true;
     }
 }

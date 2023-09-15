@@ -2,10 +2,13 @@
 
 namespace BabDev\MoneyBundle\DependencyInjection;
 
+use BabDev\MoneyBundle\Serializer\Normalizer\LegacyMoneyNormalizer;
+use Composer\InstalledVersions;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -40,6 +43,16 @@ final class BabDevMoneyExtension extends ConfigurableExtension
 
         if (ContainerBuilder::willBeAvailable('symfony/serializer', NormalizerInterface::class, ['babdev/money-bundle'])) {
             $loader->load('serializer.php');
+
+            if (class_exists(InstalledVersions::class)) {
+                $version = InstalledVersions::getVersion('symfony/serializer');
+
+                if (null !== $version && version_compare($version, '6.3', '<')) {
+                    $container->register('money.serializer.normalizer.legacy', LegacyMoneyNormalizer::class)
+                        ->setDecoratedService('money.serializer.normalizer')
+                        ->addArgument(new Reference('.inner'));
+                }
+            }
         }
 
         if (ContainerBuilder::willBeAvailable('symfony/validator', ValidatorInterface::class, ['babdev/money-bundle'])) {

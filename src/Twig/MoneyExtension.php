@@ -15,51 +15,41 @@ use Twig\TwigFunction;
 
 final class MoneyExtension extends AbstractExtension
 {
-    private FormatterFactoryInterface $formatterFactory;
-
-    /**
-     * @phpstan-var non-empty-string
-     */
-    private string $defaultCurrency;
-
     /**
      * @phpstan-param non-empty-string $defaultCurrency
      */
-    public function __construct(FormatterFactoryInterface $formatterFactory, string $defaultCurrency)
-    {
-        $this->formatterFactory = $formatterFactory;
-        $this->defaultCurrency = $defaultCurrency;
-    }
+    public function __construct(
+        private readonly FormatterFactoryInterface $formatterFactory,
+        private readonly string $defaultCurrency
+    ) {}
 
     /**
-     * @return TwigFilter[]
+     * @return list<TwigFilter>
      */
     public function getFilters(): array
     {
         return [
-            new TwigFilter('money', [$this, 'formatMoney']),
+            new TwigFilter('money', $this->formatMoney(...)),
         ];
     }
 
     /**
-     * @return TwigFunction[]
+     * @return list<TwigFunction>
      */
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('money', [$this, 'createMoney']),
+            new TwigFunction('money', $this->createMoney(...)),
         ];
     }
 
     /**
-     * @param string|int $amount
-     *
      * @phpstan-param numeric-string|int    $amount
      * @phpstan-param non-empty-string|null $currency
      *
      * @throws \InvalidArgumentException if the amount cannot be converted to a {@see Money} instance
      */
-    public function createMoney($amount, ?string $currency = null): Money
+    public function createMoney(string|int $amount, ?string $currency = null): Money
     {
         return new Money($amount, new Currency($currency ?: $this->defaultCurrency));
     }

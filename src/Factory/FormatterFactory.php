@@ -28,12 +28,7 @@ final class FormatterFactory implements FormatterFactoryInterface
         Format::INTL_MONEY => IntlMoneyFormatter::class,
     ];
 
-    private string $defaultLocale;
-
-    public function __construct(string $defaultLocale)
-    {
-        $this->defaultLocale = $defaultLocale;
-    }
+    public function __construct(private readonly string $defaultLocale) {}
 
     /**
      * @phpstan-param Format::* $format

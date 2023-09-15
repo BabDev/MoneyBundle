@@ -27,12 +27,7 @@ final class ParserFactory implements ParserFactoryInterface
         Format::INTL_MONEY => IntlMoneyParser::class,
     ];
 
-    private string $defaultLocale;
-
-    public function __construct(string $defaultLocale)
-    {
-        $this->defaultLocale = $defaultLocale;
-    }
+    public function __construct(private readonly string $defaultLocale) {}
 
     /**
      * @phpstan-param Format::* $format

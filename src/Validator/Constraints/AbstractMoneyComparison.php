@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Exception\LogicException;
 /**
  * Used for the comparison of Money objects.
  *
- * Class is based on \Symfony\Component\Validator\Constraints\AbstractComparison
+ * Class is based on {@see \Symfony\Component\Validator\Constraints\AbstractComparison}
  */
 abstract class AbstractMoneyComparison extends Constraint
 {

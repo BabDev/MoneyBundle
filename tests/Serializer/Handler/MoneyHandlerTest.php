@@ -16,7 +16,7 @@ final class MoneyHandlerTest extends TestCase
     {
         self::assertJsonStringEqualsJsonString(
             '{"amount":"1000","currency":"USD"}',
-            $this->createSerializer()->serialize(Money::USD(1000), 'json')
+            $this->createSerializer()->serialize(Money::USD(1000), 'json'),
         );
     }
 
@@ -33,7 +33,7 @@ final class MoneyHandlerTest extends TestCase
 
         self::assertXmlStringEqualsXmlString(
             $expectedXml,
-            $this->createSerializer()->serialize(Money::USD(1000), 'xml')
+            $this->createSerializer()->serialize(Money::USD(1000), 'xml'),
         );
     }
 
@@ -41,7 +41,7 @@ final class MoneyHandlerTest extends TestCase
     {
         self::assertEquals(
             Money::USD(1000),
-            $this->createSerializer()->deserialize('{"amount":"1000","currency":"USD"}', Money::class, 'json')
+            $this->createSerializer()->deserialize('{"amount":"1000","currency":"USD"}', Money::class, 'json'),
         );
     }
 
@@ -55,9 +55,10 @@ final class MoneyHandlerTest extends TestCase
             </money>
 
             XML;
+
         self::assertEquals(
             Money::USD(1000),
-            $this->createSerializer()->deserialize($generatedXml, Money::class, 'xml')
+            $this->createSerializer()->deserialize($generatedXml, Money::class, 'xml'),
         );
     }
 

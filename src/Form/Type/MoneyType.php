@@ -6,6 +6,7 @@ use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
 use BabDev\MoneyBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer;
 use Money\Currency;
+use Money\Money;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
@@ -16,15 +17,13 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Alternative money form type supporting a `Money\Money` object as a data input.
+ * Alternative money form type supporting a {@see Money} object as a data input.
  *
- * Class is based on \Symfony\Component\Form\Extension\Core\Type\MoneyType
+ * Class is based on {@see \Symfony\Component\Form\Extension\Core\Type\MoneyType}
  */
 final class MoneyType extends AbstractType
 {
-    private FormatterFactoryInterface $formatterFactory;
-    private ParserFactoryInterface $parserFactory;
-    private Currency $defaultCurrency;
+    private readonly Currency $defaultCurrency;
 
     /**
      * @var array<string, array<string, string>>
@@ -34,10 +33,11 @@ final class MoneyType extends AbstractType
     /**
      * @phpstan-param non-empty-string $defaultCurrency
      */
-    public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, string $defaultCurrency)
-    {
-        $this->formatterFactory = $formatterFactory;
-        $this->parserFactory = $parserFactory;
+    public function __construct(
+        private readonly FormatterFactoryInterface $formatterFactory,
+        private readonly ParserFactoryInterface $parserFactory,
+        string $defaultCurrency,
+    ) {
         $this->defaultCurrency = new Currency($defaultCurrency);
     }
 

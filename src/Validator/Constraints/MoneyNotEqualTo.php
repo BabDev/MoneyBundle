@@ -14,14 +14,14 @@ class MoneyNotEqualTo extends AbstractMoneyComparison
 {
     public const IS_EQUAL_ERROR = '6dcecf9b-093b-4342-8cf7-060a3ef55faa';
 
-    /**
-     * Maps error codes to the names of their constants.
-     *
-     * @var array<string, string>
-     */
-    protected static $errorNames = [
+    protected const ERROR_NAMES = [
         self::IS_EQUAL_ERROR => 'IS_EQUAL_ERROR',
     ];
+
+    /**
+     * @deprecated to be removed when dropping support for Symfony 6.1 and older
+     */
+    protected static $errorNames = self::ERROR_NAMES;
 
     public ?string $message = 'This value should not be equal to {{ compared_value }}.';
 }

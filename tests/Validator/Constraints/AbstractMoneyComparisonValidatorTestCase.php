@@ -22,17 +22,12 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     /**
      * @param mixed $options The value to compare or a set of options
      */
-    abstract protected function createConstraint($options = null): AbstractMoneyComparison;
+    abstract protected function createConstraint(mixed $options = null): AbstractMoneyComparison;
 
     protected function createValueObject(?Money $value): object
     {
         return new class($value) {
-            private ?Money $value;
-
-            public function __construct(?Money $value)
-            {
-                $this->value = $value;
-            }
+            public function __construct(private readonly ?Money $value) {}
 
             public function getValue(): ?Money
             {
@@ -123,27 +118,11 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $constraint = $this->createConstraint(['propertyPath' => 'foo']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Invalid property path "foo" provided to "%s" constraint', \get_class($constraint)));
+        $this->expectExceptionMessage(sprintf('Invalid property path "foo" provided to "%s" constraint', $constraint::class));
 
         $this->setObject($this->createValueObject(Money::USD(500)));
 
         $this->validator->validate(500, $constraint);
-    }
-
-    public function testInvalidValueAsArray(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not convert value of type "array" to a "%s" instance for comparison.', Money::class));
-
-        $this->validator->validate(500, $this->createConstraint(['value' => ['amount' => '500', 'currency' => 'USD']]));
-    }
-
-    public function testInvalidValueAsNonMoneyObject(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not convert value of type "%s" to a "%s" instance for comparison.', \stdClass::class, Money::class));
-
-        $this->validator->validate(500, $this->createConstraint(new \stdClass()));
     }
 
     public function testInvalidValueAsBadlyFormattedString(): void

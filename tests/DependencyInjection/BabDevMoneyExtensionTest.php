@@ -3,7 +3,9 @@
 namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 
 use BabDev\MoneyBundle\DependencyInjection\BabDevMoneyExtension;
+use Composer\InstalledVersions;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Matthias\SymfonyDependencyInjectionTest\PhpUnit\DefinitionDecoratesConstraint;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
@@ -17,6 +19,18 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('money.form.type.money');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.validator.greater_than');
+
+        if (class_exists(InstalledVersions::class)) {
+            $version = InstalledVersions::getVersion('symfony/serializer');
+
+            if (null !== $version && version_compare($version, '6.3', '<')) {
+                // TODO - Fix upstream
+                // $this->assertContainerBuilderServiceDecoration('money.serializer.normalizer.legacy', 'money.serializer.normalizer');
+                self::assertThat($this->container, new DefinitionDecoratesConstraint('money.serializer.normalizer.legacy', 'money.serializer.normalizer'));
+            } else {
+                $this->assertContainerBuilderNotHasService('money.serializer.normalizer.legacy');
+            }
+        }
     }
 
     public function testContainerIsLoadedWithCustomConfiguration(): void

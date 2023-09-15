@@ -22,6 +22,7 @@
     </listeners>
 
     <php>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=3"/>
+        <!-- Ignore deprecations from lowest stable -->
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=7&amp;max[indirect]=14"/>
     </php>
 </phpunit>

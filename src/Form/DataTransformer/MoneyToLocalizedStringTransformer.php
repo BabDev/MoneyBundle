@@ -16,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStrin
 /**
  * Transforms between a normalized format and a localized money string.
  *
- * Class is based on \Symfony\Component\Form\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer
+ * Class is based on {@see \Symfony\Component\Form\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer}
  *
  * @template T of Money
  * @template R of string
@@ -25,10 +25,6 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStrin
  */
 final class MoneyToLocalizedStringTransformer implements DataTransformerInterface
 {
-    private FormatterFactoryInterface $formatterFactory;
-    private ParserFactoryInterface $parserFactory;
-    private Currency $currency;
-    private ?string $locale;
     private NumberToLocalizedStringTransformer $numberTransformer;
 
     /**
@@ -36,8 +32,15 @@ final class MoneyToLocalizedStringTransformer implements DataTransformerInterfac
      *
      * @throws InvalidArgumentException if an invalid constructor parameter is provided
      */
-    public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, Currency $currency, $scaleOrTransformer = 2, ?bool $grouping = true, ?int $roundingMode = \NumberFormatter::ROUND_HALFUP, ?string $locale = null)
-    {
+    public function __construct(
+        private readonly FormatterFactoryInterface $formatterFactory,
+        private readonly ParserFactoryInterface $parserFactory,
+        private readonly Currency $currency,
+        $scaleOrTransformer = 2,
+        ?bool $grouping = true,
+        ?int $roundingMode = \NumberFormatter::ROUND_HALFUP,
+        private readonly ?string $locale = null,
+    ) {
         if ($scaleOrTransformer instanceof NumberToLocalizedStringTransformer) {
             $this->numberTransformer = $scaleOrTransformer;
         } elseif (\is_int($scaleOrTransformer) || null === $scaleOrTransformer) {
@@ -47,11 +50,6 @@ final class MoneyToLocalizedStringTransformer implements DataTransformerInterfac
         } else {
             throw new InvalidArgumentException(sprintf('The fourth argument to the %s constructor must be an instance of %s, an integer, or null; %s given', self::class, NumberToLocalizedStringTransformer::class, get_debug_type($scaleOrTransformer)));
         }
-
-        $this->formatterFactory = $formatterFactory;
-        $this->parserFactory = $parserFactory;
-        $this->currency = $currency;
-        $this->locale = $locale;
     }
 
     /**

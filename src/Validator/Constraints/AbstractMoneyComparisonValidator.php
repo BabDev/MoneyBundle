@@ -19,30 +19,19 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 /**
  * Provides a base class for the validation of property comparisons.
  *
- * Class is based on \Symfony\Component\Validator\Constraints\AbstractComparisonValidator
+ * Class is based on {@see \Symfony\Component\Validator\Constraints\AbstractComparisonValidator}
  */
 abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
 {
-    private FormatterFactoryInterface $formatterFactory;
-    private ParserFactoryInterface $parserFactory;
-
-    /**
-     * @phpstan-var non-empty-string
-     */
-    private string $defaultCurrency;
-
-    private ?PropertyAccessorInterface $propertyAccessor;
-
     /**
      * @phpstan-param non-empty-string $defaultCurrency
      */
-    public function __construct(FormatterFactoryInterface $formatterFactory, ParserFactoryInterface $parserFactory, string $defaultCurrency, ?PropertyAccessorInterface $propertyAccessor = null)
-    {
-        $this->formatterFactory = $formatterFactory;
-        $this->parserFactory = $parserFactory;
-        $this->defaultCurrency = $defaultCurrency;
-        $this->propertyAccessor = $propertyAccessor;
-    }
+    public function __construct(
+        private readonly FormatterFactoryInterface $formatterFactory,
+        private readonly ParserFactoryInterface $parserFactory,
+        private readonly string $defaultCurrency,
+        private ?PropertyAccessorInterface $propertyAccessor = null
+    ) {}
 
     /**
      * @param mixed $value
@@ -100,18 +89,12 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
     }
 
     /**
-     * @param Money|float|int|string|null $value
-     *
      * @phpstan-param Money|float|int|numeric-string|null $value
      */
-    private function ensureMoneyObject(AbstractMoneyComparison $constraint, $value): ?Money
+    private function ensureMoneyObject(AbstractMoneyComparison $constraint, Money|float|int|string|null $value): ?Money
     {
         if ($value instanceof Money || null === $value) {
             return $value;
-        }
-
-        if (\is_object($value) || \is_array($value)) {
-            throw new InvalidArgumentException(sprintf('Could not convert value of type "%s" to a "%s" instance for comparison.', get_debug_type($value), Money::class));
         }
 
         // First try to parse (assuming formatted input) then fall back to treating as a number
@@ -119,34 +102,26 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             try {
                 return $this->parserFactory->createParser($constraint->parserFormat, $constraint->locale, $this->createFactoryOptions($constraint))->parse($value, new Currency($constraint->currency ?: $this->defaultCurrency));
             } catch (ParserException $exception) {
-                throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class));
+                throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class), 0, $exception);
             }
         }
 
         try {
-            if (\is_float($value)) {
-                $number = Number::fromFloat($value);
-            } else {
-                $number = Number::fromNumber($value);
-            }
+            $number = \is_float($value) ? Number::fromFloat($value) : Number::fromNumber($value);
         } catch (\InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Number::class));
+            throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Number::class), 0, $exception);
         }
 
         try {
             return new Money((string) $number, new Currency($constraint->currency ?: $this->defaultCurrency));
         } catch (\InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class));
+            throw new InvalidArgumentException(sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class), 0, $exception);
         }
     }
 
     private function getPropertyAccessor(): PropertyAccessorInterface
     {
-        if (null === $this->propertyAccessor) {
-            $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
-        }
-
-        return $this->propertyAccessor;
+        return $this->propertyAccessor ??= PropertyAccess::createPropertyAccessor();
     }
 
     abstract protected function compareValues(Money $value1, ?Money $value2): bool;
