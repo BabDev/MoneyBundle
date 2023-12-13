@@ -40,7 +40,7 @@ final class ProductForm extends AbstractType
 }
 ```
 
-You can also use the <a href="/open-source/packages/moneybundle/docs/1.x/validator">validator integration</a> to define constraints on your form types.
+You can also use the <a href="/open-source/packages/moneybundle/docs/2.x/validator">validator integration</a> to define constraints on your form types.
 
 ```php
 <?php
