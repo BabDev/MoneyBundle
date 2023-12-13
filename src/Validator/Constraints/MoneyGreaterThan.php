@@ -14,12 +14,5 @@ class MoneyGreaterThan extends AbstractMoneyComparison
         self::TOO_LOW_ERROR => 'TOO_LOW_ERROR',
     ];
 
-    /**
-     * @var array<string, string>
-     *
-     * @deprecated to be removed when dropping support for Symfony 6.1 and older
-     */
-    protected static $errorNames = self::ERROR_NAMES;
-
     public ?string $message = 'This value should be greater than {{ compared_value }}.';
 }

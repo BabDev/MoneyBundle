@@ -14,12 +14,5 @@ class MoneyNotEqualTo extends AbstractMoneyComparison
         self::IS_EQUAL_ERROR => 'IS_EQUAL_ERROR',
     ];
 
-    /**
-     * @var array<string, string>
-     *
-     * @deprecated to be removed when dropping support for Symfony 6.1 and older
-     */
-    protected static $errorNames = self::ERROR_NAMES;
-
     public ?string $message = 'This value should not be equal to {{ compared_value }}.';
 }
