@@ -3,9 +3,7 @@
 namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 
 use BabDev\MoneyBundle\DependencyInjection\BabDevMoneyExtension;
-use Composer\InstalledVersions;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
-use Matthias\SymfonyDependencyInjectionTest\PhpUnit\DefinitionDecoratesConstraint;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase

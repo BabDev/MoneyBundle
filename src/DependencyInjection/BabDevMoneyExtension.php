@@ -2,13 +2,10 @@
 
 namespace BabDev\MoneyBundle\DependencyInjection;
 
-use BabDev\MoneyBundle\Serializer\Normalizer\LegacyMoneyNormalizer;
-use Composer\InstalledVersions;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
