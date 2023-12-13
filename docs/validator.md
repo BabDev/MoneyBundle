@@ -49,40 +49,7 @@ When used alongside the [Symfony Form component](https://symfony.com/doc/current
 
 ## Examples
 
-### Annotations
-
-<div class="docs-note">Annotations support requires the <a href="https://www.doctrine-project.org/projects/annotations.html">Doctrine Annotations</a> library.</div>
-
-```php
-<?php
-
-namespace App\Entity;
-
-use BabDev\MoneyBundle\Validator\Constraints as MoneyAssert;
-use Doctrine\ORM\Mapping as ORM;
-use Money\Money;
-
-/**
- * @ORM\Entity()
- */
-class Invoice
-{
-    /**
-     * @ORM\Embedded(class="Money\Money")
-     * @MoneyAssert\MoneyGreaterThanOrEqual(value = 0)
-     */
-    public Money $tax_due;
-
-    public function __construct()
-    {
-        $this->tax_due = Money::USD(0);
-    }
-}
-```
-
 ### Attributes
-
-<div class="docs-note">Attribute support requires PHP 8.</div>
 
 ```php
 <?php
@@ -131,9 +98,9 @@ class Invoice
     {
         $metadata->addPropertyConstraint(
             'tax_due',
-            new MoneyAssert\MoneyGreaterThanOrEqual([
-                'value' => 0,
-            ])
+            new MoneyAssert\MoneyGreaterThanOrEqual(
+                value: 0,
+            ),
         );
     }
 }
