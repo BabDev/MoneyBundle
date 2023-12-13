@@ -60,8 +60,3 @@ parameters:
 			count: 1
 			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 
-		-
-			message: "#^Parameter \\#4 \\$scaleOrTransformer of class BabDev\\\\MoneyBundle\\\\Form\\\\DataTransformer\\\\MoneyToLocalizedStringTransformer constructor expects int\\|Symfony\\\\Component\\\\Form\\\\Extension\\\\Core\\\\DataTransformer\\\\NumberToLocalizedStringTransformer\\|null, string given\\.$#"
-			count: 1
-			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
-
