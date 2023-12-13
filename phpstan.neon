@@ -6,7 +6,5 @@ parameters:
   paths:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
-  excludePaths:
-    - %currentWorkingDirectory%/src/Serializer/Normalizer/LegacyMoneyNormalizer.php
   checkMissingIterableValueType: false
   treatPhpDocTypesAsCertain: false

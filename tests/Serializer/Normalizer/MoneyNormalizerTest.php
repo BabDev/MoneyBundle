@@ -2,7 +2,6 @@
 
 namespace BabDev\MoneyBundle\Tests\Serializer\Normalizer;
 
-use BabDev\MoneyBundle\Serializer\Normalizer\LegacyMoneyNormalizer;
 use BabDev\MoneyBundle\Serializer\Normalizer\MoneyNormalizer;
 use Money\Currency;
 use Money\Money;
@@ -19,21 +18,6 @@ final class MoneyNormalizerTest extends TestCase
         self::assertEquals(
             ['amount' => '100', 'currency' => 'USD'],
             (new MoneyNormalizer())->normalize(new Money(100, new Currency('USD'))),
-        );
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testNormalizeWithLegacyDecorator(): void
-    {
-        if (!interface_exists(CacheableSupportsMethodInterface::class)) {
-            self::markTestSkipped('Test requires symfony/serializer:<6.4');
-        }
-
-        self::assertEquals(
-            ['amount' => '100', 'currency' => 'USD'],
-            (new LegacyMoneyNormalizer(new MoneyNormalizer()))->normalize(new Money(100, new Currency('USD'))),
         );
     }
 
@@ -64,21 +48,6 @@ final class MoneyNormalizerTest extends TestCase
         self::assertEquals(
             new Money(100, new Currency('USD')),
             (new MoneyNormalizer())->denormalize(['amount' => '100', 'currency' => 'USD'], Money::class),
-        );
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testDenormalizeWithLegacyDecorator(): void
-    {
-        if (!interface_exists(CacheableSupportsMethodInterface::class)) {
-            self::markTestSkipped('Test requires symfony/serializer:<6.4');
-        }
-
-        self::assertEquals(
-            new Money(100, new Currency('USD')),
-            (new LegacyMoneyNormalizer(new MoneyNormalizer()))->denormalize(['amount' => '100', 'currency' => 'USD'], Money::class),
         );
     }
 
@@ -117,17 +86,5 @@ final class MoneyNormalizerTest extends TestCase
     public function testSupportsDenormalization(mixed $data, string $type, bool $supported): void
     {
         self::assertSame($supported, (new MoneyNormalizer())->supportsDenormalization($data, $type));
-    }
-
-    /**
-     * @group legacy
-     */
-    public function testHasCacheableSupportsMethod(): void
-    {
-        if (!interface_exists(CacheableSupportsMethodInterface::class)) {
-            self::markTestSkipped('Test requires symfony/serializer:<6.4');
-        }
-
-        self::assertTrue((new LegacyMoneyNormalizer(new MoneyNormalizer()))->hasCacheableSupportsMethod());
     }
 }
