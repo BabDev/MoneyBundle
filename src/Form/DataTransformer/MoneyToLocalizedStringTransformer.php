@@ -9,7 +9,6 @@ use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Money;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStringTransformer;
 
@@ -23,34 +22,15 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStrin
  *
  * @implements DataTransformerInterface<T, R>
  */
-final class MoneyToLocalizedStringTransformer implements DataTransformerInterface
+final readonly class MoneyToLocalizedStringTransformer implements DataTransformerInterface
 {
-    private NumberToLocalizedStringTransformer $numberTransformer;
-
-    /**
-     * @param NumberToLocalizedStringTransformer|int|null $scaleOrTransformer
-     *
-     * @throws InvalidArgumentException if an invalid constructor parameter is provided
-     */
     public function __construct(
-        private readonly FormatterFactoryInterface $formatterFactory,
-        private readonly ParserFactoryInterface $parserFactory,
-        private readonly Currency $currency,
-        $scaleOrTransformer = 2,
-        ?bool $grouping = true,
-        ?int $roundingMode = \NumberFormatter::ROUND_HALFUP,
-        private readonly ?string $locale = null,
-    ) {
-        if ($scaleOrTransformer instanceof NumberToLocalizedStringTransformer) {
-            $this->numberTransformer = $scaleOrTransformer;
-        } elseif (\is_int($scaleOrTransformer) || null === $scaleOrTransformer) {
-            trigger_deprecation('babdev/money-bundle', '1.5', 'Passing an integer or null as the fourth argument to the "%s" constructor is deprecated. In 2.0, a "%s" instance will be required.', self::class, NumberToLocalizedStringTransformer::class);
-
-            $this->numberTransformer = new NumberToLocalizedStringTransformer($scaleOrTransformer, $grouping, $roundingMode, $locale);
-        } else {
-            throw new InvalidArgumentException(sprintf('The fourth argument to the %s constructor must be an instance of %s, an integer, or null; %s given', self::class, NumberToLocalizedStringTransformer::class, get_debug_type($scaleOrTransformer)));
-        }
-    }
+        private FormatterFactoryInterface $formatterFactory,
+        private ParserFactoryInterface $parserFactory,
+        private Currency $currency,
+        private NumberToLocalizedStringTransformer $numberTransformer,
+        private ?string $locale = null,
+    ) {}
 
     /**
      * @param Money|null $value Money object
