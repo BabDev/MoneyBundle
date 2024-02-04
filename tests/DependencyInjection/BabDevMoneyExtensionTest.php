@@ -2,7 +2,7 @@
 
 namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 
-use BabDev\MoneyBundle\DependencyInjection\BabDevMoneyExtension;
+use BabDev\MoneyBundle\BabDevMoneyBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
@@ -10,6 +10,9 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 {
     public function testContainerIsLoadedWithDefaultConfiguration(): void
     {
+        $this->container->setParameter('kernel.environment', 'dev');
+        $this->container->setParameter('kernel.build_dir', __DIR__);
+
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
@@ -21,6 +24,9 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWithCustomConfiguration(): void
     {
+        $this->container->setParameter('kernel.environment', 'dev');
+        $this->container->setParameter('kernel.build_dir', __DIR__);
+
         $this->load(['default_currency' => 'EUR']);
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'EUR');
@@ -32,6 +38,9 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWhenJMSSerializerBundleIsInstalled(): void
     {
+        $this->container->setParameter('kernel.environment', 'dev');
+        $this->container->setParameter('kernel.build_dir', __DIR__);
+
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
@@ -44,6 +53,9 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWhenTwigBundleIsInstalled(): void
     {
+        $this->container->setParameter('kernel.environment', 'dev');
+        $this->container->setParameter('kernel.build_dir', __DIR__);
+
         $this->load();
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
@@ -55,12 +67,18 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
     }
 
     /**
-     * @return ExtensionInterface[]
+     * @return list<ExtensionInterface>
      */
     protected function getContainerExtensions(): array
     {
+        $extension = (new BabDevMoneyBundle())->getContainerExtension();
+
+        if (!$extension instanceof ExtensionInterface) {
+            throw new \RuntimeException('The container extension could not be retrieved from the bundle.');
+        }
+
         return [
-            new BabDevMoneyExtension(),
+            $extension,
         ];
     }
 }
