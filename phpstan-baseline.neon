@@ -1,6 +1,16 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 3
+			path: src/Factory/FormatterFactory.php
+
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 3
+			path: src/Factory/ParserFactory.php
+
+		-
 			message: "#^Parameter \\#1 \\$currency of static method BabDev\\\\MoneyBundle\\\\Form\\\\Type\\\\MoneyType\\:\\:getPattern\\(\\) expects Money\\\\Currency, mixed given\\.$#"
 			count: 1
 			path: src/Form/Type/MoneyType.php

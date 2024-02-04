@@ -31,6 +31,7 @@ final class ParserFactory implements ParserFactoryInterface
 
     /**
      * @phpstan-param Format::* $format
+     * @phpstan-param array<string, mixed> $options
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a parser is not available

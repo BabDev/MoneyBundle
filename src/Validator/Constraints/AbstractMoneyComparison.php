@@ -20,11 +20,9 @@ abstract class AbstractMoneyComparison extends Constraint
     public ?string $message = null;
 
     /**
-     * @var Money|float|int|string|null
-     *
      * @phpstan-var Money|float|int|numeric-string|null
      */
-    public $value;
+    public Money|float|int|string|null $value = null;
 
     /**
      * @phpstan-var non-empty-string|null
@@ -46,10 +44,7 @@ abstract class AbstractMoneyComparison extends Constraint
     public ?string $locale = null;
     public string $style = 'currency';
 
-    /**
-     * @var string|PropertyPathInterface|null
-     */
-    public $propertyPath;
+    public string|PropertyPathInterface|null $propertyPath = null;
 
     /**
      * @param mixed                             $value        The value to compare or a set of options
