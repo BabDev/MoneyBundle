@@ -18,6 +18,8 @@ class MoneyGreaterThan extends AbstractMoneyComparison
     ];
 
     /**
+     * @var array<string, string>
+     *
      * @deprecated to be removed when dropping support for Symfony 6.1 and older
      */
     protected static $errorNames = self::ERROR_NAMES;
