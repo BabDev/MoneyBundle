@@ -31,7 +31,7 @@
         "symfony/serializer": "^6.4 || ^7.0",
         "symfony/twig-bundle": "^6.4 || ^7.0",
         "symfony/validator": "^6.4 || ^7.0",
-        "twig/twig": "^2.13 || ^3.0"
+        "twig/twig": "^3.0.4"
     },
     "conflict": {
         "doctrine/doctrine-bundle": "<2.1.1",
@@ -42,7 +42,7 @@
         "symfony/form": "<6.4",
         "symfony/serializer": "<6.4",
         "symfony/validator": "<6.4",
-        "twig/twig": "<2.13"
+        "twig/twig": "<3.0.4"
     },
     "suggest": {
         "ext/intl": "To use the intl Money\\MoneyFormatter instances",
