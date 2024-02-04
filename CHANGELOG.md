@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.11.0 (2024-??-??)
+
+- Drop support for Symfony 6.3
+
 ## 1.10.0 (2023-12-12)
 
 - Raise PHP requirement to 8.1
