@@ -20,7 +20,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
     public function normalize($object, ?string $format = null, array $context = []): array
     {
         if (!$object instanceof Money) {
-            throw new InvalidArgumentException(sprintf('The object must be an instance of "%s".', Money::class));
+            throw new InvalidArgumentException(\sprintf('The object must be an instance of "%s".', Money::class));
         }
 
         return [
@@ -43,7 +43,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
     public function denormalize($data, string $type, ?string $format = null, array $context = []): Money
     {
         if (!\is_array($data)) {
-            throw new InvalidArgumentException(sprintf('Data expected to be an array, "%s" given.', get_debug_type($data)));
+            throw new InvalidArgumentException(\sprintf('Data expected to be an array, "%s" given.', get_debug_type($data)));
         }
 
         if (!isset($data['amount']) || !isset($data['currency'])) {

@@ -23,7 +23,7 @@ final class MoneyNormalizerTest extends TestCase
     public function testNormalizeOnlyAcceptsMoneyInstances(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('The object must be an instance of "%s".', Money::class));
+        $this->expectExceptionMessage(\sprintf('The object must be an instance of "%s".', Money::class));
 
         (new MoneyNormalizer())->normalize(new \stdClass());
     }
@@ -53,7 +53,7 @@ final class MoneyNormalizerTest extends TestCase
     public function testDenormalizeOnlyAcceptsArrays(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Data expected to be an array, "%s" given.', \stdClass::class));
+        $this->expectExceptionMessage(\sprintf('Data expected to be an array, "%s" given.', \stdClass::class));
 
         (new MoneyNormalizer())->denormalize(new \stdClass(), Money::class);
     }

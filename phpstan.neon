@@ -6,5 +6,7 @@ parameters:
   paths:
     - %currentWorkingDirectory%/src
     - %currentWorkingDirectory%/tests
-  checkMissingIterableValueType: false
   treatPhpDocTypesAsCertain: false
+  ignoreErrors:
+    -
+      identifier: missingType.iterableValue

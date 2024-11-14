@@ -36,7 +36,7 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         yield 'different values as floats' => [100.0, 200.0];
         yield 'different values as non-formatted strings' => ['100', '200'];
         yield 'different values as formatted strings' => ['1.00', '2.00'];
-        yield sprintf('different values as %s objects', Money::class) => [Money::USD(100), Money::USD(200)];
+        yield \sprintf('different values as %s objects', Money::class) => [Money::USD(100), Money::USD(200)];
         yield 'different values as different data types' => ['1.00', 200];
         yield 'null input value' => [null, Money::USD(200)];
         yield 'same values as integers' => [100, 100];
@@ -56,7 +56,7 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         yield 'values as floats' => [200.0, '$2.00', 100.0, '$1.00', 'float'];
         yield 'values as non-formatted strings' => [200, '$2.00', 100, '$1.00', 'int'];
         yield 'values as formatted strings' => ['2.00', '$2.00', '1.00', '$1.00', 'string'];
-        yield sprintf('values as %s objects', Money::class) => [Money::USD(200), '$2.00', Money::USD(100), '$1.00', Money::class];
+        yield \sprintf('values as %s objects', Money::class) => [Money::USD(200), '$2.00', Money::USD(100), '$1.00', Money::class];
         yield 'values as different data types' => ['2.00', '$2.00', 100, '$1.00', 'int'];
     }
 
