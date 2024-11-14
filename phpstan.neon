@@ -8,5 +8,7 @@ parameters:
     - %currentWorkingDirectory%/tests
   excludePaths:
     - %currentWorkingDirectory%/src/Serializer/Normalizer/LegacyMoneyNormalizer.php
-  checkMissingIterableValueType: false
   treatPhpDocTypesAsCertain: false
+  ignoreErrors:
+    -
+      identifier: missingType.iterableValue
