@@ -24,7 +24,7 @@ final class FormatterFactoryTest extends TestCase
     public function testAggregateFormatterIsNotSupported(): void
     {
         $this->expectException(UnsupportedFormatException::class);
-        $this->expectExceptionMessage(sprintf('The "%s" class is not supported by "%s".', AggregateMoneyFormatter::class, FormatterFactory::class));
+        $this->expectExceptionMessage(\sprintf('The "%s" class is not supported by "%s".', AggregateMoneyFormatter::class, FormatterFactory::class));
 
         $this->factory->createFormatter(Format::AGGREGATE);
     }

@@ -118,7 +118,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $constraint = $this->createConstraint(['propertyPath' => 'foo']);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Invalid property path "foo" provided to "%s" constraint', $constraint::class));
+        $this->expectExceptionMessage(\sprintf('Invalid property path "foo" provided to "%s" constraint', $constraint::class));
 
         $this->setObject($this->createValueObject(Money::USD(500)));
 
@@ -128,7 +128,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     public function testInvalidValueAsBadlyFormattedString(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not convert value "." to a "%s" instance for comparison.', Money::class));
+        $this->expectExceptionMessage(\sprintf('Could not convert value "." to a "%s" instance for comparison.', Money::class));
 
         $this->validator->validate(500, $this->createConstraint('.'));
     }
@@ -136,7 +136,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     public function testInvalidValueAsNonNumericString(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Number::class));
+        $this->expectExceptionMessage(\sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Number::class));
 
         $this->validator->validate(500, $this->createConstraint('INVALID'));
     }
@@ -144,7 +144,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     public function testInvalidValueAsBadlyFormattedFloat(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Could not convert value "500.4925" to a "%s" instance for comparison.', Money::class));
+        $this->expectExceptionMessage(\sprintf('Could not convert value "500.4925" to a "%s" instance for comparison.', Money::class));
 
         $this->validator->validate(500, $this->createConstraint(500.4925));
     }

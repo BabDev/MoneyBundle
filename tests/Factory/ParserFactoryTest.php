@@ -24,7 +24,7 @@ final class ParserFactoryTest extends TestCase
     public function testAggregateParserIsNotSupported(): void
     {
         $this->expectException(UnsupportedFormatException::class);
-        $this->expectExceptionMessage(sprintf('The "%s" class is not supported by "%s".', AggregateMoneyParser::class, ParserFactory::class));
+        $this->expectExceptionMessage(\sprintf('The "%s" class is not supported by "%s".', AggregateMoneyParser::class, ParserFactory::class));
 
         $this->factory->createParser(Format::AGGREGATE);
     }

@@ -48,7 +48,7 @@ final class MoneyToLocalizedStringTransformer implements DataTransformerInterfac
 
             $this->numberTransformer = new NumberToLocalizedStringTransformer($scaleOrTransformer, $grouping, $roundingMode, $locale);
         } else {
-            throw new InvalidArgumentException(sprintf('The fourth argument to the %s constructor must be an instance of %s, an integer, or null; %s given', self::class, NumberToLocalizedStringTransformer::class, get_debug_type($scaleOrTransformer)));
+            throw new InvalidArgumentException(\sprintf('The fourth argument to the %s constructor must be an instance of %s, an integer, or null; %s given', self::class, NumberToLocalizedStringTransformer::class, get_debug_type($scaleOrTransformer)));
         }
     }
 
@@ -66,7 +66,7 @@ final class MoneyToLocalizedStringTransformer implements DataTransformerInterfac
         }
 
         if (!($value instanceof Money)) {
-            throw new TransformationFailedException(sprintf('Expected an instance of "%s", "%s" given.', Money::class, get_debug_type($value)));
+            throw new TransformationFailedException(\sprintf('Expected an instance of "%s", "%s" given.', Money::class, get_debug_type($value)));
         }
 
         $formatter = $this->formatterFactory->createFormatter(Format::DECIMAL, $this->locale, []);
@@ -92,7 +92,7 @@ final class MoneyToLocalizedStringTransformer implements DataTransformerInterfac
         $parser = $this->parserFactory->createParser(Format::DECIMAL, $this->locale, []);
 
         try {
-            return $parser->parse(sprintf('%.53f', $value), $this->currency);
+            return $parser->parse(\sprintf('%.53f', $value), $this->currency);
         } catch (ParserException $e) {
             throw new TransformationFailedException($e->getMessage(), 0, $e);
         }
