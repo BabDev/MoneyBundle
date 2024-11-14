@@ -2,7 +2,7 @@
 
 ## 1.11.0 (2024-??-??)
 
-- Drop support for Symfony 6.3
+- Drop support for Symfony 6.3 and 7.0
 
 ## 1.10.0 (2023-12-12)
 
