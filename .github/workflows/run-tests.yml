@@ -14,12 +14,12 @@ jobs:
         composer-flags: ['--prefer-stable']
         can-fail: [false]
         has-mongodb: [true]
-        extensions: ['curl, iconv, mbstring, mongodb-1.21.0, pdo, pdo_sqlite, sqlite, zip']
+        extensions: ['curl, iconv, mbstring, mongodb, pdo, pdo_sqlite, sqlite, zip']
         include:
           - php: '8.2'
             symfony: '6.4.*'
             composer-flags: '--prefer-stable --prefer-lowest'
-            extensions: 'curl, iconv, mbstring, mongodb-1.21.0, pdo, pdo_sqlite, sqlite, zip'
+            extensions: 'curl, iconv, mbstring, mongodb, pdo, pdo_sqlite, sqlite, zip'
             can-fail: false
             has-mongodb: true
           - php: '8.4'
