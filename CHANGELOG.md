@@ -1,8 +1,9 @@
 # Changelog
 
-## 1.11.0 (2024-??-??)
+## 1.11.0 (2025-05-11)
 
 - Drop support for Symfony 6.3 and 7.0
+- Internally upgraded to PHPStan 2
 
 ## 1.10.0 (2023-12-12)
 
