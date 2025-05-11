@@ -44,6 +44,9 @@ final class BabDevMoneyBundle extends AbstractBundle
         ;
     }
 
+    /**
+     * @param array{default_currency: non-empty-string} $config
+     */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $container->parameters()

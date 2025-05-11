@@ -47,6 +47,8 @@ final class MoneyHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param array{amount: int|numeric-string, currency: non-empty-string} $moneyAsArray
+     *
      * @throws InvalidArgumentException if a {@see Money} instance could not be created from the serialized data
      */
     public function deserializeMoneyFromJson(DeserializationVisitorInterface $visitor, array $moneyAsArray, array $type, DeserializationContext $context): Money
@@ -81,6 +83,7 @@ final class MoneyHandler implements SubscribingHandlerInterface
      */
     public function serializeMoneyToJson(JsonSerializationVisitor $visitor, Money $money, array $type, SerializationContext $context)
     {
+        /** @phpstan-ignore-next-line return.type */
         return $visitor->visitArray(
             [
                 'amount' => $money->getAmount(),

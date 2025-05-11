@@ -41,17 +41,35 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         return '';
     }
 
-    abstract public function provideValidComparisons(): \Generator;
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null, Money|float|int|string|null}>
+     */
+    abstract public static function provideValidComparisons(): \Generator;
 
-    abstract public function provideValidComparisonsToPropertyPath(): \Generator;
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null}>
+     */
+    abstract public static function provideValidComparisonsToPropertyPath(): \Generator;
 
-    abstract public function provideInvalidComparisons(): \Generator;
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null, string, Money|float|int|string|null, string, string|class-string<Money>}>
+     */
+    abstract public static function provideInvalidComparisons(): \Generator;
 
+    /**
+     * @return array{Money, non-empty-string, Money, non-empty-string, class-string<Money>}
+     */
     abstract public function provideInvalidComparisonToPropertyPath(): array;
 
-    abstract public function provideComparisonsToNullValueAtPropertyPath(): \Generator;
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null, string, bool}>
+     */
+    abstract public static function provideComparisonsToNullValueAtPropertyPath(): \Generator;
 
-    public function provideInvalidConstraintOptions(): \Generator
+    /**
+     * @return \Generator<string, array{array<array-key, mixed>|null}>
+     */
+    public static function provideInvalidConstraintOptions(): \Generator
     {
         yield 'null configuration' => [null];
         yield 'empty configuration' => [[]];
@@ -78,12 +96,9 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
-     * @param Money|float|int|string|null $dirtyValue
-     * @param Money|float|int|string|null $comparisonValue
-     *
      * @dataProvider provideValidComparisons
      */
-    public function testValidComparisonToValue($dirtyValue, $comparisonValue): void
+    public function testValidComparisonToValue(Money|float|int|string|null $dirtyValue, Money|float|int|string|null $comparisonValue): void
     {
         $this->validator->validate($dirtyValue, $this->createConstraint(['value' => $comparisonValue]));
 
@@ -91,11 +106,9 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
-     * @param Money|float|int|string|null $comparedValue
-     *
      * @dataProvider provideValidComparisonsToPropertyPath
      */
-    public function testValidComparisonToPropertyPath($comparedValue): void
+    public function testValidComparisonToPropertyPath(Money|float|int|string|null $comparedValue): void
     {
         $this->setObject($this->createValueObject(Money::USD(500)));
 
@@ -150,12 +163,9 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
-     * @param Money|float|int|string|null $dirtyValue
-     * @param Money|float|int|string|null $comparedValue
-     *
      * @dataProvider provideInvalidComparisons
      */
-    public function testInvalidComparisonToValue($dirtyValue, string $dirtyValueAsString, $comparedValue, string $comparedValueString, string $comparedValueType): void
+    public function testInvalidComparisonToValue(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, Money|float|int|string|null $comparedValue, string $comparedValueString, string $comparedValueType): void
     {
         $constraint = $this->createConstraint(['value' => $comparedValue]);
         $constraint->message = 'Constraint Message';
@@ -191,11 +201,9 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
-     * @param Money|float|int|string|null $dirtyValue
-     *
      * @dataProvider provideComparisonsToNullValueAtPropertyPath
      */
-    public function testCompareWithNullValueAtPropertyAt($dirtyValue, string $dirtyValueAsString, bool $isValid): void
+    public function testCompareWithNullValueAtPropertyAt(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, bool $isValid): void
     {
         $constraint = $this->createConstraint(['propertyPath' => 'value']);
         $constraint->message = 'Constraint Message';

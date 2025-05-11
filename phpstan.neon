@@ -4,8 +4,8 @@ includes:
 parameters:
   level: max
   paths:
-    - %currentWorkingDirectory%/src
-    - %currentWorkingDirectory%/tests
+    - src
+    - tests
   treatPhpDocTypesAsCertain: false
   ignoreErrors:
     -

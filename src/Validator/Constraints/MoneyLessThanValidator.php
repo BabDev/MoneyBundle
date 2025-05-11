@@ -14,7 +14,7 @@ final class MoneyLessThanValidator extends AbstractMoneyComparisonValidator
         return null === $value2 || $value1->lessThan($value2);
     }
 
-    protected function getErrorCode(): ?string
+    protected function getErrorCode(): string
     {
         return MoneyLessThan::TOO_HIGH_ERROR;
     }

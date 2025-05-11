@@ -25,7 +25,7 @@ abstract class AbstractMoneyComparison extends Constraint
     public Money|float|int|string|null $value = null;
 
     /**
-     * @phpstan-var non-empty-string|null
+     * @var non-empty-string|null
      */
     public ?string $currency = null;
 
@@ -39,7 +39,11 @@ abstract class AbstractMoneyComparison extends Constraint
      */
     public string $parserFormat = Format::DECIMAL;
 
+    /**
+     * @var int<0, max>
+     */
     public int $fractionDigits = 2;
+
     public bool $groupingUsed = true;
     public ?string $locale = null;
     public string $style = 'currency';

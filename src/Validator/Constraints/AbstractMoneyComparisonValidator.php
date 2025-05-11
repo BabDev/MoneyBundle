@@ -33,10 +33,7 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         private ?PropertyAccessorInterface $propertyAccessor = null
     ) {}
 
-    /**
-     * @param mixed $value
-     */
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof AbstractMoneyComparison) {
             throw new UnexpectedTypeException($constraint, AbstractMoneyComparison::class);
@@ -79,6 +76,9 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         }
     }
 
+    /**
+     * @return array{fraction_digits: int<0, max>, grouping_used: bool, style: string}
+     */
     private function createFactoryOptions(AbstractMoneyComparison $constraint): array
     {
         return [
