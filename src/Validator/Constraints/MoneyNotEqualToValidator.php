@@ -14,7 +14,7 @@ final class MoneyNotEqualToValidator extends AbstractMoneyComparisonValidator
         return null === $value2 || !$value1->equals($value2);
     }
 
-    protected function getErrorCode(): ?string
+    protected function getErrorCode(): string
     {
         return MoneyNotEqualTo::IS_EQUAL_ERROR;
     }

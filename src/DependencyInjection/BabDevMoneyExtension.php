@@ -22,6 +22,9 @@ final class BabDevMoneyExtension extends ConfigurableExtension
         return 'babdev_money';
     }
 
+    /**
+     * @param array{default_currency: non-empty-string} $mergedConfig
+     */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $container->setParameter('babdev_money.default_currency', $mergedConfig['default_currency']);

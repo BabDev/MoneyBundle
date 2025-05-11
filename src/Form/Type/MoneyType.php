@@ -20,6 +20,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Alternative money form type supporting a {@see Money} object as a data input.
  *
  * Class is based on {@see \Symfony\Component\Form\Extension\Core\Type\MoneyType}
+ *
+ * @template TData of Money
+ *
+ * @template-extends AbstractType<Money>
  */
 final class MoneyType extends AbstractType
 {
@@ -62,6 +66,7 @@ final class MoneyType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
+        /** @phpstan-ignore-next-line argument.type */
         $view->vars['money_pattern'] = self::getPattern($options['currency']);
 
         if ($options['html5']) {
@@ -71,17 +76,15 @@ final class MoneyType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(
-            [
-                'scale' => 2,
-                'grouping' => false,
-                'rounding_mode' => \NumberFormatter::ROUND_HALFUP,
-                'currency' => $this->defaultCurrency,
-                'compound' => false,
-                'html5' => false,
-                'invalid_message' => 'Please enter a valid money amount.',
-            ]
-        );
+        $resolver->setDefaults([
+            'scale' => 2,
+            'grouping' => false,
+            'rounding_mode' => \NumberFormatter::ROUND_HALFUP,
+            'currency' => $this->defaultCurrency,
+            'compound' => false,
+            'html5' => false,
+            'invalid_message' => 'Please enter a valid money amount.',
+        ]);
 
         $resolver->setAllowedValues(
             'rounding_mode',

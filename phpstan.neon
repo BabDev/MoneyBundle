@@ -4,10 +4,10 @@ includes:
 parameters:
   level: max
   paths:
-    - %currentWorkingDirectory%/src
-    - %currentWorkingDirectory%/tests
+    - src
+    - tests
   excludePaths:
-    - %currentWorkingDirectory%/src/Serializer/Normalizer/LegacyMoneyNormalizer.php
+    - src/Serializer/Normalizer/LegacyMoneyNormalizer.php
   treatPhpDocTypesAsCertain: false
   ignoreErrors:
     -

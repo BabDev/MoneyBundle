@@ -30,7 +30,10 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         return MoneyLessThanOrEqual::TOO_HIGH_ERROR;
     }
 
-    public function provideValidComparisons(): \Generator
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null, Money|float|int|string|null}>
+     */
+    public static function provideValidComparisons(): \Generator
     {
         yield 'different values as integers' => [100, 200];
         yield 'different values as floats' => [100.0, 200.0];
@@ -42,7 +45,10 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         yield 'same values as integers' => [100, 100];
     }
 
-    public function provideValidComparisonsToPropertyPath(): \Generator
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null}>
+     */
+    public static function provideValidComparisonsToPropertyPath(): \Generator
     {
         yield 'value as integer' => [400];
         yield 'value as float' => [400.0];
@@ -50,7 +56,10 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         yield 'value as formatted string' => ['4.00'];
     }
 
-    public function provideInvalidComparisons(): \Generator
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null, string, Money|float|int|string|null, string, string|class-string<Money>}>
+     */
+    public static function provideInvalidComparisons(): \Generator
     {
         yield 'values as integers' => [200, '$2.00', 100, '$1.00', 'int'];
         yield 'values as floats' => [200.0, '$2.00', 100.0, '$1.00', 'float'];
@@ -60,6 +69,9 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         yield 'values as different data types' => ['2.00', '$2.00', 100, '$1.00', 'int'];
     }
 
+    /**
+     * @return array{Money, non-empty-string, Money, non-empty-string, class-string<Money>}
+     */
     public function provideInvalidComparisonToPropertyPath(): array
     {
         return [
@@ -71,7 +83,10 @@ final class MoneyLessThanOrEqualValidatorTest extends AbstractMoneyComparisonVal
         ];
     }
 
-    public function provideComparisonsToNullValueAtPropertyPath(): \Generator
+    /**
+     * @return \Generator<string, array{Money|float|int|string|null, string, bool}>
+     */
+    public static function provideComparisonsToNullValueAtPropertyPath(): \Generator
     {
         yield 'valid null comparison' => [Money::USD(500), '$5.00', true];
     }

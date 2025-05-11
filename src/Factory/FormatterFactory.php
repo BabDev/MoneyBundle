@@ -31,6 +31,8 @@ final class FormatterFactory implements FormatterFactoryInterface
     public function __construct(private readonly string $defaultLocale) {}
 
     /**
+     * @param array{fraction_digits?: int<0, max>, grouping_used?: bool, style?: string} $options
+     *
      * @phpstan-param Format::* $format
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
