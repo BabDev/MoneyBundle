@@ -18,11 +18,15 @@ final class MoneyGreaterThanValidatorTest extends AbstractMoneyComparisonValidat
     }
 
     /**
-     * @param mixed $options The value to compare or a set of options
+     * @param array<string, mixed>|null $options An array of named arguments for the constraint or null for no arguments
      */
-    protected function createConstraint($options = null): AbstractMoneyComparison
+    protected function createConstraint(?array $options = null): AbstractMoneyComparison
     {
-        return new MoneyGreaterThan($options);
+        if (null !== $options) {
+            return new MoneyGreaterThan(...$options);
+        }
+
+        return new MoneyGreaterThan();
     }
 
     protected function getErrorCode(): string

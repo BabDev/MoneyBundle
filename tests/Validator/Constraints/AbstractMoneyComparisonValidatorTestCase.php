@@ -20,9 +20,9 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValidatorTestCase
 {
     /**
-     * @param mixed $options The value to compare or a set of options
+     * @param array<string, mixed>|null $options An array of named arguments for the constraint or null for no arguments
      */
-    abstract protected function createConstraint(mixed $options = null): AbstractMoneyComparison;
+    abstract protected function createConstraint(?array $options = null): AbstractMoneyComparison;
 
     protected function createValueObject(?Money $value): object
     {
@@ -67,7 +67,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     abstract public static function provideComparisonsToNullValueAtPropertyPath(): \Generator;
 
     /**
-     * @return \Generator<string, array{array<array-key, mixed>|null}>
+     * @return \Generator<string, array{array<string, mixed>|null}>
      */
     public static function provideInvalidConstraintOptions(): \Generator
     {
@@ -76,6 +76,8 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     }
 
     /**
+     * @param array<string, mixed>|null $options
+     *
      * @dataProvider provideInvalidConstraintOptions
      */
     public function testThrowsConstraintExceptionIfNoValueOrPropertyPath(?array $options): void
@@ -143,7 +145,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Could not convert value "." to a "%s" instance for comparison.', Money::class));
 
-        $this->validator->validate(500, $this->createConstraint('.'));
+        $this->validator->validate(500, $this->createConstraint(['value' => '.']));
     }
 
     public function testInvalidValueAsNonNumericString(): void
@@ -151,7 +153,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Number::class));
 
-        $this->validator->validate(500, $this->createConstraint('INVALID'));
+        $this->validator->validate(500, $this->createConstraint(['value' => 'INVALID']));
     }
 
     public function testInvalidValueAsBadlyFormattedFloat(): void
@@ -159,7 +161,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Could not convert value "500.4925" to a "%s" instance for comparison.', Money::class));
 
-        $this->validator->validate(500, $this->createConstraint(500.4925));
+        $this->validator->validate(500, $this->createConstraint(['value' => 500.4925]));
     }
 
     /**

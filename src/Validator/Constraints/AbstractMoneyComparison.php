@@ -6,6 +6,7 @@ use BabDev\MoneyBundle\Format;
 use Money\Money;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
+use Symfony\Component\Validator\Attribute\HasNamedArguments;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\LogicException;
@@ -53,14 +54,24 @@ abstract class AbstractMoneyComparison extends Constraint
     /**
      * @param mixed                             $value        The value to compare or a set of options
      * @param string|PropertyPathInterface|null $propertyPath An optional property path to read
+     * @param array<string, mixed>|null         $options      A set of options
      * @param string[]                          $groups       An array of validation groups
      * @param mixed                             $payload      Domain-specific data attached to a constraint
      */
-    public function __construct($value = null, $propertyPath = null, ?string $message = null, array $options = [], ?array $groups = null, $payload = null)
+    #[HasNamedArguments]
+    public function __construct(mixed $value = null, $propertyPath = null, ?string $message = null, ?array $options = null, ?array $groups = null, mixed $payload = null)
     {
         if (\is_array($value)) {
-            $options = array_merge($value, $options);
+            trigger_deprecation('babdev/money-bundle', '2.1', 'Passing an array of options to configure the "%s" constraint is deprecated, use named arguments instead.', static::class);
+
+            $options = array_merge($value, $options ?? []);
         } elseif (null !== $value) {
+            if (\is_array($options)) {
+                trigger_deprecation('babdev/money-bundle', '2.1', 'Passing an array of options to configure the "%s" constraint is deprecated, use named arguments instead.', static::class);
+            } else {
+                $options = [];
+            }
+
             $options['value'] = $value;
         }
 

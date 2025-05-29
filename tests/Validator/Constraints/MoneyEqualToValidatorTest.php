@@ -18,11 +18,15 @@ final class MoneyEqualToValidatorTest extends AbstractMoneyComparisonValidatorTe
     }
 
     /**
-     * @param mixed $options The value to compare or a set of options
+     * @param array<string, mixed>|null $options An array of named arguments for the constraint or null for no arguments
      */
-    protected function createConstraint($options = null): AbstractMoneyComparison
+    protected function createConstraint(?array $options = null): AbstractMoneyComparison
     {
-        return new MoneyEqualTo($options);
+        if (null !== $options) {
+            return new MoneyEqualTo(...$options);
+        }
+
+        return new MoneyEqualTo();
     }
 
     protected function getErrorCode(): string
