@@ -79,6 +79,8 @@ final class MoneyHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param array{name: string, params: array} $type
+     *
      * @return array<string, string>|\ArrayObject<string, string>
      */
     public function serializeMoneyToJson(JsonSerializationVisitor $visitor, Money $money, array $type, SerializationContext $context)
