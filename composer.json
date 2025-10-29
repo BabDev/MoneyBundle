@@ -21,31 +21,6 @@
         "jms/serializer-bundle": "^5.4",
         "matthiasnoback/symfony-dependency-injection-test": "^5.0",
         "phpstan/extension-installer": "^1.4",
-<<<<<<< HEAD
-        "phpstan/phpstan": "2.1.31",
-        "phpstan/phpstan-phpunit": "2.0.7",
-        "phpstan/phpstan-symfony": "2.0.8",
-        "phpunit/phpunit": "9.6.29",
-        "symfony/form": "^6.4 || ^7.3",
-        "symfony/intl": "^6.4 || ^7.3",
-        "symfony/phpunit-bridge": "^6.4 || ^7.3",
-        "symfony/property-access": "^6.4 || ^7.3",
-        "symfony/serializer": "^6.4 || ^7.3",
-        "symfony/twig-bundle": "^6.4 || ^7.3",
-        "symfony/validator": "^6.4 || ^7.3",
-        "twig/twig": "^3.0.4"
-    },
-    "conflict": {
-        "doctrine/doctrine-bundle": "<2.11",
-        "doctrine/mongodb-odm": "<2.7",
-        "doctrine/mongodb-odm-bundle": "<5.0",
-        "doctrine/orm": "<2.19",
-        "jms/serializer": "<3.28",
-        "symfony/form": "<6.4 || >=7.0 <7.3",
-        "symfony/serializer": "<6.4 || >=7.0 <7.3",
-        "symfony/validator": "<6.4 || >=7.0 <7.3",
-        "twig/twig": "<3.0.4"
-=======
         "phpstan/phpstan": "2.1.14",
         "phpstan/phpstan-phpunit": "2.0.6",
         "phpstan/phpstan-symfony": "2.0.4",
@@ -69,7 +44,6 @@
         "symfony/serializer": "<5.4 || >=6.0 <6.4 || >=7.0 <7.3",
         "symfony/validator": "<5.4 || >=6.0 <6.4 || >=7.0 <7.3",
         "twig/twig": "<2.13"
->>>>>>> 1.x
     },
     "suggest": {
         "ext/intl": "To use the intl Money\\MoneyFormatter instances",
