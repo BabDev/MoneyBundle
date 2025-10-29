@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ['8.2', '8.3', '8.4']
-        symfony: ['6.4.*', '7.3.*']
+        symfony: ['6.4.*', '7.3.*', '7.4.*@beta']
         composer-flags: ['--prefer-stable']
         can-fail: [false]
         has-mongodb: [true]
@@ -28,6 +28,11 @@ jobs:
             extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
             can-fail: false
             has-mongodb: false
+        exclude:
+          - php: '8.1'
+            symfony: '7.3.*'
+          - php: '8.1'
+            symfony: '7.4.*@beta'
 
     name: "PHP ${{ matrix.php }}${{ matrix.has-mongodb == false && ' - Without MongoDB' || '' }} - Symfony ${{ matrix.symfony }}${{ matrix.composer-flags != '' && format(' - Composer {0}', matrix.composer-flags) || '' }}"
 
