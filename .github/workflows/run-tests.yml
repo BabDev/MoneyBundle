@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         php: ['8.2', '8.3', '8.4']
-        symfony: ['6.4.*', '7.2.*', '7.3.*']
+        symfony: ['6.4.*', '7.3.*']
         composer-flags: ['--prefer-stable']
         can-fail: [false]
         has-mongodb: [true]
@@ -23,7 +23,7 @@ jobs:
             can-fail: false
             has-mongodb: true
           - php: '8.4'
-            symfony: '7.2.*'
+            symfony: '7.3.*'
             composer-flags: '--prefer-stable'
             extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
             can-fail: false
