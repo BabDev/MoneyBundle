@@ -20,6 +20,8 @@ use Twig\Environment;
 
 final class BabDevMoneyBundle extends AbstractBundle
 {
+    protected string $extensionAlias = 'babdev_money';
+
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
