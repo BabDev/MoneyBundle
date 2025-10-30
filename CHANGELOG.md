@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.0 (2025-10-30)
+
+- Minor B/C Break - Restore extension alias to 1.x value (i.e. `bab_dev_money` to `babdev_money`)
+- Drop support for Symfony 7.2
+
 ## 2.1.0 (2025-05-29)
 
 - Deprecate the options array for the validation constraints in favor of named arguments
