@@ -19,10 +19,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  */
 final class MoneyTypeTest extends TypeTestCase
 {
-    /**
-     * @var string
-     */
-    private $defaultLocale;
+    private ?string $defaultLocale = null;
 
     protected function setUp(): void
     {
@@ -38,7 +35,9 @@ final class MoneyTypeTest extends TypeTestCase
     {
         parent::tearDown();
 
-        \Locale::setDefault($this->defaultLocale);
+        if (null !== $this->defaultLocale) {
+            \Locale::setDefault($this->defaultLocale);
+        }
     }
 
     public static function dataPassMoneyPatternToView(): \Generator
