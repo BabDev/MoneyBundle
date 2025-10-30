@@ -6,6 +6,7 @@ use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
 use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparisonValidator;
 use Money\Money;
 use Money\Number;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
@@ -77,9 +78,8 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
 
     /**
      * @param array<string, mixed>|null $options
-     *
-     * @dataProvider provideInvalidConstraintOptions
      */
+    #[DataProvider('provideInvalidConstraintOptions')]
     public function testThrowsConstraintExceptionIfNoValueOrPropertyPath(?array $options): void
     {
         $this->expectException(ConstraintDefinitionException::class);
@@ -97,9 +97,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         ]);
     }
 
-    /**
-     * @dataProvider provideValidComparisons
-     */
+    #[DataProvider('provideValidComparisons')]
     public function testValidComparisonToValue(Money|float|int|string|null $dirtyValue, Money|float|int|string|null $comparisonValue): void
     {
         $this->validator->validate($dirtyValue, $this->createConstraint(['value' => $comparisonValue]));
@@ -107,9 +105,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->assertNoViolation();
     }
 
-    /**
-     * @dataProvider provideValidComparisonsToPropertyPath
-     */
+    #[DataProvider('provideValidComparisonsToPropertyPath')]
     public function testValidComparisonToPropertyPath(Money|float|int|string|null $comparedValue): void
     {
         $this->setObject($this->createValueObject(Money::USD(500)));
@@ -164,9 +160,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->validator->validate(500, $this->createConstraint(['value' => 500.4925]));
     }
 
-    /**
-     * @dataProvider provideInvalidComparisons
-     */
+    #[DataProvider('provideInvalidComparisons')]
     public function testInvalidComparisonToValue(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, Money|float|int|string|null $comparedValue, string $comparedValueString, string $comparedValueType): void
     {
         $constraint = $this->createConstraint(['value' => $comparedValue]);
@@ -202,9 +196,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
             ->assertRaised();
     }
 
-    /**
-     * @dataProvider provideComparisonsToNullValueAtPropertyPath
-     */
+    #[DataProvider('provideComparisonsToNullValueAtPropertyPath')]
     public function testCompareWithNullValueAtPropertyAt(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, bool $isValid): void
     {
         $constraint = $this->createConstraint(['propertyPath' => 'value']);

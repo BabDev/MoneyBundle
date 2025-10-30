@@ -10,6 +10,7 @@ use Money\Parser\BitcoinMoneyParser;
 use Money\Parser\DecimalMoneyParser;
 use Money\Parser\IntlLocalizedDecimalParser;
 use Money\Parser\IntlMoneyParser;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
 final class ParserFactoryTest extends TestCase
@@ -39,17 +40,13 @@ final class ParserFactoryTest extends TestCase
         self::assertInstanceOf(DecimalMoneyParser::class, $this->factory->createParser(Format::DECIMAL));
     }
 
-    /**
-     * @requires extension intl
-     */
+    #[RequiresPhpExtension('intl')]
     public function testIntlLocalizedDecimalParserIsCreated(): void
     {
         self::assertInstanceOf(IntlLocalizedDecimalParser::class, $this->factory->createParser(Format::INTL_LOCALIZED_DECIMAL));
     }
 
-    /**
-     * @requires extension intl
-     */
+    #[RequiresPhpExtension('intl')]
     public function testIntlMoneyParserIsCreated(): void
     {
         self::assertInstanceOf(IntlMoneyParser::class, $this->factory->createParser(Format::INTL_MONEY));

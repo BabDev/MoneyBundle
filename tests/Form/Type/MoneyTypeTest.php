@@ -7,6 +7,7 @@ use BabDev\MoneyBundle\Factory\ParserFactory;
 use BabDev\MoneyBundle\Form\Type\MoneyType;
 use Money\Currency;
 use Money\Money;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -40,7 +41,7 @@ final class MoneyTypeTest extends TypeTestCase
         \Locale::setDefault($this->defaultLocale);
     }
 
-    public function dataPassMoneyPatternToView(): \Generator
+    public static function dataPassMoneyPatternToView(): \Generator
     {
         yield 'USD with en_US locale' => ['$ {{ widget }}', 'en_US', new Currency('USD')];
         yield 'EUR with en_US locale' => ['€ {{ widget }}', 'en_US', new Currency('EUR')];
@@ -48,9 +49,7 @@ final class MoneyTypeTest extends TypeTestCase
         yield 'EUR with de_DE locale' => ['{{ widget }} €', 'de_DE', new Currency('EUR')];
     }
 
-    /**
-     * @dataProvider dataPassMoneyPatternToView
-     */
+    #[DataProvider('dataPassMoneyPatternToView')]
     public function testPassMoneyPatternToView(string $expected, string $locale, Currency $currency): void
     {
         \Locale::setDefault($locale);

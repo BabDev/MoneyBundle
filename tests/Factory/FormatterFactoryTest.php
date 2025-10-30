@@ -10,6 +10,7 @@ use Money\Formatter\BitcoinMoneyFormatter;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Formatter\IntlLocalizedDecimalFormatter;
 use Money\Formatter\IntlMoneyFormatter;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
 final class FormatterFactoryTest extends TestCase
@@ -39,17 +40,13 @@ final class FormatterFactoryTest extends TestCase
         self::assertInstanceOf(DecimalMoneyFormatter::class, $this->factory->createFormatter(Format::DECIMAL));
     }
 
-    /**
-     * @requires extension intl
-     */
+    #[RequiresPhpExtension('intl')]
     public function testIntlLocalizedDecimalFormatterIsCreated(): void
     {
         self::assertInstanceOf(IntlLocalizedDecimalFormatter::class, $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL));
     }
 
-    /**
-     * @requires extension intl
-     */
+    #[RequiresPhpExtension('intl')]
     public function testIntlMoneyFormatterIsCreated(): void
     {
         self::assertInstanceOf(IntlMoneyFormatter::class, $this->factory->createFormatter(Format::INTL_MONEY));

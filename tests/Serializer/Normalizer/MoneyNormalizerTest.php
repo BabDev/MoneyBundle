@@ -5,6 +5,7 @@ namespace BabDev\MoneyBundle\Tests\Serializer\Normalizer;
 use BabDev\MoneyBundle\Serializer\Normalizer\MoneyNormalizer;
 use Money\Currency;
 use Money\Money;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
@@ -28,15 +29,13 @@ final class MoneyNormalizerTest extends TestCase
         (new MoneyNormalizer())->normalize(new \stdClass());
     }
 
-    public function dataSupportsNormalization(): \Generator
+    public static function dataSupportsNormalization(): \Generator
     {
         yield 'Supported' => [new Money(100, new Currency('USD')), true];
         yield 'Not Supported' => [new \stdClass(), false];
     }
 
-    /**
-     * @dataProvider dataSupportsNormalization
-     */
+    #[DataProvider('dataSupportsNormalization')]
     public function testSupportsNormalization(mixed $data, bool $supported): void
     {
         self::assertSame($supported, (new MoneyNormalizer())->supportsNormalization($data));
@@ -73,15 +72,13 @@ final class MoneyNormalizerTest extends TestCase
         (new MoneyNormalizer())->denormalize(['amount' => '9.99', 'currency' => 'USD'], Money::class);
     }
 
-    public function dataSupportsDenormalization(): \Generator
+    public static function dataSupportsDenormalization(): \Generator
     {
         yield 'Supported' => [new \stdClass(), Money::class, true];
         yield 'Not Supported' => [new \stdClass(), \stdClass::class, false];
     }
 
-    /**
-     * @dataProvider dataSupportsDenormalization
-     */
+    #[DataProvider('dataSupportsDenormalization')]
     public function testSupportsDenormalization(mixed $data, string $type, bool $supported): void
     {
         self::assertSame($supported, (new MoneyNormalizer())->supportsDenormalization($data, $type));

@@ -11,18 +11,14 @@
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
+    <source>
         <include>
-            <directory suffix=".php">./src</directory>
+            <directory>./src</directory>
         </include>
-    </coverage>
-
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
-    </listeners>
-
-    <php>
-        <!-- Ignore deprecations from lowest stable -->
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=7&amp;max[indirect]=14"/>
-    </php>
+        <deprecationTrigger>
+            <function>trigger_deprecation</function>
+            <method>Doctrine\Deprecations\Deprecation::trigger</method>
+            <method>Doctrine\Deprecations\Deprecation::delegateTriggerToBackend</method>
+        </deprecationTrigger>
+    </source>
 </phpunit>
