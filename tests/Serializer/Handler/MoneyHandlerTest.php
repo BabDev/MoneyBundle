@@ -12,6 +12,13 @@ use PHPUnit\Framework\TestCase;
 
 final class MoneyHandlerTest extends TestCase
 {
+    public static function setUpBeforeClass(): void
+    {
+        if (!class_exists(SerializerBuilder::class)) {
+            self::markTestSkipped('Test requires JMS Serializer');
+        }
+    }
+
     public function testSerializeMoneyToJson(): void
     {
         self::assertJsonStringEqualsJsonString(
