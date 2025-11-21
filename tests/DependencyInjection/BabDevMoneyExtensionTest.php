@@ -3,6 +3,7 @@
 namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 
 use BabDev\MoneyBundle\BabDevMoneyBundle;
+use JMS\SerializerBundle\JMSSerializerBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
@@ -12,6 +13,13 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
     {
         $this->container->setParameter('kernel.environment', 'dev');
         $this->container->setParameter('kernel.build_dir', __DIR__);
+
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
+            ],
+        );
 
         $this->load();
 
@@ -27,6 +35,13 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->container->setParameter('kernel.environment', 'dev');
         $this->container->setParameter('kernel.build_dir', __DIR__);
 
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
+            ],
+        );
+
         $this->load(['default_currency' => 'EUR']);
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'EUR');
@@ -38,6 +53,18 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
     public function testContainerIsLoadedWhenJMSSerializerBundleIsInstalled(): void
     {
+        if (!class_exists(JMSSerializerBundle::class)) {
+            self::markTestSkipped('Test requires JMSSerializerBundle');
+        }
+
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
+                'JMSSerializerBundle' => JMSSerializerBundle::class,
+            ],
+        );
+
         $this->container->setParameter('kernel.environment', 'dev');
         $this->container->setParameter('kernel.build_dir', __DIR__);
 
@@ -55,6 +82,13 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
     {
         $this->container->setParameter('kernel.environment', 'dev');
         $this->container->setParameter('kernel.build_dir', __DIR__);
+
+        $this->container->setParameter(
+            'kernel.bundles',
+            [
+                'BabDevMoneyBundle' => BabDevMoneyBundle::class,
+            ],
+        );
 
         $this->load();
 
