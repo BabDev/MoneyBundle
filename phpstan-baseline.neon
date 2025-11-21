@@ -61,6 +61,12 @@ parameters:
 			path: src/Form/Type/MoneyType.php
 
 		-
+			message: '#^Property BabDev\\MoneyBundle\\Validator\\Constraints\\AbstractMoneyComparison\:\:\$value \(float\|int\|Money\\Money\|numeric\-string\|null\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Validator/Constraints/AbstractMoneyComparison.php
+
+		-
 			message: '#^Parameter \#1 \$message of method Symfony\\Component\\Validator\\Context\\ExecutionContextInterface\:\:buildViolation\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1

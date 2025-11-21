@@ -78,6 +78,7 @@ abstract class AbstractMoneyComparison extends Constraint
         parent::__construct($options, $groups, $payload);
 
         $this->message = $message ?? $this->message;
+        $this->value = $value ?? $this->value;
         $this->propertyPath = $propertyPath ?? $this->propertyPath;
 
         if (null === $this->value && null === $this->propertyPath) {

@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: ['8.2', '8.3', '8.4']
-        symfony: ['6.4.*', '7.3.*', '7.4.*@beta']
+        php: ['8.2', '8.3', '8.4', '8.5']
+        symfony: ['6.4.*', '7.3.*', '7.4.*@rc', '8.0.*@rc']
         composer-flags: ['--prefer-stable']
         can-fail: [false]
         has-mongodb: [true]
@@ -32,7 +32,13 @@ jobs:
           - php: '8.1'
             symfony: '7.3.*'
           - php: '8.1'
-            symfony: '7.4.*@beta'
+            symfony: '7.4.*@rc'
+          - php: '8.1'
+            symfony: '8.0.*@rc'
+          - php: '8.2'
+            symfony: '8.0.*@rc'
+          - php: '8.3'
+            symfony: '8.0.*@rc'
 
     name: "PHP ${{ matrix.php }}${{ matrix.has-mongodb == false && ' - Without MongoDB' || '' }} - Symfony ${{ matrix.symfony }}${{ matrix.composer-flags != '' && format(' - Composer {0}', matrix.composer-flags) || '' }}"
 
