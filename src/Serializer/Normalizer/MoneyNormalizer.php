@@ -53,8 +53,7 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
         \assert((\is_int($data['amount']) || is_numeric($data['amount'])) && (\is_string($data['currency']) && '' !== $data['currency']));
 
         try {
-            /** @phpstan-ignore-next-line argument.type */
-            return new Money($data['amount'], new Currency($data['currency']));
+            return new Money($data['amount'], new Currency($data['currency'])); // @phpstan-ignore-line argument.type
         } catch (\Exception $e) {
             throw new NotNormalizableValueException($e->getMessage(), $e->getCode(), $e);
         }

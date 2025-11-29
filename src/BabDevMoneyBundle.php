@@ -37,6 +37,9 @@ final class BabDevMoneyBundle extends AbstractBundle
         }
     }
 
+    /**
+     * @param DefinitionConfigurator<'array'> $definition
+     */
     public function configure(DefinitionConfigurator $definition): void
     {
         $definition->rootNode()

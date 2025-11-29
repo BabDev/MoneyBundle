@@ -66,8 +66,7 @@ final class MoneyType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        /** @phpstan-ignore-next-line argument.type */
-        $view->vars['money_pattern'] = self::getPattern($options['currency']);
+        $view->vars['money_pattern'] = self::getPattern($options['currency']); // @phpstan-ignore-line argument.type
 
         if ($options['html5']) {
             $view->vars['type'] = 'number';
