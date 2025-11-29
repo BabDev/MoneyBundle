@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.0 (2025-11-29)
+
+- Add support for Symfony 7.4 and 8.0
+
 ## 2.2.0 (2025-10-30)
 
 - Minor B/C Break - Restore extension alias to 1.x value (i.e. `bab_dev_money` to `babdev_money`)
