@@ -4,12 +4,6 @@
     "description": "Bundle integrating the Money for PHP library with Symfony",
     "keywords": ["money", "moneyphp", "currency", "symfony"],
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/mbabker/SymfonyDependencyInjectionTest"
-        }
-    ],
     "require": {
         "php": "^8.2",
         "moneyphp/money": "^4.5",
@@ -25,11 +19,11 @@
         "doctrine/orm": "^2.19 || ^3.0",
         "jms/serializer": "^3.28",
         "jms/serializer-bundle": "^5.4",
-        "matthiasnoback/symfony-dependency-injection-test": "dev-ci-updates as 6.1.0.1",
+        "matthiasnoback/symfony-dependency-injection-test": "^6.2",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "2.1.32",
         "phpstan/phpstan-phpunit": "2.0.8",
-        "phpstan/phpstan-symfony": "2.0.8",
+        "phpstan/phpstan-symfony": "2.0.9",
         "phpunit/phpunit": "11.5.44",
         "symfony/form": "^6.4 || ^7.3 || ^8.0",
         "symfony/intl": "^6.4 || ^7.3 || ^8.0",
