@@ -105,7 +105,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
      */
     protected function getContainerExtensions(): array
     {
-        $extension = (new BabDevMoneyBundle())->getContainerExtension();
+        $extension = new BabDevMoneyBundle()->getContainerExtension();
 
         if (!$extension instanceof ExtensionInterface) {
             throw new \RuntimeException('The container extension could not be retrieved from the bundle.');

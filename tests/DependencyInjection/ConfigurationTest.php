@@ -13,7 +13,7 @@ final class ConfigurationTest extends TestCase
 {
     protected function getConfiguration(): ConfigurationInterface
     {
-        $extension = (new BabDevMoneyBundle())->getContainerExtension();
+        $extension = new BabDevMoneyBundle()->getContainerExtension();
 
         if (!$extension instanceof BundleExtension) {
             throw new \RuntimeException('The container extension could not be retrieved from the bundle.');
@@ -24,7 +24,7 @@ final class ConfigurationTest extends TestCase
 
     public function testDefaultConfig(): void
     {
-        $config = (new Processor())->processConfiguration($this->getConfiguration(), []);
+        $config = new Processor()->processConfiguration($this->getConfiguration(), []);
 
         self::assertEquals(self::getBundleDefaultConfig(), $config);
     }
@@ -35,7 +35,7 @@ final class ConfigurationTest extends TestCase
             'default_currency' => 'EUR',
         ];
 
-        $config = (new Processor())->processConfiguration($this->getConfiguration(), [$extraConfig]);
+        $config = new Processor()->processConfiguration($this->getConfiguration(), [$extraConfig]);
 
         self::assertEquals(array_merge(self::getBundleDefaultConfig(), $extraConfig), $config);
     }

@@ -42,7 +42,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     {
         $this->expectException(TransformationFailedException::class);
 
-        (new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'), new NumberToLocalizedStringTransformer()))
+        new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'), new NumberToLocalizedStringTransformer())
             ->transform('abcd');
     }
 
@@ -69,7 +69,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     {
         $this->expectException(TransformationFailedException::class);
 
-        (new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'), new NumberToLocalizedStringTransformer()))
+        new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'), new NumberToLocalizedStringTransformer())
             ->reverseTransform(12345);
     }
 
