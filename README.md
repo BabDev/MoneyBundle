@@ -1,12 +1,12 @@
 # MoneyBundle
 
-[![Latest Stable Version](https://poser.pugx.org/babdev/money-bundle/v/stable)](https://packagist.org/packages/babdev/money-bundle) [![Latest Unstable Version](https://poser.pugx.org/babdev/money-bundle/v/unstable)](https://packagist.org/packages/babdev/money-bundle) [![Total Downloads](https://poser.pugx.org/babdev/money-bundle/downloads)](https://packagist.org/packages/babdev/money-bundle) [![License](https://poser.pugx.org/babdev/money-bundle/license)](https://packagist.org/packages/babdev/money-bundle) ![Run Tests](https://github.com/BabDev/MoneyBundle/workflows/Run%20Tests/badge.svg?branch=2.x)
+[![Latest Stable Version](https://poser.pugx.org/babdev/money-bundle/v/stable)](https://packagist.org/packages/babdev/money-bundle) [![Latest Unstable Version](https://poser.pugx.org/babdev/money-bundle/v/unstable)](https://packagist.org/packages/babdev/money-bundle) [![Total Downloads](https://poser.pugx.org/babdev/money-bundle/downloads)](https://packagist.org/packages/babdev/money-bundle) [![License](https://poser.pugx.org/babdev/money-bundle/license)](https://packagist.org/packages/babdev/money-bundle) ![Run Tests](https://github.com/BabDev/MoneyBundle/workflows/Run%20Tests/badge.svg?branch=3.x)
 
 Bundle integrating the [Money for PHP](https://github.com/moneyphp/money) library with [Symfony](https://github.com/symfony/symfony).
 
 ## Documentation
 
-Please see the [BabDev website](https://www.babdev.com/open-source/packages/moneybundle/docs/2.x) for detailed information on how to use this bundle.
+Please see the [BabDev website](https://www.babdev.com/open-source/packages/moneybundle/docs/3.x) for detailed information on how to use this bundle.
 
 ## Security
 

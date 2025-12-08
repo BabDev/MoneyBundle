@@ -6,7 +6,7 @@ When used with an application where the [Doctrine MongoDB ODM](https://www.doctr
 
 All that is required is to define a field on your document as an embedded field with the `Money\Money` type, such as the below example document:
 
-<div class="docs-note docs-note--tip">The below example uses PHP 8 Attributes, but you can use any of the ODM's mapping drivers in your application.</div>
+<div class="docs-note docs-note--tip">The below example uses Attributes, but you can use any of the ODM's mapping drivers in your application.</div>
 
 ```php
 <?php
@@ -35,7 +35,7 @@ When used with an application where the [Doctrine ORM](https://www.doctrine-proj
 
 All that is required is to define a field on your entity as an embedded field with the `Money\Money` type, such as the below example entity:
 
-<div class="docs-note docs-note--tip">The below example uses PHP 8 Attributes, but you can use any of the ORM's mapping drivers in your application.</div>
+<div class="docs-note docs-note--tip">The below example uses Attributes, but you can use any of the ORM's mapping drivers in your application.</div>
 
 ```php
 <?php
