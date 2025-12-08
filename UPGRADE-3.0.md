@@ -10,3 +10,5 @@ The below guide will assist in upgrading from the 2.x versions to 3.0.
 ## General Changes
 
 ## Removed Features
+
+- Removed support for the deprecated options array in validation constraints
