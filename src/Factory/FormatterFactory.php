@@ -21,7 +21,7 @@ final class FormatterFactory implements FormatterFactoryInterface
      *
      * @phpstan-var array<Format::*, class-string<MoneyFormatter>>
      */
-    private const FORMAT_MAP = [
+    private const array FORMAT_MAP = [
         Format::BITCOIN => BitcoinMoneyFormatter::class,
         Format::DECIMAL => DecimalMoneyFormatter::class,
         Format::INTL_LOCALIZED_DECIMAL => IntlLocalizedDecimalFormatter::class,
@@ -34,7 +34,6 @@ final class FormatterFactory implements FormatterFactoryInterface
      * @param array{fraction_digits?: int<0, max>, grouping_used?: bool, style?: string} $options
      *
      * @phpstan-param Format::* $format
-     * @phpstan-param array<string, mixed> $options
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a formatter is not available

@@ -8,9 +8,9 @@ namespace BabDev\MoneyBundle\Validator\Constraints;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class MoneyNotEqualTo extends AbstractMoneyComparison
 {
-    public const IS_EQUAL_ERROR = '6dcecf9b-093b-4342-8cf7-060a3ef55faa';
+    public const string IS_EQUAL_ERROR = '6dcecf9b-093b-4342-8cf7-060a3ef55faa';
 
-    protected const ERROR_NAMES = [
+    protected const array ERROR_NAMES = [
         self::IS_EQUAL_ERROR => 'IS_EQUAL_ERROR',
     ];
 

@@ -8,9 +8,9 @@ namespace BabDev\MoneyBundle\Validator\Constraints;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class MoneyLessThanOrEqual extends AbstractMoneyComparison
 {
-    public const TOO_HIGH_ERROR = 'eca16a86-47e0-4a2f-bc44-f9b3d58561e5';
+    public const string TOO_HIGH_ERROR = 'eca16a86-47e0-4a2f-bc44-f9b3d58561e5';
 
-    protected const ERROR_NAMES = [
+    protected const array ERROR_NAMES = [
         self::TOO_HIGH_ERROR => 'TOO_HIGH_ERROR',
     ];
 

@@ -13,19 +13,17 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterface
 {
     /**
-     * @param mixed $object Object to normalize
-     *
      * @throws InvalidArgumentException when the object given is not a supported type for the normalizer
      */
-    public function normalize($object, ?string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array
     {
-        if (!$object instanceof Money) {
+        if (!$data instanceof Money) {
             throw new InvalidArgumentException(\sprintf('The object must be an instance of "%s".', Money::class));
         }
 
         return [
-            'amount' => $object->getAmount(),
-            'currency' => $object->getCurrency()->getCode(),
+            'amount' => $data->getAmount(),
+            'currency' => $data->getCurrency()->getCode(),
         ];
     }
 
@@ -35,12 +33,10 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
     }
 
     /**
-     * @param mixed $data Data to restore
-     *
      * @throws InvalidArgumentException Occurs when the arguments are not coherent or not supported
      * @throws UnexpectedValueException Occurs when the item cannot be hydrated with the given data
      */
-    public function denormalize($data, string $type, ?string $format = null, array $context = []): Money
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): Money
     {
         if (!\is_array($data)) {
             throw new InvalidArgumentException(\sprintf('Data expected to be an array, "%s" given.', get_debug_type($data)));

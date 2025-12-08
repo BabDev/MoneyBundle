@@ -53,11 +53,11 @@ final class MoneyType extends AbstractType
             ->addViewTransformer(new MoneyToLocalizedStringTransformer(
                 $this->formatterFactory,
                 $this->parserFactory,
-                $options['currency'],
+                $options['currency'], // @phpstan-ignore argument.type
                 new NumberToLocalizedStringTransformer(
-                    $options['scale'],
-                    $options['grouping'],
-                    $options['rounding_mode'],
+                    $options['scale'], // @phpstan-ignore argument.type
+                    $options['grouping'], // @phpstan-ignore argument.type
+                    $options['rounding_mode'], // @phpstan-ignore argument.type
                     $options['html5'] ? 'en' : null
                 )
             ))

@@ -9,8 +9,8 @@ use Money\MoneyParser;
 
 interface ParserFactoryInterface
 {
-    public const STYLE_CURRENCY = 'currency';
-    public const STYLE_DECIMAL = 'decimal';
+    public const string STYLE_CURRENCY = 'currency';
+    public const string STYLE_DECIMAL = 'decimal';
 
     /**
      * @phpstan-param Format::* $format

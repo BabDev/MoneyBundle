@@ -16,7 +16,7 @@ use Twig\TwigFunction;
 final class MoneyExtension extends AbstractExtension
 {
     /**
-     * @phpstan-param non-empty-string $defaultCurrency
+     * @param non-empty-string $defaultCurrency
      */
     public function __construct(
         private readonly FormatterFactoryInterface $formatterFactory,
@@ -44,8 +44,8 @@ final class MoneyExtension extends AbstractExtension
     }
 
     /**
-     * @phpstan-param numeric-string|int    $amount
-     * @phpstan-param non-empty-string|null $currency
+     * @param numeric-string|int    $amount
+     * @param non-empty-string|null $currency
      *
      * @throws \InvalidArgumentException if the amount cannot be converted to a {@see Money} instance
      */

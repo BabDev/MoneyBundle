@@ -7,9 +7,9 @@ namespace BabDev\MoneyBundle;
  */
 abstract class Format
 {
-    public const AGGREGATE = 'aggregate';
-    public const BITCOIN = 'bitcoin';
-    public const DECIMAL = 'decimal';
-    public const INTL_LOCALIZED_DECIMAL = 'intl_localized_decimal';
-    public const INTL_MONEY = 'intl_money';
+    public const string AGGREGATE = 'aggregate';
+    public const string BITCOIN = 'bitcoin';
+    public const string DECIMAL = 'decimal';
+    public const string INTL_LOCALIZED_DECIMAL = 'intl_localized_decimal';
+    public const string INTL_MONEY = 'intl_money';
 }

@@ -20,7 +20,7 @@ final class ParserFactory implements ParserFactoryInterface
      *
      * @phpstan-var array<Format::*, class-string<MoneyParser>>
      */
-    private const PARSER_MAP = [
+    private const array PARSER_MAP = [
         Format::BITCOIN => BitcoinMoneyParser::class,
         Format::DECIMAL => DecimalMoneyParser::class,
         Format::INTL_LOCALIZED_DECIMAL => IntlLocalizedDecimalParser::class,
@@ -33,7 +33,6 @@ final class ParserFactory implements ParserFactoryInterface
      * @param array{fraction_digits?: int<0, max>, grouping_used?: bool, style?: string} $options
      *
      * @phpstan-param Format::* $format
-     * @phpstan-param array<string, mixed> $options
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a parser is not available
