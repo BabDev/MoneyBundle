@@ -9,3 +9,15 @@ The default currency for your application can be set with the `default_currency`
 babdev_money:
     default_currency: EUR
 ```
+
+```php
+<?php // config/packages/babdev_money.php
+
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
+return App::config([
+    'babdev_money' => [
+        'default_currency' => 'EUR',
+    ],
+]);
+```
