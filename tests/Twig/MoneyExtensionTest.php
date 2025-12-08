@@ -6,19 +6,18 @@ use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Twig\MoneyExtension;
 use Money\Money;
 use Money\MoneyFormatter;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
+#[AllowMockObjectsWithoutExpectations]
 final class MoneyExtensionTest extends TestCase
 {
-    /**
-     * @var MockObject&FormatterFactoryInterface
-     */
-    private MockObject $formatterFactory;
+    private readonly MockObject&FormatterFactoryInterface $formatterFactory;
 
-    private MoneyExtension $extension;
+    private readonly MoneyExtension $extension;
 
     protected function setUp(): void
     {

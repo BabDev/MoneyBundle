@@ -1,30 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:children\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/BabDevMoneyBundle.php
-
-		-
-			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/BabDevMoneyBundle.php
-
-		-
-			message: '#^Cannot call method end\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 2
-			path: src/BabDevMoneyBundle.php
-
-		-
-			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/BabDevMoneyBundle.php
-
-		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 3
@@ -61,12 +37,6 @@ parameters:
 			path: src/Form/Type/MoneyType.php
 
 		-
-			message: '#^Property BabDev\\MoneyBundle\\Validator\\Constraints\\AbstractMoneyComparison\:\:\$value \(float\|int\|Money\\Money\|numeric\-string\|null\) does not accept mixed\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Validator/Constraints/AbstractMoneyComparison.php
-
-		-
 			message: '#^Parameter \#1 \$message of method Symfony\\Component\\Validator\\Context\\ExecutionContextInterface\:\:buildViolation\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
@@ -77,30 +47,6 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: src/Validator/Constraints/AbstractMoneyComparisonValidator.php
-
-		-
-			message: '#^Parameter \#1 \$format of method BabDev\\MoneyBundle\\Factory\\FormatterFactory\:\:createFormatter\(\) expects ''aggregate''\|''bitcoin''\|''decimal''\|''intl_localized…''\|''intl_money'', ''unsupported'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Factory/FormatterFactoryTest.php
-
-		-
-			message: '#^Parameter \#1 \$format of method BabDev\\MoneyBundle\\Factory\\ParserFactory\:\:createParser\(\) expects ''aggregate''\|''bitcoin''\|''decimal''\|''intl_localized…''\|''intl_money'', ''unsupported'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Factory/ParserFactoryTest.php
-
-		-
-			message: '#^Parameter \#1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer\<Money\\Money,string\>\:\:reverseTransform\(\) expects string, int given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
-
-		-
-			message: '#^Parameter \#1 \$value of method BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer\<Money\\Money,string\>\:\:transform\(\) expects Money\\Money\|null, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Form/DataTransformer/MoneyToLocalizedStringTransformerTest.php
 
 		-
 			message: '#^Parameter \#2 \$locale of function setlocale expects string\|null, bool\|string given\.$#'

@@ -8,8 +8,10 @@ use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyNotEqualTo;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyNotEqualToValidator;
 use Money\Money;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 
+#[AllowMockObjectsWithoutExpectations]
 final class MoneyNotEqualToValidatorTest extends AbstractMoneyComparisonValidatorTestCase
 {
     protected function createValidator(): ConstraintValidatorInterface
@@ -23,7 +25,7 @@ final class MoneyNotEqualToValidatorTest extends AbstractMoneyComparisonValidato
     protected function createConstraint(?array $options = null): AbstractMoneyComparison
     {
         if (null !== $options) {
-            return new MoneyNotEqualTo(...$options);
+            return new MoneyNotEqualTo(...$options); // @phpstan-ignore-line argument.type
         }
 
         return new MoneyNotEqualTo();

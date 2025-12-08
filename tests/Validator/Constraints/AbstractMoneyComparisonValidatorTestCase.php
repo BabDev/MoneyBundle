@@ -27,13 +27,8 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
 
     protected function createValueObject(?Money $value): object
     {
-        return new class($value) {
-            public function __construct(private readonly ?Money $value) {}
-
-            public function getValue(): ?Money
-            {
-                return $this->value;
-            }
+        return new readonly class($value) {
+            public function __construct(public private(set) ?Money $value) {}
         };
     }
 

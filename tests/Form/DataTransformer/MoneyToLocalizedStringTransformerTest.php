@@ -43,7 +43,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $this->expectException(TransformationFailedException::class);
 
         new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'), new NumberToLocalizedStringTransformer())
-            ->transform('abcd');
+            ->transform('abcd'); // @phpstan-ignore-line argument.type
     }
 
     public function testTransformEmpty(): void
@@ -70,7 +70,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         $this->expectException(TransformationFailedException::class);
 
         new MoneyToLocalizedStringTransformer(new FormatterFactory('en_US'), new ParserFactory('en_US'), new Currency('USD'), new NumberToLocalizedStringTransformer())
-            ->reverseTransform(12345);
+            ->reverseTransform(12345); // @phpstan-ignore-line argument.type
     }
 
     public function testReverseTransformEmpty(): void

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 final class FormatterFactoryTest extends TestCase
 {
-    private FormatterFactory $factory;
+    private readonly FormatterFactory $factory;
 
     protected function setUp(): void
     {
@@ -57,6 +57,6 @@ final class FormatterFactoryTest extends TestCase
         $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported format "unsupported"');
 
-        $this->factory->createFormatter('unsupported');
+        $this->factory->createFormatter('unsupported'); // @phpstan-ignore-line argument.type
     }
 }

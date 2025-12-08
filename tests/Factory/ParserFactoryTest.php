@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ParserFactoryTest extends TestCase
 {
-    private ParserFactory $factory;
+    private readonly ParserFactory $factory;
 
     protected function setUp(): void
     {
@@ -57,6 +57,6 @@ final class ParserFactoryTest extends TestCase
         $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported format "unsupported"');
 
-        $this->factory->createParser('unsupported');
+        $this->factory->createParser('unsupported'); // @phpstan-ignore-line argument.type
     }
 }
