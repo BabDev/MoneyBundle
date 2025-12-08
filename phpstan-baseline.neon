@@ -1,42 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 3
-			path: src/Factory/FormatterFactory.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 3
-			path: src/Factory/ParserFactory.php
-
-		-
-			message: '#^Parameter \#1 \$scale of class Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer constructor expects int\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Form/Type/MoneyType.php
-
-		-
-			message: '#^Parameter \#2 \$grouping of class Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer constructor expects bool\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Form/Type/MoneyType.php
-
-		-
-			message: '#^Parameter \#3 \$currency of class BabDev\\MoneyBundle\\Form\\DataTransformer\\MoneyToLocalizedStringTransformer constructor expects Money\\Currency, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Form/Type/MoneyType.php
-
-		-
-			message: '#^Parameter \#3 \$roundingMode of class Symfony\\Component\\Form\\Extension\\Core\\DataTransformer\\NumberToLocalizedStringTransformer constructor expects int\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Form/Type/MoneyType.php
-
-		-
 			message: '#^Parameter \#1 \$message of method Symfony\\Component\\Validator\\Context\\ExecutionContextInterface\:\:buildViolation\(\) expects string, string\|null given\.$#'
 			identifier: argument.type
 			count: 1
