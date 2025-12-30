@@ -14,5 +14,5 @@ class MoneyGreaterThanOrEqual extends AbstractMoneyComparison
         self::TOO_LOW_ERROR => 'TOO_LOW_ERROR',
     ];
 
-    public ?string $message = 'This value should be greater than or equal to {{ compared_value }}.';
+    public string $message = 'This value should be greater than or equal to {{ compared_value }}.';
 }

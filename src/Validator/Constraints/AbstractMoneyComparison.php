@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Exception\LogicException;
  */
 abstract class AbstractMoneyComparison extends Constraint
 {
-    public ?string $message = null;
+    public string $message;
 
     /**
      * @var Money|float|int|numeric-string|null

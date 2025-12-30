@@ -14,5 +14,5 @@ class MoneyEqualTo extends AbstractMoneyComparison
         self::NOT_EQUAL_ERROR => 'NOT_EQUAL_ERROR',
     ];
 
-    public ?string $message = 'This value should be equal to {{ compared_value }}.';
+    public string $message = 'This value should be equal to {{ compared_value }}.';
 }

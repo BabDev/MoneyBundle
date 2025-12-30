@@ -9,6 +9,7 @@ use Money\Exception\ParserException;
 use Money\Money;
 use Money\Number;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
+use Symfony\Component\PropertyAccess\Exception\UninitializedPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Validator\Constraint;
@@ -52,14 +53,19 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
                 $comparedValue = $this->getPropertyAccessor()->getValue($object, $path);
             } catch (NoSuchPropertyException $e) {
                 throw new InvalidArgumentException(\sprintf('Invalid property path "%s" provided to "%s" constraint: ', $path, get_debug_type($constraint)).$e->getMessage(), 0, $e);
+            } catch (UninitializedPropertyException) {
+                $comparedValue = null;
             }
         } else {
             $comparedValue = $constraint->value;
         }
 
-        /** @var Money $firstValue */
-        $firstValue = $this->ensureMoneyObject($constraint, $value);
-        $secondValue = $this->ensureMoneyObject($constraint, $comparedValue);
+        $firstValue = $this->ensureMoneyObject($constraint, $value); // @phpstan-ignore-line argument.type
+
+        // Since we validated $value !== null, we must have a Money object now
+        \assert($firstValue instanceof Money);
+
+        $secondValue = $this->ensureMoneyObject($constraint, $comparedValue); // @phpstan-ignore-line argument.type
 
         if (!$this->compareValues($firstValue, $secondValue)) {
             $violationBuilder = $this->context->buildViolation($constraint->message)
