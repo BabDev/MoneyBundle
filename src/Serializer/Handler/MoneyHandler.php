@@ -85,8 +85,7 @@ final class MoneyHandler implements SubscribingHandlerInterface
      */
     public function serializeMoneyToJson(JsonSerializationVisitor $visitor, Money $money, array $type, SerializationContext $context)
     {
-        /** @phpstan-ignore-next-line return.type */
-        return $visitor->visitArray(
+        return $visitor->visitArray( // @phpstan-ignore-line return.type
             [
                 'amount' => $money->getAmount(),
                 'currency' => $money->getCurrency()->getCode(),
