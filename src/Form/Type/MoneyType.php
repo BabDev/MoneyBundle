@@ -70,6 +70,12 @@ final class MoneyType extends AbstractType
 
         if ($options['html5']) {
             $view->vars['type'] = 'number';
+
+            if (!isset($view->vars['attr']['step'])) { // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+                $view->vars['attr']['step'] = 'any'; // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+            }
+        } else {
+            $view->vars['attr']['inputmode'] = 0 === $options['scale'] ? 'numeric' : 'decimal'; // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
         }
     }
 
@@ -83,6 +89,7 @@ final class MoneyType extends AbstractType
             'compound' => false,
             'html5' => false,
             'invalid_message' => 'Please enter a valid money amount.',
+            'input' => 'float',
         ]);
 
         $resolver->setAllowedValues(
@@ -101,6 +108,7 @@ final class MoneyType extends AbstractType
         $resolver->setAllowedTypes('scale', 'int');
         $resolver->setAllowedTypes('html5', 'bool');
         $resolver->setAllowedTypes('currency', Currency::class);
+        $resolver->setAllowedValues('input', ['float', 'integer', 'string']);
 
         $resolver->setNormalizer(
             'grouping',

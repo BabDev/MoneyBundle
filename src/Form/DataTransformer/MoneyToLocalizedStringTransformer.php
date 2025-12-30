@@ -57,7 +57,7 @@ final readonly class MoneyToLocalizedStringTransformer implements DataTransforme
     /**
      * @param string $value Localized money string
      *
-     * @phpstan-return Money|null
+     * @return Money|null
      *
      * @throws TransformationFailedException if the given value is not a string or if the value can not be transformed
      */

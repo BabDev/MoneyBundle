@@ -7,6 +7,7 @@ use BabDev\MoneyBundle\Factory\ParserFactory;
 use BabDev\MoneyBundle\Form\Type\MoneyType;
 use Money\Currency;
 use Money\Money;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
@@ -17,6 +18,7 @@ use Symfony\Component\Intl\Util\IntlTestHelper;
  *
  * Class is based on \Symfony\Component\Form\Tests\Extension\Core\Type\MoneyTypeTest
  */
+#[AllowMockObjectsWithoutExpectations]
 final class MoneyTypeTest extends TypeTestCase
 {
     private ?string $defaultLocale = null;
@@ -117,8 +119,72 @@ final class MoneyTypeTest extends TypeTestCase
         $form = $this->factory->create(MoneyType::class, null, ['currency' => new Currency('EUR'), 'html5' => true, 'scale' => 2]);
         $form->setData(Money::EUR(1234560));
 
-        self::assertSame('12345.60', $form->createView()->vars['value']);
-        self::assertSame('number', $form->createView()->vars['type']);
+        $view = $form->createView();
+
+        self::assertSame('12345.60', $view->vars['value']);
+        self::assertSame('number', $view->vars['type']);
+    }
+
+    public function testHtml5AddsStepAttributeIfNotSet(): void
+    {
+        $form = $this->factory->create(MoneyType::class, null, ['html5' => true]);
+
+        self::assertSame('any', $form->createView()->vars['attr']['step']); // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+
+        $form = $this->factory->create(MoneyType::class, null, ['html5' => false, 'scale' => 2]);
+
+        self::assertSame('decimal', $form->createView()->vars['attr']['inputmode']); // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+
+        $form = $this->factory->create(MoneyType::class, null, ['html5' => false, 'scale' => 0]);
+
+        self::assertSame('numeric', $form->createView()->vars['attr']['inputmode']); // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+    }
+
+    public function testHtml5DoesNotOverrideUserProvidedStep(): void
+    {
+        $form = $this->factory->create(MoneyType::class, null, ['html5' => true, 'attr' => ['step' => '0.01']]);
+
+        self::assertSame('0.01', $form->createView()->vars['attr']['step']); // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+
+        $form = $this->factory->create(MoneyType::class, null, ['html5' => false, 'scale' => 2]);
+
+        self::assertSame('decimal', $form->createView()->vars['attr']['inputmode']); // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+    }
+
+    public function testDefaultInput(): void
+    {
+        $form = $this->factory->create(MoneyType::class);
+        $form->submit('12345.67');
+
+        self::assertEquals(Money::USD(1234567), $form->getData());
+    }
+
+    public function testIntegerInput(): void
+    {
+        $form = $this->factory->create(MoneyType::class, null, ['input' => 'integer']);
+        $form->submit('12345.67');
+
+        self::assertEquals(Money::USD(1234567), $form->getData());
+    }
+
+    public function testSubmitStringInputWithDefaultScale(): void
+    {
+        $form = $this->factory->create(MoneyType::class, null, ['input' => 'string']);
+        $form->submit('1.234');
+
+        self::assertEquals(Money::USD(123), $form->getData());
+        self::assertEquals(Money::USD(123), $form->getNormData());
+        self::assertSame('1.23', $form->getViewData());
+    }
+
+    public function testSubmitStringInputWithScale(): void
+    {
+        $form = $this->factory->create(MoneyType::class, null, ['input' => 'string', 'scale' => 3]);
+        $form->submit('1.234');
+
+        self::assertEquals(Money::USD(123), $form->getData());
+        self::assertEquals(Money::USD(123), $form->getNormData());
+        self::assertSame('1.230', $form->getViewData());
     }
 
     protected function getExtensions(): array
