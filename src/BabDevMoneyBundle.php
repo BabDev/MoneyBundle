@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
 use Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -33,7 +34,16 @@ final class BabDevMoneyBundle extends AbstractBundle
 
         // Register ORM mappings if DoctrineBundle and the ORM are installed
         if (class_exists(DoctrineBundle::class) && class_exists(EntityManager::class)) {
-            $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], false, [], true));
+            /*
+             * The $aliasMap parameter is deprecated in DoctrineBundle 3.2 and was removed from the signature using a
+             * dynamic B/C layer. If the parameter still exists, we are on a version of the bundle that requires an array;
+             * if it doesn't, the $enableXsdValidation parameter is now in that position.
+             */
+            if (new \ReflectionClass(DoctrineOrmMappingsPass::class)->getMethod('createXmlMappingDriver')->getParameters()[3]->getName() === 'aliasMap') {
+                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], false, [], true));
+            } else {
+                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], false, true));
+            }
         }
     }
 
