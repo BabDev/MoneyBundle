@@ -45,7 +45,7 @@ final readonly class MoneyToLocalizedStringTransformer implements DataTransforme
             return '';
         }
 
-        if (!($value instanceof Money)) {
+        if (!$value instanceof Money) {
             throw new TransformationFailedException(\sprintf('Expected an instance of "%s", "%s" given.', Money::class, get_debug_type($value)));
         }
 
