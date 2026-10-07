@@ -57,7 +57,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer update ${{ matrix.composer-flags }} --prefer-dist --no-suggest
+          composer update ${{ matrix.composer-flags }} --prefer-dist
         env:
           SYMFONY_REQUIRE: ${{ matrix.symfony }}
 
