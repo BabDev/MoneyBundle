@@ -61,9 +61,8 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
     }
 
     /**
+     * @param non-empty-string                                                                     $format
      * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string|null} $options
-     *
-     * @phpstan-param Format::* $format
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a formatter is not available
@@ -78,8 +77,6 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
 
     /**
      * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string|null} $options
-     *
-     * @phpstan-param Format::* $format
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a formatter is not available

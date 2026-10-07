@@ -67,9 +67,8 @@ class MoneyRange extends Constraint
      * @param string|null                         $style                   The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
      * @param string|null                         $currencyMismatchMessage The message used when the value and a limit have different currencies
      * @param self::UNIT_*|null                   $scalarUnit              The unit of integer, float, and integer string values
-     *
-     * @phpstan-param Format::*|null $formatterFormat The format used to display values in violation messages
-     * @phpstan-param Format::*|null $parserFormat    The format used to parse formatted string values to a Money instance
+     * @param non-empty-string|null               $formatterFormat         The format used to display values in violation messages
+     * @param non-empty-string|null               $parserFormat            The format used to parse formatted string values to a Money instance
      */
     #[HasNamedArguments]
     public function __construct(

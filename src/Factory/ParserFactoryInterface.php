@@ -13,8 +13,8 @@ interface ParserFactoryInterface
     public const string STYLE_DECIMAL = 'decimal';
 
     /**
-     * @phpstan-param Format::* $format
-     * @phpstan-param array<string, mixed> $options
+     * @param non-empty-string     $format
+     * @param array<string, mixed> $options
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a parser is not available

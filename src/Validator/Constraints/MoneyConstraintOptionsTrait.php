@@ -32,12 +32,16 @@ trait MoneyConstraintOptionsTrait
     public ?string $currency = null;
 
     /**
-     * @phpstan-var Format::*
+     * The name of the format used to display values in violation messages.
+     *
+     * @var non-empty-string
      */
     public string $formatterFormat = Format::INTL_MONEY;
 
     /**
-     * @phpstan-var Format::*
+     * The name of the format used to parse formatted string values.
+     *
+     * @var non-empty-string
      */
     public string $parserFormat = Format::DECIMAL;
 

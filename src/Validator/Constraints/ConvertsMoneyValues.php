@@ -95,7 +95,7 @@ trait ConvertsMoneyValues
     }
 
     /**
-     * @phpstan-param Format::* $format
+     * @param non-empty-string $format
      */
     private function parse(AbstractMoneyComparison|MoneyRange $constraint, string $format, string $value, Currency $currency): Money
     {

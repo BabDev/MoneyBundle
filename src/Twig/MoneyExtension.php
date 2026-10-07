@@ -55,9 +55,8 @@ final class MoneyExtension extends AbstractExtension
     }
 
     /**
+     * @param non-empty-string     $format
      * @param array<string, mixed> $options
-     *
-     * @phpstan-param Format::* $format
      *
      * @throws UnsupportedFormatException if an unsupported format was requested
      * @throws MissingDependencyException if a dependency for a formatter is not available

@@ -19,15 +19,14 @@ trait MoneyZeroComparisonConstraintTrait
     /**
      * Zero is compared in the currency of the validated value, so the constraint has no "currency" option; as the sign of an amount does not depend on its unit, integer, float, and integer string values are always treated as minor units.
      *
-     * @param string[]         $groups         An array of validation groups
-     * @param mixed            $payload        Domain-specific data attached to a constraint
-     * @param int<0, max>|null $fractionDigits The number of fraction digits used when formatting values; defaults to the number of fraction digits of the value's currency
-     * @param bool|null        $groupingUsed   Whether grouping is used when formatting and parsing values
-     * @param string|null      $locale         The locale used when formatting and parsing values
-     * @param string|null      $style          The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
-     *
-     * @phpstan-param Format::*|null $formatterFormat The format used to display values in violation messages
-     * @phpstan-param Format::*|null $parserFormat    The format used to parse formatted string values to a Money instance
+     * @param string[]              $groups          An array of validation groups
+     * @param mixed                 $payload         Domain-specific data attached to a constraint
+     * @param int<0, max>|null      $fractionDigits  The number of fraction digits used when formatting values; defaults to the number of fraction digits of the value's currency
+     * @param bool|null             $groupingUsed    Whether grouping is used when formatting and parsing values
+     * @param string|null           $locale          The locale used when formatting and parsing values
+     * @param string|null           $style           The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
+     * @param non-empty-string|null $formatterFormat The format used to display values in violation messages
+     * @param non-empty-string|null $parserFormat    The format used to parse formatted string values to a Money instance
      */
     #[HasNamedArguments]
     public function __construct(

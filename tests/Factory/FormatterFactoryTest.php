@@ -197,6 +197,6 @@ final class FormatterFactoryTest extends TestCase
         $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported format "unsupported"');
 
-        $this->factory->createFormatter('unsupported'); // @phpstan-ignore-line argument.type
+        $this->factory->createFormatter('unsupported');
     }
 }

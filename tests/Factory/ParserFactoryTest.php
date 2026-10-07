@@ -78,6 +78,6 @@ final class ParserFactoryTest extends TestCase
         $this->expectException(UnsupportedFormatException::class);
         $this->expectExceptionMessage('Unsupported format "unsupported"');
 
-        $this->factory->createParser('unsupported'); // @phpstan-ignore-line argument.type
+        $this->factory->createParser('unsupported');
     }
 }
