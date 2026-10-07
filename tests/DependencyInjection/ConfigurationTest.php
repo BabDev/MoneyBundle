@@ -3,8 +3,10 @@
 namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 
 use BabDev\MoneyBundle\BabDevMoneyBundle;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ConfigurationExtensionInterface;
@@ -38,6 +40,25 @@ final class ConfigurationTest extends TestCase
         $config = new Processor()->processConfiguration($this->getConfiguration(), [$extraConfig]);
 
         self::assertEquals(array_merge(self::getBundleDefaultConfig(), $extraConfig), $config);
+    }
+
+    /**
+     * @return \Generator<string, array{mixed}>
+     */
+    public static function provideInvalidDefaultCurrencies(): \Generator
+    {
+        yield 'empty string' => [''];
+        yield 'null' => [null];
+        yield 'integer' => [840];
+        yield 'array' => [['USD']];
+    }
+
+    #[DataProvider('provideInvalidDefaultCurrencies')]
+    public function testConfigRejectsInvalidDefaultCurrency(mixed $defaultCurrency): void
+    {
+        $this->expectException(InvalidConfigurationException::class);
+
+        new Processor()->processConfiguration($this->getConfiguration(), [['default_currency' => $defaultCurrency]]);
     }
 
     protected static function getBundleDefaultConfig(): array

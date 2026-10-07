@@ -2,6 +2,6 @@
 
 ```yaml
 babdev_money:
-    # The default currency to use in your application
+    # The currency code used when no currency is given, which must be supported by the "money.currencies" service to be used with the form type.
     default_currency: USD
 ```

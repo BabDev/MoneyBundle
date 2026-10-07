@@ -53,7 +53,11 @@ final class BabDevMoneyBundle extends AbstractBundle
     {
         $definition->rootNode()
             ->children()
-                ->scalarNode('default_currency')->defaultValue('USD')->end()
+                ->stringNode('default_currency')
+                    ->info('The currency code used when no currency is given, which must be supported by the "money.currencies" service to be used with the form type.')
+                    ->defaultValue('USD')
+                    ->cannotBeEmpty()
+                ->end()
             ->end()
         ;
     }
