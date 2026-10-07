@@ -3,6 +3,7 @@
 namespace BabDev\MoneyBundle\Tests\Serializer\Handler;
 
 use BabDev\MoneyBundle\Serializer\Handler\MoneyHandler;
+use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\EventDispatcher\EventDispatcher;
 use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Handler\HandlerRegistry;
@@ -71,6 +72,53 @@ final class MoneyHandlerTest extends TestCase
         );
     }
 
+    public function testSerializeNestedMoneyToXml(): void
+    {
+        $xml = $this->createSerializer()->serialize(new MoneyHandlerTestInvoice(Money::USD(1000), [Money::USD(400), Money::EUR(600)]), 'xml');
+
+        $expectedXml = <<<XML
+            <?xml version="1.0" encoding="UTF-8"?>
+            <result>
+              <total>
+                <amount>1000</amount>
+                <currency>USD</currency>
+              </total>
+              <payments>
+                <entry>
+                  <amount>400</amount>
+                  <currency>USD</currency>
+                </entry>
+                <entry>
+                  <amount>600</amount>
+                  <currency>EUR</currency>
+                </entry>
+              </payments>
+            </result>
+
+            XML;
+
+        self::assertXmlStringEqualsXmlString($expectedXml, $xml);
+
+        $invoice = $this->createSerializer()->deserialize($xml, MoneyHandlerTestInvoice::class, 'xml');
+
+        self::assertInstanceOf(MoneyHandlerTestInvoice::class, $invoice);
+        self::assertEquals(Money::USD(1000), $invoice->total);
+        self::assertEquals([Money::USD(400), Money::EUR(600)], $invoice->payments);
+    }
+
+    public function testSerializeNestedMoneyToJson(): void
+    {
+        $json = $this->createSerializer()->serialize(new MoneyHandlerTestInvoice(Money::USD(1000), [Money::USD(400), Money::EUR(600)]), 'json');
+
+        self::assertJsonStringEqualsJsonString('{"total":{"amount":"1000","currency":"USD"},"payments":[{"amount":"400","currency":"USD"},{"amount":"600","currency":"EUR"}]}', $json);
+
+        $invoice = $this->createSerializer()->deserialize($json, MoneyHandlerTestInvoice::class, 'json');
+
+        self::assertInstanceOf(MoneyHandlerTestInvoice::class, $invoice);
+        self::assertEquals(Money::USD(1000), $invoice->total);
+        self::assertEquals([Money::USD(400), Money::EUR(600)], $invoice->payments);
+    }
+
     /**
      * @return \Generator<string, array{string, string}>
      */
@@ -120,4 +168,15 @@ final class MoneyHandlerTest extends TestCase
 
         return SerializerBuilder::create($registry, new EventDispatcher())->build();
     }
+}
+
+final class MoneyHandlerTestInvoice
+{
+    public function __construct(
+        #[Type(Money::class)]
+        public Money $total,
+        /** @var list<Money> */
+        #[Type('array<Money\Money>')]
+        public array $payments = [],
+    ) {}
 }

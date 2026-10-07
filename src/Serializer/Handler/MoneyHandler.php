@@ -86,13 +86,26 @@ final class MoneyHandler implements SubscribingHandlerInterface
         );
     }
 
-    public function serializeMoneyToXml(XmlSerializationVisitor $visitor, Money $money, array $type, SerializationContext $context): \DOMElement
+    /**
+     * Serializes a {@see Money} instance to a "money" root element, or to the current element when the instance is nested in another value.
+     */
+    public function serializeMoneyToXml(XmlSerializationVisitor $visitor, Money $money, array $type, SerializationContext $context): ?\DOMElement
     {
         $amountNode = $visitor->getDocument()->createElement('amount');
         $amountNode->nodeValue = $money->getAmount();
 
         $currencyNode = $visitor->getDocument()->createElement('currency');
         $currencyNode->nodeValue = $money->getCurrency()->getCode();
+
+        // When nested, the visitor has already created the element for the property or array entry
+        $currentNode = $visitor->getCurrentNode();
+
+        if (null !== $currentNode) {
+            $currentNode->appendChild($amountNode);
+            $currentNode->appendChild($currencyNode);
+
+            return null;
+        }
 
         $moneyNode = $visitor->getDocument()->createElement('money');
         $moneyNode->appendChild($amountNode);
