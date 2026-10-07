@@ -30,6 +30,17 @@ Validates that a value is greater than another value as defined in the options. 
 
 Validates that a value is greater than or equal to another value as defined in the options. To validate that a value is greater than another value, see `MoneyGreaterThan`.
 
+### `MoneyPositive`, `MoneyPositiveOrZero`, `MoneyNegative`, and `MoneyNegativeOrZero`
+
+Validates that a value is greater than zero, greater than or equal to zero, less than zero, or less than or equal to zero. Zero is compared in the currency of the validated value, so these constraints work with values in any currency.
+
+These constraints support the same options as the other constraints, except the `value`, `propertyPath`, `currency`, `currencyMismatchMessage`, and `scalarUnit` options. As the sign of an amount does not depend on its unit, integer, float, and integer string values do not need the `scalarUnit` option.
+
+```php
+#[MoneyAssert\MoneyPositive]
+public Money $price;
+```
+
 ## Constraint Options
 
 The constraints support the following extra options, similar to the comparison constraints provided by the Validator component:
