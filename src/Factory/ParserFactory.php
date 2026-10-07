@@ -36,7 +36,7 @@ final class ParserFactory implements ParserFactoryInterface
     ) {}
 
     /**
-     * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string} $options
+     * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string|null} $options
      *
      * @phpstan-param Format::* $format
      *

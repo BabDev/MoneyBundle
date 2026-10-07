@@ -168,6 +168,15 @@ final class FormatterFactoryTest extends TestCase
     }
 
     #[RequiresPhpExtension('intl')]
+    public function testIntlLocalizedDecimalFormatterUsesTheDecimalStyleByDefault(): void
+    {
+        self::assertSame('1,234', $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL)->format(Money::JPY(1234)));
+        self::assertSame('1,234.50', $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL)->format(Money::EUR(123450)));
+        self::assertSame('$1,234.50', $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL, null, ['style' => 'currency'])->format(Money::EUR(123450)));
+        self::assertSame('€1,234.50', $this->factory->createFormatter(Format::INTL_MONEY)->format(Money::EUR(123450)));
+    }
+
+    #[RequiresPhpExtension('intl')]
     public function testFormattersAreReusedForTheSameArguments(): void
     {
         $formatter = $this->factory->createFormatter(Format::INTL_MONEY, null, ['style' => 'decimal']);

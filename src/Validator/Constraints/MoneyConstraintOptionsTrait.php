@@ -50,7 +50,11 @@ trait MoneyConstraintOptionsTrait
 
     public bool $groupingUsed = true;
     public ?string $locale = null;
-    public string $style = 'currency';
+
+    /**
+     * The number style used by the intl formatters and parsers, or null to use the default style of the format.
+     */
+    public ?string $style = null;
 
     /**
      * The unit of integer, float, and integer string values; formatted strings are always parsed with the parser format.

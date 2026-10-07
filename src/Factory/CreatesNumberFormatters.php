@@ -13,7 +13,7 @@ use BabDev\MoneyBundle\Format;
 trait CreatesNumberFormatters
 {
     /**
-     * @param array{grouping_used?: bool, style?: string} $options
+     * @param array{grouping_used?: bool, style?: string|null} $options The options; the style defaults to "decimal" for the localized decimal format and "currency" for the money format
      *
      * @phpstan-param Format::INTL_* $format
      *
@@ -25,7 +25,9 @@ trait CreatesNumberFormatters
             throw new MissingDependencyException(\sprintf('The "%s" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', $format, \NumberFormatter::class));
         }
 
-        $style = FormatterFactoryInterface::STYLE_DECIMAL === ($options['style'] ?? FormatterFactoryInterface::STYLE_CURRENCY) ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY;
+        // The localized decimal format represents amounts without a currency, so it defaults to the decimal style; in the currency style, ICU would use the locale's currency
+        $defaultStyle = Format::INTL_LOCALIZED_DECIMAL === $format ? FormatterFactoryInterface::STYLE_DECIMAL : FormatterFactoryInterface::STYLE_CURRENCY;
+        $style = FormatterFactoryInterface::STYLE_DECIMAL === ($options['style'] ?? $defaultStyle) ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY;
 
         $numberFormatter = new \NumberFormatter($locale, $style);
         $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, ($options['grouping_used'] ?? true) ? 1 : 0);

@@ -12,7 +12,7 @@ The filter has the following additional optional arguments:
 
 - $format - An identifier for the formatter to use, all formatters use a snake case version of the formatter class without the "MoneyFormatter" suffix (i.e. to use the Bitcoin formatter the key name is "bitcoin"); this defaults to "intl_money"
 - $locale - The locale to use while formatting the `Money` instance, only supported with the intl formatters, defaults to the current request's locale if one is not provided, or the value of the `kernel.default_locale` parameter outside of a request
-- $options - Additional options to configure the formatters, currently supported keys are "fraction_digits", "grouping_used", and "style" (note not all formatters support all options); the intl formatters use the number of decimal places of the `Money` instance's currency unless "fraction_digits" is set
+- $options - Additional options to configure the formatters, currently supported keys are "fraction_digits", "grouping_used", and "style" (note not all formatters support all options)
 
 Below is a basic example of rendering the `$tax_due` property from an `Invoice` entity (which is typed as a `Money` instance), the default configuration will be used:
 

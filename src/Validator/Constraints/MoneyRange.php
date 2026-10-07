@@ -64,7 +64,7 @@ class MoneyRange extends Constraint
      * @param int<0, max>|null                    $fractionDigits          The number of fraction digits used when formatting values; defaults to the number of fraction digits of the value's currency
      * @param bool|null                           $groupingUsed            Whether grouping is used when formatting and parsing values
      * @param string|null                         $locale                  The locale used when formatting and parsing values
-     * @param string|null                         $style                   The number style used when formatting and parsing values
+     * @param string|null                         $style                   The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
      * @param string|null                         $currencyMismatchMessage The message used when the value and a limit have different currencies
      * @param self::UNIT_*|null                   $scalarUnit              The unit of integer, float, and integer string values
      *

@@ -131,6 +131,21 @@ final class MoneyRangeValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
+    public function testLocalizedDecimalFormatUsesTheDecimalStyleByDefault(): void
+    {
+        $constraint = new MoneyRange(min: Money::EUR(100000), formatterFormat: Format::INTL_LOCALIZED_DECIMAL, locale: 'en');
+
+        self::assertNull($constraint->style);
+
+        $this->validator->validate(Money::EUR(99950), $constraint);
+
+        $this->buildViolation($constraint->minMessage)
+            ->setParameter('{{ limit }}', '1,000.00')
+            ->setParameter('{{ value }}', '999.50')
+            ->setCode(MoneyRange::TOO_LOW_ERROR)
+            ->assertRaised();
+    }
+
     public function testScalarLimitsUseTheCurrencyOfTheValue(): void
     {
         $constraint = new MoneyRange(min: 100, max: 1000, formatterFormat: Format::DECIMAL, scalarUnit: MoneyRange::UNIT_MINOR);

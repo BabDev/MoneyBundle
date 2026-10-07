@@ -22,6 +22,7 @@
 - The formatter factory now reuses the formatters it creates for the same format, locale, and options
 - The `default_currency` configuration option must now be a non-empty string
 - Add `MoneyRange`, `MoneyPositive`, `MoneyPositiveOrZero`, `MoneyNegative`, and `MoneyNegativeOrZero` validation constraints
+- The `intl_localized_decimal` format now uses the decimal style by default
 
 ## 3.1.0 (2026-05-12)
 

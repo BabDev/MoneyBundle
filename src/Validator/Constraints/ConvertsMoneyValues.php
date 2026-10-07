@@ -42,7 +42,7 @@ trait ConvertsMoneyValues
     }
 
     /**
-     * @return array{fraction_digits: int<0, max>|null, grouping_used: bool, style: string}
+     * @return array{fraction_digits: int<0, max>|null, grouping_used: bool, style: string|null}
      */
     private function createFactoryOptions(AbstractMoneyComparison|MoneyRange $constraint): array
     {

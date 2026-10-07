@@ -56,6 +56,14 @@ final class ParserFactoryTest extends TestCase
     }
 
     #[RequiresPhpExtension('intl')]
+    public function testIntlLocalizedDecimalParserUsesTheDecimalStyleByDefault(): void
+    {
+        $currency = new Currency('EUR');
+
+        self::assertEquals(new Money(123450, $currency), $this->factory->createParser(Format::INTL_LOCALIZED_DECIMAL)->parse('1,234.50', $currency));
+    }
+
+    #[RequiresPhpExtension('intl')]
     public function testParsersUseTheGivenCurrencies(): void
     {
         $factory = new ParserFactory('en_US', new CurrencyList(['PTS' => 3]));
