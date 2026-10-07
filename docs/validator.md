@@ -34,6 +34,7 @@ Validates that a value is greater than or equal to another value as defined in t
 
 The constraints support the following extra options, similar to the comparison constraints provided by the Validator component:
 
+- `currencyMismatchMessage` - This is the message that will be shown if the value and the compared value have different currencies, and supports the same parameters as the `message` option
 - `groups` - Defines the validation group(s) this constraint belongs to
 - `message` - This is the message that will be shown if the value fails the validation check; messages have the following parameters available:
     - `{{ compared_value }}` - The value being compared to
@@ -45,7 +46,7 @@ The constraints support the following extra options, similar to the comparison c
 
 The constraints also support the following options to control how values are converted and displayed:
 
-- `currency` - The currency code used when converting a scalar value into a `Money\Money` instance; defaults to the `babdev_money.default_currency` configuration value
+- `currency` - The currency code used when converting a scalar value into a `Money\Money` instance; defaults to the currency of the other value if it is a `Money\Money` instance, otherwise the `babdev_money.default_currency` configuration value
 - `formatterFormat` - The format used to display values in violation messages, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::INTL_MONEY`
 - `parserFormat` - The format used to parse a scalar value into a `Money\Money` instance, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::DECIMAL`
 - `fractionDigits` - The number of fraction digits used by the intl formatters and parsers; defaults to 2
@@ -57,6 +58,12 @@ The constraints also support the following options to control how values are con
 #[MoneyAssert\MoneyGreaterThanOrEqual(value: '10.00', currency: 'EUR', locale: 'de')]
 public Money $price;
 ```
+
+## Currencies
+
+When a scalar value is converted into a `Money\Money` instance for comparison, it uses the constraint's `currency` option if set. Otherwise, it uses the currency of the other value when that value is a `Money\Money` instance, so a constraint such as `#[MoneyGreaterThan(value: 0)]` works with values in any currency. If neither value is a `Money\Money` instance, the `babdev_money.default_currency` configuration value is used.
+
+Values with different currencies cannot be ordered, so the `MoneyGreaterThan`, `MoneyGreaterThanOrEqual`, `MoneyLessThan`, and `MoneyLessThanOrEqual` constraints add a violation using the `currencyMismatchMessage` option, with the `AbstractMoneyComparison::CURRENCY_MISMATCH_ERROR` code, instead of comparing them. For the `MoneyEqualTo` and `MoneyNotEqualTo` constraints, values with different currencies are not equal.
 
 ## Form Support
 

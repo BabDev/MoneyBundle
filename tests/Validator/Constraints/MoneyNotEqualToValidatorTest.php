@@ -95,4 +95,11 @@ final class MoneyNotEqualToValidatorTest extends AbstractMoneyComparisonValidato
     {
         yield 'valid null comparison' => [Money::USD(500), '$5.00', true];
     }
+
+    public function testValuesWithDifferentCurrenciesAreNotEqual(): void
+    {
+        $this->validator->validate(Money::USD(200), $this->createConstraint(['value' => Money::EUR(200)]));
+
+        $this->assertNoViolation();
+    }
 }

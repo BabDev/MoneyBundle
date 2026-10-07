@@ -18,7 +18,11 @@ use Symfony\Component\Validator\Exception\LogicException;
  */
 abstract class AbstractMoneyComparison extends Constraint
 {
+    public const string CURRENCY_MISMATCH_ERROR = '0d6541c7-4a16-43bf-84bd-894c3bd0bfa1';
+
     public string $message;
+
+    public string $currencyMismatchMessage = 'This value should be in the same currency as {{ compared_value }}.';
 
     /**
      * @var Money|float|int|numeric-string|null
@@ -52,15 +56,16 @@ abstract class AbstractMoneyComparison extends Constraint
     public string|PropertyPathInterface|null $propertyPath = null;
 
     /**
-     * @param Money|float|int|numeric-string|null $value          The value to compare or a set of options
-     * @param string|PropertyPathInterface|null   $propertyPath   An optional property path to read
-     * @param string[]                            $groups         An array of validation groups
-     * @param mixed                               $payload        Domain-specific data attached to a constraint
-     * @param non-empty-string|null               $currency       The currency code used when converting scalar values to a Money instance
-     * @param int<0, max>|null                    $fractionDigits The number of fraction digits used when formatting and parsing values
-     * @param bool|null                           $groupingUsed   Whether grouping is used when formatting and parsing values
-     * @param string|null                         $locale         The locale used when formatting and parsing values
-     * @param string|null                         $style          The number style used when formatting and parsing values
+     * @param Money|float|int|numeric-string|null $value                   The value to compare or a set of options
+     * @param string|PropertyPathInterface|null   $propertyPath            An optional property path to read
+     * @param string[]                            $groups                  An array of validation groups
+     * @param mixed                               $payload                 Domain-specific data attached to a constraint
+     * @param non-empty-string|null               $currency                The currency code used when converting scalar values to a Money instance; defaults to the currency of the Money instance being compared to, or the default currency if neither value is a Money instance
+     * @param int<0, max>|null                    $fractionDigits          The number of fraction digits used when formatting and parsing values
+     * @param bool|null                           $groupingUsed            Whether grouping is used when formatting and parsing values
+     * @param string|null                         $locale                  The locale used when formatting and parsing values
+     * @param string|null                         $style                   The number style used when formatting and parsing values
+     * @param string|null                         $currencyMismatchMessage The message used when the compared values have different currencies
      *
      * @phpstan-param Format::*|null $formatterFormat The format used to display values in violation messages
      * @phpstan-param Format::*|null $parserFormat    The format used to parse scalar values to a Money instance
@@ -79,6 +84,7 @@ abstract class AbstractMoneyComparison extends Constraint
         ?bool $groupingUsed = null,
         ?string $locale = null,
         ?string $style = null,
+        ?string $currencyMismatchMessage = null,
     ) {
         parent::__construct(null, $groups, $payload);
 
@@ -92,6 +98,7 @@ abstract class AbstractMoneyComparison extends Constraint
         $this->groupingUsed = $groupingUsed ?? $this->groupingUsed;
         $this->locale = $locale ?? $this->locale;
         $this->style = $style ?? $this->style;
+        $this->currencyMismatchMessage = $currencyMismatchMessage ?? $this->currencyMismatchMessage;
 
         if (null === $this->value && null === $this->propertyPath) {
             throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires either the "value" or "propertyPath" option to be set.', static::class));

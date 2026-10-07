@@ -244,6 +244,56 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
             ->assertRaised();
     }
 
+    public function testScalarComparedValueUsesTheCurrencyOfTheValidatedValue(): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $formatter = new DecimalMoneyFormatter(new ISOCurrencies());
+
+        $dirtyValue = new Money($dirtyValue->getAmount(), new Currency('EUR'));
+        $comparedValue = $formatter->format(new Money($comparedValue->getAmount(), new Currency('EUR')));
+
+        $constraint = $this->createConstraint([
+            'value' => $comparedValue,
+            'message' => 'Constraint Message',
+            'formatterFormat' => Format::DECIMAL,
+        ]);
+
+        $this->validator->validate($dirtyValue, $constraint);
+
+        $this->buildViolation('Constraint Message')
+            ->setParameter('{{ value }}', $formatter->format($dirtyValue))
+            ->setParameter('{{ compared_value }}', $comparedValue)
+            ->setParameter('{{ compared_value_type }}', 'string')
+            ->setCode($this->getErrorCode())
+            ->assertRaised();
+    }
+
+    public function testScalarValidatedValueUsesTheCurrencyOfTheComparedValue(): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $formatter = new DecimalMoneyFormatter(new ISOCurrencies());
+
+        $dirtyValue = $formatter->format(new Money($dirtyValue->getAmount(), new Currency('EUR')));
+        $comparedValue = new Money($comparedValue->getAmount(), new Currency('EUR'));
+
+        $constraint = $this->createConstraint([
+            'value' => $comparedValue,
+            'message' => 'Constraint Message',
+            'formatterFormat' => Format::DECIMAL,
+        ]);
+
+        $this->validator->validate($dirtyValue, $constraint);
+
+        $this->buildViolation('Constraint Message')
+            ->setParameter('{{ value }}', $dirtyValue)
+            ->setParameter('{{ compared_value }}', $formatter->format($comparedValue))
+            ->setParameter('{{ compared_value_type }}', Money::class)
+            ->setCode($this->getErrorCode())
+            ->assertRaised();
+    }
+
     #[DataProvider('provideComparisonsToNullValueAtPropertyPath')]
     public function testCompareWithNullValueAtPropertyAt(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, bool $isValid): void
     {

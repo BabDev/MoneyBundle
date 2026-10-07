@@ -12,6 +12,7 @@ class MoneyLessThanOrEqual extends AbstractMoneyComparison
 
     protected const array ERROR_NAMES = [
         self::TOO_HIGH_ERROR => 'TOO_HIGH_ERROR',
+        self::CURRENCY_MISMATCH_ERROR => 'CURRENCY_MISMATCH_ERROR',
     ];
 
     public string $message = 'This value should be less than or equal to {{ compared_value }}.';

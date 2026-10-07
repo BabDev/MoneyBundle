@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 
 #[AllowMockObjectsWithoutExpectations]
-final class MoneyGreaterThanOrEqualValidatorTest extends AbstractMoneyComparisonValidatorTestCase
+final class MoneyGreaterThanOrEqualValidatorTest extends AbstractMoneyOrderingComparisonValidatorTestCase
 {
     protected function createValidator(): ConstraintValidatorInterface
     {
