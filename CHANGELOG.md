@@ -8,6 +8,7 @@
 - The money comparison validation constraints no longer throw an exception when comparing values with different currencies
 - Scalar values now use the currency of the `Money\Money` instance they are compared to when the constraint's `currency` option is not set
 - Add a violation with the new `currencyMismatchMessage` option and `AbstractMoneyComparison::CURRENCY_MISMATCH_ERROR` code when currencies differ
+- Add an English translation for the currency mismatch message in the `validators` translation domain
 
 ## 3.1.0 (2026-05-12)
 

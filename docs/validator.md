@@ -65,6 +65,15 @@ When a scalar value is converted into a `Money\Money` instance for comparison, i
 
 Values with different currencies cannot be ordered, so the `MoneyGreaterThan`, `MoneyGreaterThanOrEqual`, `MoneyLessThan`, and `MoneyLessThanOrEqual` constraints add a violation using the `currencyMismatchMessage` option, with the `AbstractMoneyComparison::CURRENCY_MISMATCH_ERROR` code, instead of comparing them. For the `MoneyEqualTo` and `MoneyNotEqualTo` constraints, values with different currencies are not equal.
 
+## Translations
+
+The default messages for the constraints are translated in the `validators` domain. The `message` defaults reuse the wording of the comparison constraints from the Validator component, so they are translated by the Validator component's own translations. The bundle provides an English translation for the `currencyMismatchMessage` default; to translate it into other languages, add the message to your application's `validators` translation files:
+
+```yaml
+# translations/validators.de.yaml
+'This value should be in the same currency as {{ compared_value }}.': 'Dieser Wert sollte dieselbe Währung wie {{ compared_value }} haben.'
+```
+
 ## Form Support
 
 When used alongside the [Symfony Form component](https://symfony.com/doc/current/components/form.html), the constraints can be used with your forms to validate your data.
