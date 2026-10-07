@@ -2,8 +2,13 @@
 
 namespace BabDev\MoneyBundle\Tests\Validator\Constraints;
 
+use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
+use BabDev\MoneyBundle\Format;
 use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
 use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparisonValidator;
+use Money\Currencies\ISOCurrencies;
+use Money\Currency;
+use Money\Formatter\DecimalMoneyFormatter;
 use Money\Money;
 use Money\Number;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -187,6 +192,54 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
             ->setParameter('{{ compared_value }}', $comparedValueString)
             ->setParameter('{{ compared_value_path }}', 'value')
             ->setParameter('{{ compared_value_type }}', $comparedValueType)
+            ->setCode($this->getErrorCode())
+            ->assertRaised();
+    }
+
+    public function testOptionsCanBeSetAsNamedArguments(): void
+    {
+        $constraint = $this->createConstraint([
+            'value' => 100,
+            'currency' => 'EUR',
+            'formatterFormat' => Format::DECIMAL,
+            'parserFormat' => Format::INTL_LOCALIZED_DECIMAL,
+            'fractionDigits' => 3,
+            'groupingUsed' => false,
+            'locale' => 'de',
+            'style' => FormatterFactoryInterface::STYLE_DECIMAL,
+        ]);
+
+        self::assertSame('EUR', $constraint->currency);
+        self::assertSame(Format::DECIMAL, $constraint->formatterFormat);
+        self::assertSame(Format::INTL_LOCALIZED_DECIMAL, $constraint->parserFormat);
+        self::assertSame(3, $constraint->fractionDigits);
+        self::assertFalse($constraint->groupingUsed);
+        self::assertSame('de', $constraint->locale);
+        self::assertSame(FormatterFactoryInterface::STYLE_DECIMAL, $constraint->style);
+    }
+
+    public function testNamedArgumentOptionsAreUsedForValidation(): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $formatter = new DecimalMoneyFormatter(new ISOCurrencies());
+
+        $dirtyValue = new Money($dirtyValue->getAmount(), new Currency('EUR'));
+        $comparedValue = $formatter->format(new Money($comparedValue->getAmount(), new Currency('EUR')));
+
+        $constraint = $this->createConstraint([
+            'value' => $comparedValue,
+            'message' => 'Constraint Message',
+            'currency' => 'EUR',
+            'formatterFormat' => Format::DECIMAL,
+        ]);
+
+        $this->validator->validate($dirtyValue, $constraint);
+
+        $this->buildViolation('Constraint Message')
+            ->setParameter('{{ value }}', $formatter->format($dirtyValue))
+            ->setParameter('{{ compared_value }}', $comparedValue)
+            ->setParameter('{{ compared_value_type }}', 'string')
             ->setCode($this->getErrorCode())
             ->assertRaised();
     }

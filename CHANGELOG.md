@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1 (????-??-??)
+
+- Restore the ability to configure the `currency`, `formatterFormat`, `parserFormat`, `fractionDigits`, `groupingUsed`, `locale`, and `style` options for the money comparison validation constraints, which were not accepted as named arguments after the options array was removed in 3.0
+
 ## 3.1.0 (2026-05-12)
 
 - Address deprecated `$aliasMap` argument from `Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass::createXmlMappingDriver()`

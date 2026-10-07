@@ -43,6 +43,21 @@ The constraints support the following extra options, similar to the comparison c
 - `propertyPath` - Defines the object property whose value is used to make the comparison
 - `value` - This option is required; it defines the value to compare to, this should be a `Money\Money` instance or a scalar value (string/int/float) that can be parsed into a `Money\Money` instance
 
+The constraints also support the following options to control how values are converted and displayed:
+
+- `currency` - The currency code used when converting a scalar value into a `Money\Money` instance; defaults to the `babdev_money.default_currency` configuration value
+- `formatterFormat` - The format used to display values in violation messages, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::INTL_MONEY`
+- `parserFormat` - The format used to parse a scalar value into a `Money\Money` instance, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::DECIMAL`
+- `fractionDigits` - The number of fraction digits used by the intl formatters and parsers; defaults to 2
+- `groupingUsed` - Whether the intl formatters and parsers use grouping separators; defaults to true
+- `locale` - The locale used by the intl formatters and parsers; defaults to the `kernel.default_locale` parameter
+- `style` - The number style used by the intl formatters and parsers, either `currency` or `decimal`; defaults to `currency`
+
+```php
+#[MoneyAssert\MoneyGreaterThanOrEqual(value: '10.00', currency: 'EUR', locale: 'de')]
+public Money $price;
+```
+
 ## Form Support
 
 When used alongside the [Symfony Form component](https://symfony.com/doc/current/components/form.html), the constraints can be used with your forms to validate your data.
