@@ -44,13 +44,15 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             return;
         }
 
+        $value = $this->ensureConvertibleValue($value);
+
         if ($path = $constraint->propertyPath) {
             if (null === $object = $this->context->getObject()) {
                 return;
             }
 
             try {
-                $comparedValue = $this->getPropertyAccessor($constraint)->getValue($object, $path);
+                $comparedValue = $this->ensureConvertibleComparedValue($constraint, $this->getPropertyAccessor($constraint)->getValue($object, $path), $path);
             } catch (NoSuchPropertyException $e) {
                 throw new InvalidArgumentException(\sprintf('Invalid property path "%s" provided to "%s" constraint: ', $path, get_debug_type($constraint)).$e->getMessage(), 0, $e);
             } catch (UninitializedPropertyException) {
@@ -60,14 +62,14 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             $comparedValue = $constraint->value;
         }
 
-        $currency = $this->resolveCurrency($constraint, $value, $comparedValue); // @phpstan-ignore-line argument.type
+        $currency = $this->resolveCurrency($constraint, $value, $comparedValue);
 
-        $firstValue = $this->ensureMoneyObject($constraint, $value, $currency); // @phpstan-ignore-line argument.type
+        $firstValue = $this->ensureMoneyObject($constraint, $value, $currency);
 
         // Since we validated $value !== null, we must have a Money object now
         \assert($firstValue instanceof Money);
 
-        $secondValue = $this->ensureMoneyObject($constraint, $comparedValue, $currency); // @phpstan-ignore-line argument.type
+        $secondValue = $this->ensureMoneyObject($constraint, $comparedValue, $currency);
 
         if (null !== $secondValue && $this->requiresSameCurrency() && !$firstValue->isSameCurrency($secondValue)) {
             $this->addViolation($constraint, $constraint->currencyMismatchMessage, AbstractMoneyComparison::CURRENCY_MISMATCH_ERROR, $firstValue, $secondValue, $comparedValue, $path);

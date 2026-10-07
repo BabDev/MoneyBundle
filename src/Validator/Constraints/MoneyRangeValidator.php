@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
-use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 /**
  * Validator ensuring a Money object has a value between a minimum and/or maximum value, inclusive.
@@ -44,9 +43,9 @@ final class MoneyRangeValidator extends ConstraintValidator
             return;
         }
 
-        $value = $this->ensureConvertible($value);
-        $min = $this->ensureConvertible($this->getLimit($constraint, $constraint->min, $constraint->minPropertyPath));
-        $max = $this->ensureConvertible($this->getLimit($constraint, $constraint->max, $constraint->maxPropertyPath));
+        $value = $this->ensureConvertibleValue($value);
+        $min = $this->ensureConvertibleComparedValue($constraint, $this->getLimit($constraint, $constraint->min, $constraint->minPropertyPath), $constraint->minPropertyPath);
+        $max = $this->ensureConvertibleComparedValue($constraint, $this->getLimit($constraint, $constraint->max, $constraint->maxPropertyPath), $constraint->maxPropertyPath);
 
         $currency = $this->resolveCurrency($constraint, $value, $min, $max);
 
@@ -126,17 +125,5 @@ final class MoneyRangeValidator extends ConstraintValidator
         } catch (UninitializedPropertyException) {
             return null;
         }
-    }
-
-    /**
-     * @throws UnexpectedValueException if the value cannot be converted to a {@see Money} instance
-     */
-    private function ensureConvertible(mixed $value): Money|float|int|string|null
-    {
-        if (null === $value || $value instanceof Money || \is_int($value) || \is_float($value) || \is_string($value)) {
-            return $value;
-        }
-
-        throw new UnexpectedValueException($value, Money::class.'|int|float|string');
     }
 }

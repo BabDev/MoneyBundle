@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
@@ -236,5 +237,20 @@ final class MoneyRangeValidatorTest extends ConstraintValidatorTestCase
         $this->expectException(UnexpectedValueException::class);
 
         $this->validator->validate(['amount' => 500], new MoneyRange(min: Money::USD(100)));
+    }
+
+    public function testUnsupportedLimitsFromAPropertyPathAreRejected(): void
+    {
+        $this->setObject(new class {
+            /**
+             * @var list<int>
+             */
+            public array $max = [500];
+        });
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf('The value of the "max" property path provided to the "%s" constraint must be a "%s" instance, an integer, a float, or a string, "array" given.', MoneyRange::class, Money::class));
+
+        $this->validator->validate(Money::USD(500), new MoneyRange(maxPropertyPath: 'max'));
     }
 }

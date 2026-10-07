@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
+use Symfony\Component\Validator\Exception\UnexpectedValueException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 /**
@@ -115,6 +116,30 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->validator->validate($comparedValue, $this->createConstraint(['propertyPath' => 'value', 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
 
         $this->assertNoViolation();
+    }
+
+    public function testUnsupportedValuesAreRejected(): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+
+        $this->validator->validate(['amount' => 500], $this->createConstraint(['value' => Money::USD(500)]));
+    }
+
+    public function testUnsupportedValuesFromAPropertyPathAreRejected(): void
+    {
+        $this->setObject(new class {
+            /**
+             * @var list<int>
+             */
+            public array $value = [500];
+        });
+
+        $constraint = $this->createConstraint(['propertyPath' => 'value']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf('The value of the "value" property path provided to the "%s" constraint must be a "%s" instance, an integer, a float, or a string, "array" given.', $constraint::class, Money::class));
+
+        $this->validator->validate(Money::USD(500), $constraint);
     }
 
     public function testNoViolationOnNullObjectWithPropertyPath(): void

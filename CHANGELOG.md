@@ -24,6 +24,7 @@
 - Add `MoneyRange`, `MoneyPositive`, `MoneyPositiveOrZero`, `MoneyNegative`, and `MoneyNegativeOrZero` validation constraints
 - The `intl_localized_decimal` format now uses the decimal style by default
 - Fix serializing a `Money\Money` instance nested in another value to XML with the JMS Serializer
+- The money validation constraints now report values which cannot be converted to a `Money\Money` instance as a type violation instead of raising a `TypeError`
 
 ## 3.1.0 (2026-05-12)
 

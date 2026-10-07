@@ -9,8 +9,10 @@ use Money\Money;
 use Money\Number;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Symfony\Component\PropertyAccess\PropertyPathInterface;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\LogicException;
+use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 /**
  * Converts values to {@see Money} instances for the money validators.
@@ -125,5 +127,29 @@ trait ConvertsMoneyValues
         }
 
         return $this->propertyAccessor;
+    }
+
+    /**
+     * @throws UnexpectedValueException if the validated value cannot be converted to a {@see Money} instance, which the validator reports as a violation
+     */
+    private function ensureConvertibleValue(mixed $value): Money|float|int|string
+    {
+        if ($value instanceof Money || \is_int($value) || \is_float($value) || \is_string($value)) {
+            return $value;
+        }
+
+        throw new UnexpectedValueException($value, Money::class.'|int|float|string');
+    }
+
+    /**
+     * @throws InvalidArgumentException if the value read from a property path cannot be converted to a {@see Money} instance
+     */
+    private function ensureConvertibleComparedValue(AbstractMoneyComparison|MoneyRange $constraint, mixed $value, string|PropertyPathInterface|null $path): Money|float|int|string|null
+    {
+        if (null === $value || $value instanceof Money || \is_int($value) || \is_float($value) || \is_string($value)) {
+            return $value;
+        }
+
+        throw new InvalidArgumentException(\sprintf('The value of the "%s" property path provided to the "%s" constraint must be a "%s" instance, an integer, a float, or a string, "%s" given.', (string) $path, get_debug_type($constraint), Money::class, get_debug_type($value)));
     }
 }
