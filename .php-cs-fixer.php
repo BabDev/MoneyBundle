@@ -6,7 +6,7 @@ return new PhpCsFixer\Config()
         '@Symfony:risky' => true,
         '@PHP8x4Migration' => true,
         '@PHP8x4Migration:risky' => true,
-        '@PHPUnit10x0Migration:risky' => true,
+        '@PHPUnit11x0Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_after_opening_tag' => false,
         'fopen_flags' => false,
