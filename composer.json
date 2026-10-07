@@ -27,6 +27,7 @@
         "phpstan/phpstan-symfony": "2.1.0",
         "phpunit/phpunit": "12.5.38",
         "symfony/form": "^7.4 || ^8.1",
+        "symfony/framework-bundle": "^7.4 || ^8.1",
         "symfony/intl": "^7.4 || ^8.1",
         "symfony/property-access": "^7.4 || ^8.1",
         "symfony/serializer": "^7.4 || ^8.1",
