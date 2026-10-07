@@ -28,7 +28,7 @@ final class BabDevMoneyBundle extends AbstractBundle
 
         // Register ODM mappings if DoctrineMongoDBBundle and the ODM are installed
         if (class_exists(DoctrineMongoDBBundle::class) && class_exists(DocumentManager::class)) {
-            $container->addCompilerPass(DoctrineMongoDBMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], []));
+            $container->addCompilerPass(DoctrineMongoDBMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], 'doctrine_mongodb.odm.default_document_manager'));
         }
 
         // Register ORM mappings if DoctrineBundle and the ORM are installed
@@ -39,9 +39,9 @@ final class BabDevMoneyBundle extends AbstractBundle
              * if it doesn't, the $enableXsdValidation parameter is now in that position.
              */
             if ('aliasMap' === new \ReflectionClass(DoctrineOrmMappingsPass::class)->getMethod('createXmlMappingDriver')->getParameters()[3]->getName()) {
-                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], false, [], true));
+                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], 'doctrine.default_entity_manager', [], true));
             } else {
-                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], false, true));
+                $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver([realpath(__DIR__.'/../config/mapping') => 'Money'], [], 'doctrine.default_entity_manager', true));
             }
         }
     }
