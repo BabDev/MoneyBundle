@@ -30,7 +30,7 @@ final class DoctrineMappingTest extends TestCase
 
         self::assertTrue($money->isEmbeddedClass);
         self::assertSame('string', $money->getTypeOfField('amount'));
-        self::assertSame(Currency::class, $money->embeddedClasses['currency']->class);
+        self::assertSame(Currency::class, $money->embeddedClasses['currency']['class']);
 
         $currency = new OrmClassMetadata(Currency::class);
         $driver->loadMetadataForClass(Currency::class, $currency);

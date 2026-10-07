@@ -28,6 +28,13 @@ use Twig\Environment;
  */
 final class BundleIntegrationTest extends KernelTestCase
 {
+    /**
+     * The exception handler registered before the first kernel was booted, wrapped in an array as the handler may be null.
+     *
+     * @var array{callable|null}|null
+     */
+    private ?array $exceptionHandler = null;
+
     public static function setUpBeforeClass(): void
     {
         new Filesystem()->remove(TestKernel::getTemporaryDirectory());
@@ -38,20 +45,42 @@ final class BundleIntegrationTest extends KernelTestCase
         new Filesystem()->remove(TestKernel::getTemporaryDirectory());
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        // Older versions of the ErrorHandler component leave their exception handler registered when the kernel boots
+        if (null !== $this->exceptionHandler) {
+            while (self::getExceptionHandler() !== $this->exceptionHandler[0] && null !== self::getExceptionHandler()) {
+                restore_exception_handler();
+            }
+        }
+    }
+
     /**
      * @param non-empty-string                       $scenario
      * @param list<class-string<BundleInterface>>    $bundles
      * @param array<string, array<array-key, mixed>> $config
      */
-    private static function bootTestKernel(string $scenario, array $bundles = [], array $config = []): void
+    private function bootTestKernel(string $scenario, array $bundles = [], array $config = []): void
     {
         self::ensureKernelShutdown();
+
+        $this->exceptionHandler ??= [self::getExceptionHandler()];
 
         $kernel = new TestKernel($scenario, $bundles, $config);
         $kernel->boot();
 
         self::$kernel = $kernel;
         self::$booted = true;
+    }
+
+    private static function getExceptionHandler(): ?callable
+    {
+        $handler = set_exception_handler(null);
+        restore_exception_handler();
+
+        return $handler;
     }
 
     /**
@@ -68,7 +97,7 @@ final class BundleIntegrationTest extends KernelTestCase
 
     public function testServicesAreRegisteredWithTheFramework(): void
     {
-        self::bootTestKernel('framework');
+        $this->bootTestKernel('framework');
 
         $container = self::getContainer();
 
@@ -91,7 +120,7 @@ final class BundleIntegrationTest extends KernelTestCase
 
     public function testValidatorsWorkWithoutThePropertyAccessor(): void
     {
-        self::bootTestKernel('without_property_access', [], [
+        $this->bootTestKernel('without_property_access', [], [
             // The form and serializer components require the property accessor
             'framework' => [
                 'form' => ['enabled' => false],
@@ -108,7 +137,7 @@ final class BundleIntegrationTest extends KernelTestCase
 
     public function testTwigExtensionIsRegistered(): void
     {
-        self::bootTestKernel('twig', [TwigBundle::class]);
+        $this->bootTestKernel('twig', [TwigBundle::class]);
 
         $twig = self::getContainer()->get('twig');
 
@@ -119,7 +148,7 @@ final class BundleIntegrationTest extends KernelTestCase
 
     public function testDoctrineBundleWithoutTheOrmConfigured(): void
     {
-        self::bootTestKernel(
+        $this->bootTestKernel(
             'doctrine_dbal',
             [DoctrineBundle::class],
             ['doctrine' => ['dbal' => ['url' => 'sqlite:///:memory:']]],
@@ -131,7 +160,7 @@ final class BundleIntegrationTest extends KernelTestCase
     #[RequiresPhpExtension('pdo_sqlite')]
     public function testDoctrineOrmIntegration(): void
     {
-        self::bootTestKernel(
+        $this->bootTestKernel(
             'doctrine_orm',
             [DoctrineBundle::class],
             [
@@ -175,7 +204,7 @@ final class BundleIntegrationTest extends KernelTestCase
         // CI removes the ODM packages without disabling the extension
         self::skipIfMissing(DoctrineMongoDBBundle::class, DocumentManager::class);
 
-        self::bootTestKernel(
+        $this->bootTestKernel(
             'doctrine_mongodb',
             [DoctrineMongoDBBundle::class],
             [
@@ -193,7 +222,7 @@ final class BundleIntegrationTest extends KernelTestCase
     {
         self::skipIfMissing(JMSSerializerBundle::class);
 
-        self::bootTestKernel('jms_serializer', [JMSSerializerBundle::class]);
+        $this->bootTestKernel('jms_serializer', [JMSSerializerBundle::class]);
 
         $handlerRegistry = self::getContainer()->get('jms_serializer.handler_registry');
 
