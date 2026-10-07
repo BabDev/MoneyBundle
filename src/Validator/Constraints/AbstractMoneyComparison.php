@@ -55,9 +55,9 @@ abstract class AbstractMoneyComparison extends Constraint
     public string $parserFormat = Format::DECIMAL;
 
     /**
-     * @var int<0, max>
+     * @var int<0, max>|null
      */
-    public int $fractionDigits = 2;
+    public ?int $fractionDigits = null;
 
     public bool $groupingUsed = true;
     public ?string $locale = null;
@@ -80,7 +80,7 @@ abstract class AbstractMoneyComparison extends Constraint
      * @param string[]                            $groups                  An array of validation groups
      * @param mixed                               $payload                 Domain-specific data attached to a constraint
      * @param non-empty-string|null               $currency                The currency code used when converting scalar values to a Money instance; defaults to the currency of the Money instance being compared to, or the default currency if neither value is a Money instance
-     * @param int<0, max>|null                    $fractionDigits          The number of fraction digits used when formatting and parsing values
+     * @param int<0, max>|null                    $fractionDigits          The number of fraction digits used when formatting and parsing values; defaults to the number of fraction digits of the value's currency
      * @param bool|null                           $groupingUsed            Whether grouping is used when formatting and parsing values
      * @param string|null                         $locale                  The locale used when formatting and parsing values
      * @param string|null                         $style                   The number style used when formatting and parsing values

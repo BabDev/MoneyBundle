@@ -10,8 +10,10 @@ use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparisonValidator;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Formatter\DecimalMoneyFormatter;
+use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
@@ -288,6 +290,33 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
 
         $this->buildViolation('Constraint Message')
             ->setParameter('{{ value }}', $dirtyValue)
+            ->setParameter('{{ compared_value }}', $formatter->format($comparedValue))
+            ->setParameter('{{ compared_value_type }}', Money::class)
+            ->setCode($this->getErrorCode())
+            ->assertRaised();
+    }
+
+    #[RequiresPhpExtension('intl')]
+    public function testValuesAreFormattedWithTheFractionDigitsOfTheirCurrency(): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $dirtyValue = new Money($dirtyValue->getAmount(), new Currency('JPY'));
+        $comparedValue = new Money($comparedValue->getAmount(), new Currency('JPY'));
+
+        // The currency style applies the currency's fraction digits unless they are set
+        $formatter = new IntlMoneyFormatter(new \NumberFormatter('en', \NumberFormatter::CURRENCY), new ISOCurrencies());
+
+        $constraint = $this->createConstraint([
+            'value' => $comparedValue,
+            'message' => 'Constraint Message',
+            'locale' => 'en',
+        ]);
+
+        $this->validator->validate($dirtyValue, $constraint);
+
+        $this->buildViolation('Constraint Message')
+            ->setParameter('{{ value }}', $formatter->format($dirtyValue))
             ->setParameter('{{ compared_value }}', $formatter->format($comparedValue))
             ->setParameter('{{ compared_value_type }}', Money::class)
             ->setCode($this->getErrorCode())

@@ -50,7 +50,7 @@ The constraints also support the following options to control how values are con
 - `formatterFormat` - The format used to display values in violation messages, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::INTL_MONEY`
 - `parserFormat` - The format used to parse a formatted string into a `Money\Money` instance, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::DECIMAL`
 - `scalarUnit` - The unit of integer, float, and integer string values, either `AbstractMoneyComparison::UNIT_MINOR` (`minor`) or `AbstractMoneyComparison::UNIT_MAJOR` (`major`); see [Scalar Values](#scalar-values)
-- `fractionDigits` - The number of fraction digits used by the intl formatters and parsers; defaults to 2
+- `fractionDigits` - The number of fraction digits used by the intl formatters; defaults to the number of decimal places used by the value's currency
 - `groupingUsed` - Whether the intl formatters and parsers use grouping separators; defaults to true
 - `locale` - The locale used by the intl formatters and parsers; defaults to the `kernel.default_locale` parameter
 - `style` - The number style used by the intl formatters and parsers, either `currency` or `decimal`; defaults to `currency`

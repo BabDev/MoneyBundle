@@ -5,6 +5,7 @@ namespace BabDev\MoneyBundle\Factory;
 use BabDev\MoneyBundle\Factory\Exception\MissingDependencyException;
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Format;
+use BabDev\MoneyBundle\Formatter\CurrencyFractionDigitsFormatter;
 use Money\Currencies\BitcoinCurrencies;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\AggregateMoneyFormatter;
@@ -31,7 +32,7 @@ final class FormatterFactory implements FormatterFactoryInterface
     public function __construct(private readonly string $defaultLocale) {}
 
     /**
-     * @param array{fraction_digits?: int<0, max>, grouping_used?: bool, style?: string} $options
+     * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string} $options
      *
      * @phpstan-param Format::* $format
      *
@@ -57,15 +58,22 @@ final class FormatterFactory implements FormatterFactoryInterface
                 }
 
                 $formatterLocale = $locale ?: $this->defaultLocale;
-                $fractionDigits = (int) ($options['fraction_digits'] ?? 2);
                 $groupingUsed = (bool) ($options['grouping_used'] ?? true);
                 $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
 
                 $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
-                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
-                return new IntlLocalizedDecimalFormatter($numberFormatter, new ISOCurrencies());
+                $currencies = new ISOCurrencies();
+                $formatter = new IntlLocalizedDecimalFormatter($numberFormatter, $currencies);
+
+                if (!isset($options['fraction_digits'])) {
+                    return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $currencies);
+                }
+
+                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, (int) $options['fraction_digits']);
+
+                return $formatter;
 
             case Format::INTL_MONEY:
                 if (!class_exists(\NumberFormatter::class)) {
@@ -73,15 +81,22 @@ final class FormatterFactory implements FormatterFactoryInterface
                 }
 
                 $formatterLocale = $locale ?: $this->defaultLocale;
-                $fractionDigits = (int) ($options['fraction_digits'] ?? 2);
                 $groupingUsed = (bool) ($options['grouping_used'] ?? true);
                 $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
 
                 $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
-                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
-                return new IntlMoneyFormatter($numberFormatter, new ISOCurrencies());
+                $currencies = new ISOCurrencies();
+                $formatter = new IntlMoneyFormatter($numberFormatter, $currencies);
+
+                if (!isset($options['fraction_digits'])) {
+                    return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $currencies);
+                }
+
+                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, (int) $options['fraction_digits']);
+
+                return $formatter;
 
             default:
                 throw new UnsupportedFormatException(array_keys(self::FORMAT_MAP), \sprintf('Unsupported format "%s"', $format));

@@ -14,6 +14,7 @@
 - Deprecated not setting the `scalarUnit` option when comparing a non-zero integer, float, or integer string value with the money comparison validation constraints; these values are currently treated as minor units, and the default will change to major units in 4.0
 - The `scale` option for the `MoneyType` form type now defaults to the number of decimal places used by the currency
 - The `MoneyType` form type now throws an `InvalidOptionsException` if the `scale` option is greater than the number of decimal places used by the currency, or if the currency is not supported
+- The `intl_money` and `intl_localized_decimal` formatters now use the number of decimal places used by the currency when the `fraction_digits` option is not set
 
 ## 3.1.0 (2026-05-12)
 
