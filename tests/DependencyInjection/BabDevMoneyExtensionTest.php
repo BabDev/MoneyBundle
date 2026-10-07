@@ -37,6 +37,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasService('money.form.type.money');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.validator.greater_than');
+        $this->assertContainerBuilderHasService('money.validator.range');
     }
 
     public function testContainerIsLoadedWithCustomConfiguration(): void

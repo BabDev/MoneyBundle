@@ -8,6 +8,7 @@ use BabDev\MoneyBundle\Validator\Constraints\MoneyGreaterThanValidator;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyLessThanOrEqualValidator;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyLessThanValidator;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyNotEqualToValidator;
+use BabDev\MoneyBundle\Validator\Constraints\MoneyRangeValidator;
 
 return static function (ContainerConfigurator $container): void {
     $container->services()
@@ -43,5 +44,9 @@ return static function (ContainerConfigurator $container): void {
         ->set('money.validator.less_than_or_equal', MoneyLessThanOrEqualValidator::class)
             ->parent('money.validator.abstract')
             ->tag('validator.constraint_validator', ['alias' => MoneyLessThanOrEqualValidator::class])
+
+        ->set('money.validator.range', MoneyRangeValidator::class)
+            ->parent('money.validator.abstract')
+            ->tag('validator.constraint_validator', ['alias' => MoneyRangeValidator::class])
     ;
 };

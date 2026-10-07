@@ -21,7 +21,7 @@
 - Add a `money.currencies` service, which can be redefined to support currencies other than the ISO 4217 currencies
 - The formatter factory now reuses the formatters it creates for the same format, locale, and options
 - The `default_currency` configuration option must now be a non-empty string
-- Add `MoneyPositive`, `MoneyPositiveOrZero`, `MoneyNegative`, and `MoneyNegativeOrZero` validation constraints
+- Add `MoneyRange`, `MoneyPositive`, `MoneyPositiveOrZero`, `MoneyNegative`, and `MoneyNegativeOrZero` validation constraints
 
 ## 3.1.0 (2026-05-12)
 

@@ -41,6 +41,22 @@ These constraints support the same options as the other constraints, except the 
 public Money $price;
 ```
 
+### `MoneyRange`
+
+Validates that a value is between a minimum and/or maximum value, inclusive. The limits are set with the `min` and `max` options, or read from the validated object with the `minPropertyPath` and `maxPropertyPath` options; at least one limit is required, and a limit read from a property path which is not initialized is ignored.
+
+This constraint uses its own messages instead of the `message` option:
+
+- `notInRangeMessage` - The message used when both a minimum and maximum are set; supports the `{{ value }}`, `{{ min }}`, and `{{ max }}` parameters
+- `minMessage` and `maxMessage` - The messages used when only a minimum or maximum is set; support the `{{ value }}` and `{{ limit }}` parameters
+
+The `{{ min_limit_path }}` and `{{ max_limit_path }}` parameters are also available when the limits are read from property paths. The constraint supports the same conversion and display options as the other constraints, and a limit in a different currency than the value adds a violation using the `currencyMismatchMessage` option.
+
+```php
+#[MoneyAssert\MoneyRange(min: '1.00', max: '100.00')]
+public Money $price;
+```
+
 ## Constraint Options
 
 The constraints support the following extra options, similar to the comparison constraints provided by the Validator component:
