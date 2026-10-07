@@ -19,6 +19,7 @@
 - The formatter factory now uses the current request's locale when no locale is given; the parser factory still uses the `kernel.default_locale` parameter
 - Deprecated the `input` option for the `MoneyType` form type
 - Add a `money.currencies` service, which can be redefined to support currencies other than the ISO 4217 currencies
+- The formatter factory now reuses the formatters it creates for the same format, locale, and options
 
 ## 3.1.0 (2026-05-12)
 

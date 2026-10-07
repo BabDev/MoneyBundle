@@ -167,6 +167,22 @@ final class FormatterFactoryTest extends TestCase
         self::assertSame('123.456', $factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL, null, ['style' => 'decimal'])->format($money));
     }
 
+    #[RequiresPhpExtension('intl')]
+    public function testFormattersAreReusedForTheSameArguments(): void
+    {
+        $formatter = $this->factory->createFormatter(Format::INTL_MONEY, null, ['style' => 'decimal']);
+
+        self::assertSame($formatter, $this->factory->createFormatter(Format::INTL_MONEY, null, ['style' => 'decimal']));
+        self::assertSame($formatter, $this->factory->createFormatter(Format::INTL_MONEY, 'en_US', ['style' => 'decimal']));
+        self::assertNotSame($formatter, $this->factory->createFormatter(Format::INTL_MONEY, 'de_DE', ['style' => 'decimal']));
+        self::assertNotSame($formatter, $this->factory->createFormatter(Format::INTL_MONEY));
+        self::assertNotSame($formatter, $this->factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL, null, ['style' => 'decimal']));
+
+        $this->factory->setLocale('de_DE');
+
+        self::assertNotSame($formatter, $this->factory->createFormatter(Format::INTL_MONEY, null, ['style' => 'decimal']));
+    }
+
     public function testFormatterIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void
     {
         $this->expectException(UnsupportedFormatException::class);

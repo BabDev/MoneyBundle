@@ -16,6 +16,8 @@ use Money\Parser\IntlMoneyParser;
 
 final class ParserFactory implements ParserFactoryInterface
 {
+    use CreatesNumberFormatters;
+
     /**
      * @var array<string, class-string<MoneyParser>>
      *
@@ -55,36 +57,13 @@ final class ParserFactory implements ParserFactoryInterface
                 return new DecimalMoneyParser($this->currencies);
 
             case Format::INTL_LOCALIZED_DECIMAL:
-                if (!class_exists(\NumberFormatter::class)) {
-                    throw new MissingDependencyException(\sprintf('The "intl_localized_decimal" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
-                }
-
-                $formatterLocale = $locale ?: $this->defaultLocale;
-                $fractionDigits = (int) ($options['fraction_digits'] ?? 2);
-                $groupingUsed = (bool) ($options['grouping_used'] ?? true);
-                $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
-
-                $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
-                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
-                $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
-
-                return new IntlLocalizedDecimalParser($numberFormatter, $this->currencies);
-
             case Format::INTL_MONEY:
-                if (!class_exists(\NumberFormatter::class)) {
-                    throw new MissingDependencyException(\sprintf('The "intl_money" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
-                }
+                $numberFormatter = $this->createNumberFormatter($format, $locale ?: $this->defaultLocale, $options);
+                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, (int) ($options['fraction_digits'] ?? 2));
 
-                $formatterLocale = $locale ?: $this->defaultLocale;
-                $fractionDigits = (int) ($options['fraction_digits'] ?? 2);
-                $groupingUsed = (bool) ($options['grouping_used'] ?? true);
-                $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
-
-                $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
-                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
-                $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
-
-                return new IntlMoneyParser($numberFormatter, $this->currencies);
+                return Format::INTL_MONEY === $format
+                    ? new IntlMoneyParser($numberFormatter, $this->currencies)
+                    : new IntlLocalizedDecimalParser($numberFormatter, $this->currencies);
 
             default:
                 throw new UnsupportedFormatException(array_keys(self::PARSER_MAP), \sprintf('Unsupported format "%s"', $format));

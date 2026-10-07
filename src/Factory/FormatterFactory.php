@@ -19,6 +19,8 @@ use Symfony\Contracts\Translation\LocaleAwareInterface;
 
 final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareInterface
 {
+    use CreatesNumberFormatters;
+
     /**
      * @var array<string, class-string<MoneyFormatter>>
      *
@@ -35,6 +37,11 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
      * The locale used by the intl formatters when no locale is given, which follows the current request's locale when available.
      */
     private string $locale;
+
+    /**
+     * @var array<string, MoneyFormatter>
+     */
+    private array $formatters = [];
 
     public function __construct(
         string $defaultLocale,
@@ -63,6 +70,22 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
      */
     public function createFormatter(string $format, ?string $locale = null, array $options = []): MoneyFormatter
     {
+        // Formatters are reused for the same arguments, as creating the intl formatters is relatively expensive and the formatters do not keep any state between calls
+        $key = serialize([$format, $locale ?: $this->locale, $options['fraction_digits'] ?? null, $options['grouping_used'] ?? true, $options['style'] ?? null]);
+
+        return $this->formatters[$key] ??= $this->doCreateFormatter($format, $locale, $options);
+    }
+
+    /**
+     * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string} $options
+     *
+     * @phpstan-param Format::* $format
+     *
+     * @throws UnsupportedFormatException if an unsupported format was requested
+     * @throws MissingDependencyException if a dependency for a formatter is not available
+     */
+    private function doCreateFormatter(string $format, ?string $locale, array $options): MoneyFormatter
+    {
         switch ($format) {
             case Format::AGGREGATE:
                 throw new UnsupportedFormatException(array_keys(self::FORMAT_MAP), \sprintf('The "%s" class is not supported by "%s".', AggregateMoneyFormatter::class, self::class));
@@ -75,40 +98,12 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
                 return new DecimalMoneyFormatter($this->currencies);
 
             case Format::INTL_LOCALIZED_DECIMAL:
-                if (!class_exists(\NumberFormatter::class)) {
-                    throw new MissingDependencyException(\sprintf('The "intl_localized_decimal" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
-                }
-
-                $formatterLocale = $locale ?: $this->locale;
-                $groupingUsed = (bool) ($options['grouping_used'] ?? true);
-                $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
-
-                $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
-                $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
-
-                $formatter = new IntlLocalizedDecimalFormatter($numberFormatter, $this->currencies);
-
-                if (!isset($options['fraction_digits'])) {
-                    return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $this->currencies);
-                }
-
-                $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, (int) $options['fraction_digits']);
-
-                return $formatter;
-
             case Format::INTL_MONEY:
-                if (!class_exists(\NumberFormatter::class)) {
-                    throw new MissingDependencyException(\sprintf('The "intl_money" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
-                }
+                $numberFormatter = $this->createNumberFormatter($format, $locale ?: $this->locale, $options);
 
-                $formatterLocale = $locale ?: $this->locale;
-                $groupingUsed = (bool) ($options['grouping_used'] ?? true);
-                $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
-
-                $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
-                $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
-
-                $formatter = new IntlMoneyFormatter($numberFormatter, $this->currencies);
+                $formatter = Format::INTL_MONEY === $format
+                    ? new IntlMoneyFormatter($numberFormatter, $this->currencies)
+                    : new IntlLocalizedDecimalFormatter($numberFormatter, $this->currencies);
 
                 if (!isset($options['fraction_digits'])) {
                     return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $this->currencies);
