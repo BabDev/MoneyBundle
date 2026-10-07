@@ -114,6 +114,7 @@ final class MoneyType extends AbstractType
         $resolver->setAllowedTypes('html5', 'bool');
         $resolver->setAllowedTypes('currency', Currency::class);
         $resolver->setAllowedValues('input', ['float', 'integer', 'string']);
+        $resolver->setDeprecated('input', 'babdev/money-bundle', '3.2', 'The "%name%" option is deprecated and has no effect.');
 
         // The scale defaults to the currency's subunit, and cannot be greater than it as the extra digits would be silently rounded off
         $resolver->setNormalizer(

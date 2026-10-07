@@ -17,6 +17,7 @@
 - The `intl_money` and `intl_localized_decimal` formatters now use the number of decimal places used by the currency when the `fraction_digits` option is not set
 - Invalid data passed to the serializer integrations now always raise contextually appropriate exceptions
 - The formatter factory now uses the current request's locale when no locale is given; the parser factory still uses the `kernel.default_locale` parameter
+- Deprecated the `input` option for the `MoneyType` form type
 
 ## 3.1.0 (2026-05-12)
 

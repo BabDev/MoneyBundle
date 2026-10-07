@@ -160,17 +160,19 @@ final class MoneyTypeTest extends TypeTestCase
         self::assertEquals(Money::USD(1234567), $form->getData());
     }
 
-    public function testIntegerInput(): void
+    public function testInputOptionIsDeprecated(): void
     {
+        $this->expectUserDeprecationMessage('Since babdev/money-bundle 3.2: The "input" option is deprecated and has no effect.');
+
         $form = $this->factory->create(MoneyType::class, null, ['input' => 'integer']);
         $form->submit('12345.67');
 
         self::assertEquals(Money::USD(1234567), $form->getData());
     }
 
-    public function testSubmitStringInputWithDefaultScale(): void
+    public function testSubmitValueIsRoundedToTheDefaultScale(): void
     {
-        $form = $this->factory->create(MoneyType::class, null, ['input' => 'string']);
+        $form = $this->factory->create(MoneyType::class);
         $form->submit('1.234');
 
         self::assertEquals(Money::USD(123), $form->getData());
