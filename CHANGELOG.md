@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.0 (????-??-??)
+## 3.2.0 (2026-10-07)
 
 - Restore the ability to configure the `currency`, `formatterFormat`, `parserFormat`, `fractionDigits`, `groupingUsed`, `locale`, and `style` options for the money comparison validation constraints, which were not accepted as named arguments after the options array was removed in 3.0
 - Only register the Doctrine ORM and MongoDB ODM mappings when the respective bundle is registered and its ORM/ODM layer is configured, fixing a container compile error when the packages are installed but not enabled
