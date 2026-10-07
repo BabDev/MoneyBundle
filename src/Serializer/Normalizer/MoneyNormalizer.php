@@ -6,7 +6,6 @@ use Money\Currency;
 use Money\Money;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
-use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -33,25 +32,40 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
     }
 
     /**
-     * @throws InvalidArgumentException Occurs when the arguments are not coherent or not supported
-     * @throws UnexpectedValueException Occurs when the item cannot be hydrated with the given data
+     * @throws NotNormalizableValueException if a {@see Money} instance cannot be created from the given data
      */
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): Money
     {
+        /** @var string|null $path */
+        $path = $context['deserialization_path'] ?? null;
+
         if (!\is_array($data)) {
-            throw new InvalidArgumentException(\sprintf('Data expected to be an array, "%s" given.', get_debug_type($data)));
+            throw NotNormalizableValueException::createForUnexpectedDataType(\sprintf('Data expected to be an array, "%s" given.', get_debug_type($data)), $data, ['array'], $path, true);
         }
 
         if (!isset($data['amount']) || !isset($data['currency'])) {
-            throw new UnexpectedValueException('Missing required keys from data array, must provide "amount" and "currency".');
+            throw new NotNormalizableValueException('Missing required keys from data array, must provide "amount" and "currency".', currentType: 'array', expectedTypes: ['array'], path: $path, useMessageForUser: true);
         }
 
-        \assert((\is_int($data['amount']) || is_numeric($data['amount'])) && (\is_string($data['currency']) && '' !== $data['currency']));
+        $amount = $data['amount'];
+        $currency = $data['currency'];
+
+        if (!\is_int($amount) && !\is_string($amount)) {
+            throw NotNormalizableValueException::createForUnexpectedDataType(\sprintf('The amount must be an integer or a string, "%s" given.', get_debug_type($amount)), $amount, ['int', 'string'], $this->appendPath($path, 'amount'), true);
+        }
+
+        if (!\is_string($currency) || '' === $currency) {
+            throw NotNormalizableValueException::createForUnexpectedDataType('The currency must be a non-empty string.', $currency, ['string'], $this->appendPath($path, 'currency'), true);
+        }
+
+        if (\is_string($amount) && !is_numeric($amount)) {
+            throw new NotNormalizableValueException('The amount must be an integer amount in the currency\'s minor unit.', currentType: 'string', expectedTypes: ['int', 'string'], path: $this->appendPath($path, 'amount'), useMessageForUser: true);
+        }
 
         try {
-            return new Money($data['amount'], new Currency($data['currency'])); // @phpstan-ignore-line argument.type
-        } catch (\Exception $e) {
-            throw new NotNormalizableValueException($e->getMessage(), $e->getCode(), $e);
+            return new Money($amount, new Currency($currency));
+        } catch (\InvalidArgumentException $e) {
+            throw new NotNormalizableValueException('The amount must be an integer amount in the currency\'s minor unit.', $e->getCode(), $e, get_debug_type($amount), ['int', 'string'], $this->appendPath($path, 'amount'), true);
         }
     }
 
@@ -68,5 +82,10 @@ final class MoneyNormalizer implements NormalizerInterface, DenormalizerInterfac
         return [
             Money::class => true,
         ];
+    }
+
+    private function appendPath(?string $path, string $key): string
+    {
+        return null === $path || '' === $path ? $key : $path.'.'.$key;
     }
 }

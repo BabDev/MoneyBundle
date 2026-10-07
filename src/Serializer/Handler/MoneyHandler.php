@@ -47,17 +47,15 @@ final class MoneyHandler implements SubscribingHandlerInterface
     }
 
     /**
-     * @param array{amount: int|numeric-string, currency: non-empty-string} $moneyAsArray
-     *
      * @throws InvalidArgumentException if a {@see Money} instance could not be created from the serialized data
      */
-    public function deserializeMoneyFromJson(DeserializationVisitorInterface $visitor, array $moneyAsArray, array $type, DeserializationContext $context): Money
+    public function deserializeMoneyFromJson(DeserializationVisitorInterface $visitor, mixed $moneyAsArray, array $type, DeserializationContext $context): Money
     {
-        try {
-            return new Money($moneyAsArray['amount'], new Currency($moneyAsArray['currency']));
-        } catch (\Exception $exception) {
-            throw new InvalidArgumentException('Could not deserialize Money data.', $exception->getCode(), $exception);
+        if (!\is_array($moneyAsArray)) {
+            throw new InvalidArgumentException(\sprintf('Could not deserialize Money data, expected an array but got "%s".', get_debug_type($moneyAsArray)));
         }
+
+        return $this->createMoney($moneyAsArray['amount'] ?? null, $moneyAsArray['currency'] ?? null);
     }
 
     /**
@@ -65,17 +63,10 @@ final class MoneyHandler implements SubscribingHandlerInterface
      */
     public function deserializeMoneyFromXml(XmlDeserializationVisitor $visitor, \SimpleXMLElement $moneyAsXml, array $type, DeserializationContext $context): Money
     {
-        /** @phpstan-var numeric-string $amount */
-        $amount = (string) $moneyAsXml->amount;
-
-        /** @phpstan-var non-empty-string $currency */
-        $currency = (string) $moneyAsXml->currency;
-
-        try {
-            return new Money($amount, new Currency($currency));
-        } catch (\Exception $exception) {
-            throw new InvalidArgumentException('Could not deserialize Money data.', $exception->getCode(), $exception);
-        }
+        return $this->createMoney(
+            isset($moneyAsXml->amount) ? (string) $moneyAsXml->amount : null,
+            isset($moneyAsXml->currency) ? (string) $moneyAsXml->currency : null,
+        );
     }
 
     /**
@@ -85,7 +76,8 @@ final class MoneyHandler implements SubscribingHandlerInterface
      */
     public function serializeMoneyToJson(JsonSerializationVisitor $visitor, Money $money, array $type, SerializationContext $context)
     {
-        return $visitor->visitArray( // @phpstan-ignore-line return.type
+        // @phpstan-ignore-next-line return.type
+        return $visitor->visitArray(
             [
                 'amount' => $money->getAmount(),
                 'currency' => $money->getCurrency()->getCode(),
@@ -107,5 +99,33 @@ final class MoneyHandler implements SubscribingHandlerInterface
         $moneyNode->appendChild($currencyNode);
 
         return $moneyNode;
+    }
+
+    /**
+     * @throws InvalidArgumentException if a {@see Money} instance could not be created from the serialized data
+     */
+    private function createMoney(mixed $amount, mixed $currency): Money
+    {
+        if (null === $amount || null === $currency) {
+            throw new InvalidArgumentException('Could not deserialize Money data, the "amount" and "currency" values are required.');
+        }
+
+        if (!\is_int($amount) && !\is_string($amount)) {
+            throw new InvalidArgumentException(\sprintf('Could not deserialize Money data, the amount must be an integer or a string but got "%s".', get_debug_type($amount)));
+        }
+
+        if (!\is_string($currency) || '' === $currency) {
+            throw new InvalidArgumentException('Could not deserialize Money data, the currency must be a non-empty string.');
+        }
+
+        if (\is_string($amount) && !is_numeric($amount)) {
+            throw new InvalidArgumentException('Could not deserialize Money data, the amount must be an integer amount in the currency\'s minor unit.');
+        }
+
+        try {
+            return new Money($amount, new Currency($currency));
+        } catch (\InvalidArgumentException $exception) {
+            throw new InvalidArgumentException('Could not deserialize Money data, the amount must be an integer amount in the currency\'s minor unit.', $exception->getCode(), $exception);
+        }
     }
 }

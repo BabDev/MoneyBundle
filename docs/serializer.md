@@ -38,3 +38,5 @@ Below is an example of how a `Money\Money` instance is serialized into JSON form
     "currency": "USD"
 }
 ```
+
+When deserializing, the `amount` must be an integer or an integer string in the currency's minor unit, and the `currency` must be a non-empty string.

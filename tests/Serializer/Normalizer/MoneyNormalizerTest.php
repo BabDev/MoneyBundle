@@ -7,9 +7,13 @@ use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
-use Symfony\Component\Serializer\Exception\UnexpectedValueException;
+use Symfony\Component\Serializer\Exception\PartialDenormalizationException;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 final class MoneyNormalizerTest extends TestCase
 {
@@ -51,7 +55,7 @@ final class MoneyNormalizerTest extends TestCase
 
     public function testDenormalizeOnlyAcceptsArrays(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(NotNormalizableValueException::class);
         $this->expectExceptionMessage(\sprintf('Data expected to be an array, "%s" given.', \stdClass::class));
 
         new MoneyNormalizer()->denormalize(new \stdClass(), Money::class);
@@ -59,17 +63,68 @@ final class MoneyNormalizerTest extends TestCase
 
     public function testDenormalizeValidatesArrayKeys(): void
     {
-        $this->expectException(UnexpectedValueException::class);
+        $this->expectException(NotNormalizableValueException::class);
         $this->expectExceptionMessage('Missing required keys from data array, must provide "amount" and "currency".');
 
         new MoneyNormalizer()->denormalize([], Money::class);
     }
 
-    public function testDenormalizeConvertsExceptionsCreatingMoneyInstances(): void
+    /**
+     * @return \Generator<string, array{array<string, mixed>, string, string}>
+     */
+    public static function dataInvalidMoneyData(): \Generator
     {
-        $this->expectException(NotNormalizableValueException::class);
+        yield 'Float amount' => [['amount' => 9.99, 'currency' => 'USD'], 'amount', 'The amount must be an integer or a string, "float" given.'];
+        yield 'Boolean amount' => [['amount' => true, 'currency' => 'USD'], 'amount', 'The amount must be an integer or a string, "bool" given.'];
+        yield 'Array amount' => [['amount' => [100], 'currency' => 'USD'], 'amount', 'The amount must be an integer or a string, "array" given.'];
+        yield 'Decimal amount' => [['amount' => '9.99', 'currency' => 'USD'], 'amount', 'The amount must be an integer amount in the currency\'s minor unit.'];
+        yield 'Non-numeric amount' => [['amount' => '$100', 'currency' => 'USD'], 'amount', 'The amount must be an integer amount in the currency\'s minor unit.'];
+        yield 'Empty currency' => [['amount' => '100', 'currency' => ''], 'currency', 'The currency must be a non-empty string.'];
+        yield 'Integer currency' => [['amount' => '100', 'currency' => 840], 'currency', 'The currency must be a non-empty string.'];
+    }
 
-        new MoneyNormalizer()->denormalize(['amount' => '9.99', 'currency' => 'USD'], Money::class);
+    /**
+     * @param array<string, mixed> $data
+     */
+    #[DataProvider('dataInvalidMoneyData')]
+    public function testDenormalizeRejectsInvalidData(array $data, string $key, string $message): void
+    {
+        try {
+            new MoneyNormalizer()->denormalize($data, Money::class, null, ['deserialization_path' => 'price']);
+
+            self::fail(\sprintf('A %s should have been thrown.', NotNormalizableValueException::class));
+        } catch (NotNormalizableValueException $exception) {
+            self::assertSame($message, $exception->getMessage());
+            self::assertSame('price.'.$key, $exception->getPath());
+            self::assertTrue($exception->canUseMessageForUser());
+        }
+    }
+
+    public function testDenormalizationErrorsAreCollected(): void
+    {
+        $serializer = new Serializer([new MoneyNormalizer(), new ObjectNormalizer()], [new JsonEncoder()]);
+
+        try {
+            $serializer->deserialize(
+                '{"total":{"amount":9.99,"currency":"USD"},"tax":{"amount":"100","currency":""}}',
+                MoneyNormalizerTestInvoice::class,
+                'json',
+                [DenormalizerInterface::COLLECT_DENORMALIZATION_ERRORS => true],
+            );
+
+            self::fail(\sprintf('A %s should have been thrown.', PartialDenormalizationException::class));
+        } catch (PartialDenormalizationException $exception) {
+            $errors = [];
+
+            foreach ($exception->getErrors() as $error) {
+                self::assertInstanceOf(NotNormalizableValueException::class, $error);
+
+                $errors[$error->getPath() ?? ''] = $error->getMessage();
+            }
+
+            self::assertSame('The amount must be an integer or a string, "float" given.', $errors['total.amount'] ?? null);
+            self::assertSame('The currency must be a non-empty string.', $errors['tax.currency'] ?? null);
+        }
     }
 
     public static function dataSupportsDenormalization(): \Generator
@@ -83,4 +138,12 @@ final class MoneyNormalizerTest extends TestCase
     {
         self::assertSame($supported, new MoneyNormalizer()->supportsDenormalization($data, $type));
     }
+}
+
+final readonly class MoneyNormalizerTestInvoice
+{
+    public function __construct(
+        public Money $total,
+        public Money $tax,
+    ) {}
 }
