@@ -29,10 +29,10 @@ jobs:
             composer-flags: '--prefer-stable'
             extensions: 'curl, iconv, mbstring, pdo, pdo_sqlite, sqlite, zip'
             can-fail: false
-            has-jms: true
+            has-jms: false
             has-mongodb: false
 
-    name: "PHP ${{ matrix.php }}${{ matrix.has-mongodb == false && ' - Without MongoDB' || '' }} - Symfony ${{ matrix.symfony }}${{ matrix.composer-flags != '' && format(' - Composer {0}', matrix.composer-flags) || '' }}"
+    name: "PHP ${{ matrix.php }}${{ matrix.has-jms == false && ' - Without JMS Serializer' || '' }}${{ matrix.has-mongodb == false && ' - Without MongoDB' || '' }} - Symfony ${{ matrix.symfony }}${{ matrix.composer-flags != '' && format(' - Composer {0}', matrix.composer-flags) || '' }}"
 
     steps:
       - name: Checkout code
