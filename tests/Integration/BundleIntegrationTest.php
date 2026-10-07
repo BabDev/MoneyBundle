@@ -6,6 +6,7 @@ use BabDev\MoneyBundle\Form\Type\MoneyType;
 use BabDev\MoneyBundle\Tests\Integration\Fixtures\Invoice;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use JMS\Serializer\GraphNavigatorInterface;
@@ -51,6 +52,18 @@ final class BundleIntegrationTest extends KernelTestCase
 
         self::$kernel = $kernel;
         self::$booted = true;
+    }
+
+    /**
+     * @param class-string ...$classes
+     */
+    private static function skipIfMissing(string ...$classes): void
+    {
+        foreach ($classes as $class) {
+            if (!class_exists($class)) {
+                self::markTestSkipped(\sprintf('Test requires "%s".', $class));
+            }
+        }
     }
 
     public function testServicesAreRegisteredWithTheFramework(): void
@@ -159,6 +172,9 @@ final class BundleIntegrationTest extends KernelTestCase
     #[RequiresPhpExtension('mongodb')]
     public function testDoctrineMongoDbOdmIntegration(): void
     {
+        // CI removes the ODM packages without disabling the extension
+        self::skipIfMissing(DoctrineMongoDBBundle::class, DocumentManager::class);
+
         self::bootTestKernel(
             'doctrine_mongodb',
             [DoctrineMongoDBBundle::class],
@@ -175,6 +191,8 @@ final class BundleIntegrationTest extends KernelTestCase
 
     public function testJmsSerializerHandlerIsRegistered(): void
     {
+        self::skipIfMissing(JMSSerializerBundle::class);
+
         self::bootTestKernel('jms_serializer', [JMSSerializerBundle::class]);
 
         $handlerRegistry = self::getContainer()->get('jms_serializer.handler_registry');
