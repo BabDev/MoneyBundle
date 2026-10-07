@@ -52,7 +52,7 @@ The constraints also support the following options to control how values are con
 - `scalarUnit` - The unit of integer, float, and integer string values, either `AbstractMoneyComparison::UNIT_MINOR` (`minor`) or `AbstractMoneyComparison::UNIT_MAJOR` (`major`); see [Scalar Values](#scalar-values)
 - `fractionDigits` - The number of fraction digits used by the intl formatters; defaults to the number of decimal places used by the value's currency
 - `groupingUsed` - Whether the intl formatters and parsers use grouping separators; defaults to true
-- `locale` - The locale used by the intl formatters and parsers; defaults to the `kernel.default_locale` parameter
+- `locale` - The locale used by the intl formatters and parsers; the formatters default to the current request's locale (or the `kernel.default_locale` parameter outside of a request), and the parsers default to the `kernel.default_locale` parameter so values defined in code are always parsed the same way
 - `style` - The number style used by the intl formatters and parsers, either `currency` or `decimal`; defaults to `currency`
 
 ```php

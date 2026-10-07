@@ -13,6 +13,7 @@ return static function (ContainerConfigurator $container): void {
             ->args([
                 param('kernel.default_locale'),
             ])
+            ->tag('kernel.locale_aware')
         ->alias(FormatterFactoryInterface::class, 'money.factory.formatter')
 
         ->set('money.factory.parser', ParserFactory::class)

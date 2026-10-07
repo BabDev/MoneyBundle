@@ -14,8 +14,9 @@ use Money\Formatter\DecimalMoneyFormatter;
 use Money\Formatter\IntlLocalizedDecimalFormatter;
 use Money\Formatter\IntlMoneyFormatter;
 use Money\MoneyFormatter;
+use Symfony\Contracts\Translation\LocaleAwareInterface;
 
-final class FormatterFactory implements FormatterFactoryInterface
+final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareInterface
 {
     /**
      * @var array<string, class-string<MoneyFormatter>>
@@ -29,7 +30,25 @@ final class FormatterFactory implements FormatterFactoryInterface
         Format::INTL_MONEY => IntlMoneyFormatter::class,
     ];
 
-    public function __construct(private readonly string $defaultLocale) {}
+    /**
+     * The locale used by the intl formatters when no locale is given, which follows the current request's locale when available.
+     */
+    private string $locale;
+
+    public function __construct(string $defaultLocale)
+    {
+        $this->locale = $defaultLocale;
+    }
+
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
 
     /**
      * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string} $options
@@ -57,7 +76,7 @@ final class FormatterFactory implements FormatterFactoryInterface
                     throw new MissingDependencyException(\sprintf('The "intl_localized_decimal" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
                 }
 
-                $formatterLocale = $locale ?: $this->defaultLocale;
+                $formatterLocale = $locale ?: $this->locale;
                 $groupingUsed = (bool) ($options['grouping_used'] ?? true);
                 $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
 
@@ -80,7 +99,7 @@ final class FormatterFactory implements FormatterFactoryInterface
                     throw new MissingDependencyException(\sprintf('The "intl_money" format requires the "%s" class to be available. You will need to either install the PHP "intl" extension or the "symfony/polyfill-intl-icu" package with Composer (the polyfill is only available for the "en" locale).', \NumberFormatter::class));
                 }
 
-                $formatterLocale = $locale ?: $this->defaultLocale;
+                $formatterLocale = $locale ?: $this->locale;
                 $groupingUsed = (bool) ($options['grouping_used'] ?? true);
                 $optionsStyle = $options['style'] ?? self::STYLE_CURRENCY;
 

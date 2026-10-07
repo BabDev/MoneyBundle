@@ -15,6 +15,12 @@ use Money\Money;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\EventListener\LocaleAwareListener;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 final class FormatterFactoryTest extends TestCase
 {
@@ -94,6 +100,58 @@ final class FormatterFactoryTest extends TestCase
         foreach ($expectations as [$money, $expected]) {
             self::assertSame($expected, $formatter->format($money));
         }
+    }
+
+    #[RequiresPhpExtension('intl')]
+    public function testIntlFormattersUseTheFactoryLocaleWhenNoLocaleIsGiven(): void
+    {
+        self::assertSame('en_US', $this->factory->getLocale());
+
+        $this->factory->setLocale('de_DE');
+
+        self::assertSame('de_DE', $this->factory->getLocale());
+        self::assertSame('1.234,50', $this->factory->createFormatter(Format::INTL_MONEY, null, ['style' => 'decimal'])->format(Money::EUR(123450)));
+        self::assertSame('1,234.50', $this->factory->createFormatter(Format::INTL_MONEY, 'en_US', ['style' => 'decimal'])->format(Money::EUR(123450)));
+    }
+
+    #[RequiresPhpExtension('intl')]
+    public function testFactoryLocaleFollowsTheRequestLocale(): void
+    {
+        $requestStack = new RequestStack();
+        $listener = new LocaleAwareListener([$this->factory], $requestStack);
+        $kernel = self::createStub(HttpKernelInterface::class);
+
+        $format = fn (): string => $this->factory->createFormatter(Format::INTL_MONEY, null, ['style' => 'decimal'])->format(Money::EUR(123450));
+
+        $mainRequest = Request::create('/');
+        $mainRequest->setDefaultLocale('en_US');
+        $mainRequest->setLocale('de_DE');
+        $requestStack->push($mainRequest);
+        $listener->onKernelRequest(new RequestEvent($kernel, $mainRequest, HttpKernelInterface::MAIN_REQUEST));
+
+        self::assertSame('1.234,50', $format());
+
+        $subRequest = Request::create('/');
+        $subRequest->setDefaultLocale('en_US');
+        $subRequest->setLocale('fr_FR');
+        $requestStack->push($subRequest);
+        $listener->onKernelRequest(new RequestEvent($kernel, $subRequest, HttpKernelInterface::SUB_REQUEST));
+
+        // The French grouping separator differs between ICU versions
+        $frenchFormatter = new \NumberFormatter('fr_FR', \NumberFormatter::DECIMAL);
+        $frenchFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, 2);
+
+        self::assertSame($frenchFormatter->format(1234.5), $format());
+
+        $listener->onKernelFinishRequest(new FinishRequestEvent($kernel, $subRequest, HttpKernelInterface::SUB_REQUEST));
+        $requestStack->pop();
+
+        self::assertSame('1.234,50', $format());
+
+        $listener->onKernelFinishRequest(new FinishRequestEvent($kernel, $mainRequest, HttpKernelInterface::MAIN_REQUEST));
+        $requestStack->pop();
+
+        self::assertSame('1,234.50', $format());
     }
 
     public function testFormatterIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void

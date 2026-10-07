@@ -25,6 +25,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
         $this->assertContainerBuilderHasService('money.factory.formatter');
+        $this->assertContainerBuilderHasServiceDefinitionWithTag('money.factory.formatter', 'kernel.locale_aware');
         $this->assertContainerBuilderHasService('money.form.type.money');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.validator.greater_than');
