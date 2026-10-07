@@ -5,6 +5,9 @@ namespace BabDev\MoneyBundle\Tests\Factory;
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Factory\ParserFactory;
 use BabDev\MoneyBundle\Format;
+use Money\Currencies\CurrencyList;
+use Money\Currency;
+use Money\Money;
 use Money\Parser\AggregateMoneyParser;
 use Money\Parser\BitcoinMoneyParser;
 use Money\Parser\DecimalMoneyParser;
@@ -50,6 +53,16 @@ final class ParserFactoryTest extends TestCase
     public function testIntlMoneyParserIsCreated(): void
     {
         self::assertInstanceOf(IntlMoneyParser::class, $this->factory->createParser(Format::INTL_MONEY));
+    }
+
+    #[RequiresPhpExtension('intl')]
+    public function testParsersUseTheGivenCurrencies(): void
+    {
+        $factory = new ParserFactory('en_US', new CurrencyList(['PTS' => 3]));
+        $currency = new Currency('PTS');
+
+        self::assertEquals(new Money(123456, $currency), $factory->createParser(Format::DECIMAL)->parse('123.456', $currency));
+        self::assertEquals(new Money(123456, $currency), $factory->createParser(Format::INTL_LOCALIZED_DECIMAL, null, ['style' => 'decimal'])->parse('123.456', $currency));
     }
 
     public function testParserIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void

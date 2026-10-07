@@ -5,6 +5,7 @@ namespace BabDev\MoneyBundle\Factory;
 use BabDev\MoneyBundle\Factory\Exception\MissingDependencyException;
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Format;
+use Money\Currencies;
 use Money\Currencies\ISOCurrencies;
 use Money\MoneyParser;
 use Money\Parser\AggregateMoneyParser;
@@ -27,7 +28,10 @@ final class ParserFactory implements ParserFactoryInterface
         Format::INTL_MONEY => IntlMoneyParser::class,
     ];
 
-    public function __construct(private readonly string $defaultLocale) {}
+    public function __construct(
+        private readonly string $defaultLocale,
+        private readonly Currencies $currencies = new ISOCurrencies(),
+    ) {}
 
     /**
      * @param array{fraction_digits?: int<0, max>|null, grouping_used?: bool, style?: string} $options
@@ -48,7 +52,7 @@ final class ParserFactory implements ParserFactoryInterface
                 return new BitcoinMoneyParser($fractionDigits);
 
             case Format::DECIMAL:
-                return new DecimalMoneyParser(new ISOCurrencies());
+                return new DecimalMoneyParser($this->currencies);
 
             case Format::INTL_LOCALIZED_DECIMAL:
                 if (!class_exists(\NumberFormatter::class)) {
@@ -64,7 +68,7 @@ final class ParserFactory implements ParserFactoryInterface
                 $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
-                return new IntlLocalizedDecimalParser($numberFormatter, new ISOCurrencies());
+                return new IntlLocalizedDecimalParser($numberFormatter, $this->currencies);
 
             case Format::INTL_MONEY:
                 if (!class_exists(\NumberFormatter::class)) {
@@ -80,7 +84,7 @@ final class ParserFactory implements ParserFactoryInterface
                 $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, $fractionDigits);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
-                return new IntlMoneyParser($numberFormatter, new ISOCurrencies());
+                return new IntlMoneyParser($numberFormatter, $this->currencies);
 
             default:
                 throw new UnsupportedFormatException(array_keys(self::PARSER_MAP), \sprintf('Unsupported format "%s"', $format));

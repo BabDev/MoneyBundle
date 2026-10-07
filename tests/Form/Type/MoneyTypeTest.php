@@ -5,10 +5,12 @@ namespace BabDev\MoneyBundle\Tests\Form\Type;
 use BabDev\MoneyBundle\Factory\FormatterFactory;
 use BabDev\MoneyBundle\Factory\ParserFactory;
 use BabDev\MoneyBundle\Form\Type\MoneyType;
+use Money\Currencies\CurrencyList;
 use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\Form\Forms;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -214,6 +216,26 @@ final class MoneyTypeTest extends TypeTestCase
         $this->expectExceptionMessage('The "XYZ" currency is not supported.');
 
         $this->factory->create(MoneyType::class, null, ['currency' => new Currency('XYZ')]);
+    }
+
+    public function testCurrenciesCanBeCustomized(): void
+    {
+        $currencies = new CurrencyList(['PTS' => 3]);
+
+        $factory = Forms::createFormFactoryBuilder()
+            ->addType(new MoneyType(new FormatterFactory('en_US', $currencies), new ParserFactory('en_US', $currencies), 'PTS', $currencies))
+            ->getFormFactory();
+
+        $form = $factory->create(MoneyType::class);
+        $form->submit('123.456');
+
+        self::assertEquals(new Money(123456, new Currency('PTS')), $form->getData());
+        self::assertSame('123.456', $form->getViewData());
+
+        $this->expectException(InvalidOptionsException::class);
+        $this->expectExceptionMessage('The "USD" currency is not supported.');
+
+        $factory->create(MoneyType::class, null, ['currency' => new Currency('USD')]);
     }
 
     public function testLargestPreciseAmountCanBeSubmitted(): void

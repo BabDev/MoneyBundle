@@ -6,6 +6,7 @@ use BabDev\MoneyBundle\Factory\Exception\MissingDependencyException;
 use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Format;
 use BabDev\MoneyBundle\Formatter\CurrencyFractionDigitsFormatter;
+use Money\Currencies;
 use Money\Currencies\BitcoinCurrencies;
 use Money\Currencies\ISOCurrencies;
 use Money\Formatter\AggregateMoneyFormatter;
@@ -35,8 +36,10 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
      */
     private string $locale;
 
-    public function __construct(string $defaultLocale)
-    {
+    public function __construct(
+        string $defaultLocale,
+        private readonly Currencies $currencies = new ISOCurrencies(),
+    ) {
         $this->locale = $defaultLocale;
     }
 
@@ -69,7 +72,7 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
                 return new BitcoinMoneyFormatter($fractionDigits, new BitcoinCurrencies());
 
             case Format::DECIMAL:
-                return new DecimalMoneyFormatter(new ISOCurrencies());
+                return new DecimalMoneyFormatter($this->currencies);
 
             case Format::INTL_LOCALIZED_DECIMAL:
                 if (!class_exists(\NumberFormatter::class)) {
@@ -83,11 +86,10 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
                 $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
-                $currencies = new ISOCurrencies();
-                $formatter = new IntlLocalizedDecimalFormatter($numberFormatter, $currencies);
+                $formatter = new IntlLocalizedDecimalFormatter($numberFormatter, $this->currencies);
 
                 if (!isset($options['fraction_digits'])) {
-                    return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $currencies);
+                    return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $this->currencies);
                 }
 
                 $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, (int) $options['fraction_digits']);
@@ -106,11 +108,10 @@ final class FormatterFactory implements FormatterFactoryInterface, LocaleAwareIn
                 $numberFormatter = new \NumberFormatter($formatterLocale, self::STYLE_DECIMAL === $optionsStyle ? \NumberFormatter::DECIMAL : \NumberFormatter::CURRENCY);
                 $numberFormatter->setAttribute(\NumberFormatter::GROUPING_USED, $groupingUsed ? 1 : 0);
 
-                $currencies = new ISOCurrencies();
-                $formatter = new IntlMoneyFormatter($numberFormatter, $currencies);
+                $formatter = new IntlMoneyFormatter($numberFormatter, $this->currencies);
 
                 if (!isset($options['fraction_digits'])) {
-                    return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $currencies);
+                    return new CurrencyFractionDigitsFormatter($formatter, $numberFormatter, $this->currencies);
                 }
 
                 $numberFormatter->setAttribute(\NumberFormatter::FRACTION_DIGITS, (int) $options['fraction_digits']);

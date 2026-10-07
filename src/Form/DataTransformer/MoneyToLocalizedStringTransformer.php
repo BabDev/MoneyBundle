@@ -5,6 +5,7 @@ namespace BabDev\MoneyBundle\Form\DataTransformer;
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
 use BabDev\MoneyBundle\Format;
+use Money\Currencies;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Exception\ParserException;
@@ -45,6 +46,7 @@ final readonly class MoneyToLocalizedStringTransformer implements DataTransforme
      * @param string|null $locale       The locale used by the number transformer, used to localize amounts which cannot be converted through it precisely
      * @param int|null    $scale        The number of decimal places for the amount, which must be the same as the number transformer's; defaults to the currency's subunit
      * @param int         $roundingMode The rounding mode for the amount, as one of the NumberFormatter::ROUND_* constants, which must be the same as the number transformer's
+     * @param Currencies  $currencies   The currencies used to determine the currency's subunit, which should be the same as the formatter and parser factories'
      *
      * @throws \InvalidArgumentException if the currency is not supported or the scale is negative or greater than the currency's subunit
      */
@@ -56,9 +58,8 @@ final readonly class MoneyToLocalizedStringTransformer implements DataTransforme
         private ?string $locale = null,
         ?int $scale = null,
         private int $roundingMode = \NumberFormatter::ROUND_HALFUP,
+        Currencies $currencies = new ISOCurrencies(),
     ) {
-        $currencies = new ISOCurrencies();
-
         if (!$currencies->contains($currency)) {
             throw new \InvalidArgumentException(\sprintf('The "%s" currency is not supported.', $currency->getCode()));
         }

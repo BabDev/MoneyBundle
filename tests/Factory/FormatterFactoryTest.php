@@ -6,6 +6,8 @@ use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Factory\FormatterFactory;
 use BabDev\MoneyBundle\Format;
 use BabDev\MoneyBundle\Formatter\CurrencyFractionDigitsFormatter;
+use Money\Currencies\CurrencyList;
+use Money\Currency;
 use Money\Formatter\AggregateMoneyFormatter;
 use Money\Formatter\BitcoinMoneyFormatter;
 use Money\Formatter\DecimalMoneyFormatter;
@@ -152,6 +154,17 @@ final class FormatterFactoryTest extends TestCase
         $requestStack->pop();
 
         self::assertSame('1,234.50', $format());
+    }
+
+    #[RequiresPhpExtension('intl')]
+    public function testFormattersUseTheGivenCurrencies(): void
+    {
+        $factory = new FormatterFactory('en_US', new CurrencyList(['PTS' => 3]));
+        $money = new Money(123456, new Currency('PTS'));
+
+        self::assertSame('123.456', $factory->createFormatter(Format::DECIMAL)->format($money));
+        self::assertSame('123.456', $factory->createFormatter(Format::INTL_MONEY, null, ['style' => 'decimal'])->format($money));
+        self::assertSame('123.456', $factory->createFormatter(Format::INTL_LOCALIZED_DECIMAL, null, ['style' => 'decimal'])->format($money));
     }
 
     public function testFormatterIsNotCreatedWhenAnUnsupportedFormatIsGiven(): void

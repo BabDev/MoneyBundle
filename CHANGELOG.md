@@ -18,6 +18,7 @@
 - Invalid data passed to the serializer integrations now always raise contextually appropriate exceptions
 - The formatter factory now uses the current request's locale when no locale is given; the parser factory still uses the `kernel.default_locale` parameter
 - Deprecated the `input` option for the `MoneyType` form type
+- Add a `money.currencies` service, which can be redefined to support currencies other than the ISO 4217 currencies
 
 ## 3.1.0 (2026-05-12)
 

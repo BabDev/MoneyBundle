@@ -5,6 +5,7 @@ namespace BabDev\MoneyBundle\Form\Type;
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
 use BabDev\MoneyBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer;
+use Money\Currencies;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Money;
@@ -37,12 +38,15 @@ final class MoneyType extends AbstractType
     private static array $patterns = [];
 
     /**
+     * @param Currencies $currencies The supported currencies, which should be the same as the formatter and parser factories'
+     *
      * @phpstan-param non-empty-string $defaultCurrency
      */
     public function __construct(
         private readonly FormatterFactoryInterface $formatterFactory,
         private readonly ParserFactoryInterface $parserFactory,
         string $defaultCurrency,
+        private readonly Currencies $currencies = new ISOCurrencies(),
     ) {
         $this->defaultCurrency = new Currency($defaultCurrency);
     }
@@ -65,6 +69,7 @@ final class MoneyType extends AbstractType
                 $options['html5'] ? 'en' : null,
                 $options['scale'], // @phpstan-ignore argument.type
                 $options['rounding_mode'], // @phpstan-ignore argument.type
+                $this->currencies,
             ))
         ;
     }
@@ -117,14 +122,14 @@ final class MoneyType extends AbstractType
         $resolver->setDeprecated('input', 'babdev/money-bundle', '3.2', 'The "%name%" option is deprecated and has no effect.');
 
         // The scale defaults to the currency's subunit, and cannot be greater than it as the extra digits would be silently rounded off
+        $currencies = $this->currencies;
+
         $resolver->setNormalizer(
             'scale',
-            static function (Options $options, ?int $value): int {
+            static function (Options $options, ?int $value) use ($currencies): int {
                 $currency = $options['currency'];
 
                 \assert($currency instanceof Currency);
-
-                $currencies = new ISOCurrencies();
 
                 if (!$currencies->contains($currency)) {
                     throw new InvalidOptionsException(\sprintf('The "%s" currency is not supported.', $currency->getCode()));

@@ -11,6 +11,7 @@ return static function (ContainerConfigurator $container): void {
                 service('money.factory.formatter'),
                 service('money.factory.parser'),
                 param('babdev_money.default_currency'),
+                service('money.currencies'),
             ])
             ->tag('form.type')
     ;

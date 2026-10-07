@@ -5,7 +5,10 @@ namespace BabDev\MoneyBundle\Tests\DependencyInjection;
 use BabDev\MoneyBundle\BabDevMoneyBundle;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Money\Currencies;
+use Money\Currencies\ISOCurrencies;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\Reference;
 
 final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
 {
@@ -26,6 +29,11 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasParameter('babdev_money.default_currency', 'USD');
         $this->assertContainerBuilderHasService('money.factory.formatter');
         $this->assertContainerBuilderHasServiceDefinitionWithTag('money.factory.formatter', 'kernel.locale_aware');
+        $this->assertContainerBuilderHasService('money.currencies', ISOCurrencies::class);
+        $this->assertContainerBuilderHasAlias(Currencies::class, 'money.currencies');
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('money.factory.formatter', 1, new Reference('money.currencies'));
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('money.factory.parser', 1, new Reference('money.currencies'));
+        $this->assertContainerBuilderHasServiceDefinitionWithArgument('money.form.type.money', 3, new Reference('money.currencies'));
         $this->assertContainerBuilderHasService('money.form.type.money');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.validator.greater_than');
