@@ -57,3 +57,9 @@ class Invoice
     }
 }
 ```
+
+## Storage and Queries
+
+A `Money\Money` object is stored as two string fields, matching the data types used internally by the object. With the ORM, the above entity uses `tax_due_amount` and `tax_due_currency_code` columns, both `VARCHAR(255)`.
+
+<div class="docs-note">Because the amount is stored as a string, sorting and comparing amounts in queries is done as text, not numerically. This applies to both the ORM and the MongoDB ODM.</div>
