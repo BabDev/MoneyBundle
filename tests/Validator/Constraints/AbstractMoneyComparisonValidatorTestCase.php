@@ -2,6 +2,7 @@
 
 namespace BabDev\MoneyBundle\Tests\Validator\Constraints;
 
+use BabDev\MoneyBundle\Factory\FormatterFactory;
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Format;
 use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparison;
@@ -10,7 +11,6 @@ use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Formatter\DecimalMoneyFormatter;
 use Money\Money;
-use Money\Number;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
@@ -100,7 +100,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     #[DataProvider('provideValidComparisons')]
     public function testValidComparisonToValue(Money|float|int|string|null $dirtyValue, Money|float|int|string|null $comparisonValue): void
     {
-        $this->validator->validate($dirtyValue, $this->createConstraint(['value' => $comparisonValue]));
+        $this->validator->validate($dirtyValue, $this->createConstraint(['value' => $comparisonValue, 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
 
         $this->assertNoViolation();
     }
@@ -110,7 +110,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
     {
         $this->setObject($this->createValueObject(Money::USD(500)));
 
-        $this->validator->validate($comparedValue, $this->createConstraint(['propertyPath' => 'value']));
+        $this->validator->validate($comparedValue, $this->createConstraint(['propertyPath' => 'value', 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
 
         $this->assertNoViolation();
     }
@@ -141,15 +141,15 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Could not convert value "." to a "%s" instance for comparison.', Money::class));
 
-        $this->validator->validate(500, $this->createConstraint(['value' => '.']));
+        $this->validator->validate(500, $this->createConstraint(['value' => '.', 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
     }
 
     public function testInvalidValueAsNonNumericString(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(\sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Number::class));
+        $this->expectExceptionMessage(\sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Money::class));
 
-        $this->validator->validate(500, $this->createConstraint(['value' => 'INVALID']));
+        $this->validator->validate(500, $this->createConstraint(['value' => 'INVALID', 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
     }
 
     public function testInvalidValueAsBadlyFormattedFloat(): void
@@ -157,13 +157,13 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Could not convert value "500.4925" to a "%s" instance for comparison.', Money::class));
 
-        $this->validator->validate(500, $this->createConstraint(['value' => 500.4925]));
+        $this->validator->validate(500, $this->createConstraint(['value' => 500.4925, 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
     }
 
     #[DataProvider('provideInvalidComparisons')]
     public function testInvalidComparisonToValue(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, Money|float|int|string|null $comparedValue, string $comparedValueString, string $comparedValueType): void
     {
-        $constraint = $this->createConstraint(['value' => $comparedValue]);
+        $constraint = $this->createConstraint(['value' => $comparedValue, 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]);
         $constraint->message = 'Constraint Message';
 
         $this->validator->validate($dirtyValue, $constraint);
@@ -294,10 +294,188 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
             ->assertRaised();
     }
 
+    /**
+     * @return \Generator<string, array{'int'|'float'|'string'}>
+     */
+    public static function provideScalarTypes(): \Generator
+    {
+        yield 'integer' => ['int'];
+        yield 'float' => ['float'];
+        yield 'integer string' => ['string'];
+    }
+
+    /**
+     * @param 'int'|'float'|'string' $type
+     */
+    #[DataProvider('provideScalarTypes')]
+    public function testComparedScalarValueInMajorUnits(string $type): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $this->validateAndAssertViolation(
+            $dirtyValue,
+            $comparedValue,
+            ['value' => $this->toMajorUnitScalar($comparedValue, $type), 'scalarUnit' => AbstractMoneyComparison::UNIT_MAJOR],
+            $type,
+        );
+    }
+
+    /**
+     * @param 'int'|'float'|'string' $type
+     */
+    #[DataProvider('provideScalarTypes')]
+    public function testValidatedScalarValueInMajorUnits(string $type): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $this->validateAndAssertViolation(
+            $this->toMajorUnitScalar($dirtyValue, $type),
+            $comparedValue,
+            ['value' => $comparedValue, 'scalarUnit' => AbstractMoneyComparison::UNIT_MAJOR],
+            Money::class,
+            $dirtyValue,
+        );
+    }
+
+    public function testMajorUnitsSupportFractionalFloats(): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        // Shift both values by the same fractional amount to keep the comparison's outcome
+        $dirtyValue = $dirtyValue->add(Money::USD(50));
+        $comparedValue = $comparedValue->add(Money::USD(50));
+
+        $this->validateAndAssertViolation(
+            $dirtyValue,
+            $comparedValue,
+            ['value' => (float) new DecimalMoneyFormatter(new ISOCurrencies())->format($comparedValue), 'scalarUnit' => AbstractMoneyComparison::UNIT_MAJOR],
+            'float',
+        );
+    }
+
+    public function testMinorUnitsRejectFractionalFloats(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf('Could not convert value "2.5" to a "%s" instance for comparison.', Money::class));
+
+        $this->validator->validate(Money::USD(500), $this->createConstraint(['value' => 2.5, 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
+    }
+
+    public function testScalarValuesUseMinorUnitsWithADeprecationWhenTheScalarUnitIsNotSet(): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $constraint = $this->createConstraint(['value' => (int) $comparedValue->getAmount()]);
+
+        $this->expectUserDeprecationMessage(\sprintf('Since babdev/money-bundle 3.2: Comparing the scalar value "%s" with the "%s" constraint without setting the "scalarUnit" option is deprecated, the value is treated as an amount in minor units. In 4.0, the default will change to major units; set the option to "minor" to keep the current behavior or "major" to opt in to the new behavior.', $comparedValue->getAmount(), $constraint::class));
+
+        $this->validateAndAssertViolation($dirtyValue, $comparedValue, ['value' => (int) $comparedValue->getAmount()], 'int');
+    }
+
+    /**
+     * @return \Generator<string, array{float|int|string}>
+     */
+    public static function provideZeroValues(): \Generator
+    {
+        yield 'integer' => [0];
+        yield 'float' => [0.0];
+        yield 'integer string' => ['0'];
+        yield 'negative integer string' => ['-0'];
+    }
+
+    #[DataProvider('provideZeroValues')]
+    public function testZeroDoesNotTriggerTheScalarUnitDeprecation(float|int|string $value): void
+    {
+        $deprecations = [];
+
+        set_error_handler(static function (int $level, string $message) use (&$deprecations): bool {
+            $deprecations[] = $message;
+
+            return true;
+        }, \E_USER_DEPRECATED);
+
+        try {
+            $this->validator->validate(Money::USD(500), $this->createConstraint(['value' => $value]));
+        } finally {
+            restore_error_handler();
+        }
+
+        self::assertSame([], $deprecations);
+    }
+
+    public function testThrowsConstraintExceptionForAnInvalidScalarUnit(): void
+    {
+        $this->expectException(ConstraintDefinitionException::class);
+        $this->expectExceptionMessage('constraint requires the "scalarUnit" option to be one of "minor" or "major", "cents" given.');
+
+        $this->createConstraint(['value' => 0, 'scalarUnit' => 'cents']);
+    }
+
+    public function testFormattedStringsAreParsedWithTheParserFormat(): void
+    {
+        [$dirtyValue, , $comparedValue] = $this->provideInvalidComparisonToPropertyPath();
+
+        $dirtyValue = new Money($dirtyValue->getAmount(), new Currency('EUR'));
+        $comparedValue = new Money($comparedValue->getAmount(), new Currency('EUR'));
+
+        // German formatting has no "." for these amounts (i.e. "3,00 €"), which previously skipped the parser
+        $formattedValue = new FormatterFactory('en')->createFormatter(Format::INTL_MONEY, 'de')->format($comparedValue);
+
+        $this->validateAndAssertViolation(
+            $dirtyValue,
+            $comparedValue,
+            ['value' => $formattedValue, 'parserFormat' => Format::INTL_MONEY, 'locale' => 'de', 'currency' => 'EUR'],
+            'string',
+        );
+    }
+
+    /**
+     * Validates the value with the given constraint options and asserts the constraint's violation is raised, with values in violation messages formatted as decimals.
+     *
+     * @param array<string, mixed> $options
+     */
+    private function validateAndAssertViolation(Money|float|int|string $dirtyValue, Money $comparedValue, array $options, string $comparedValueType, ?Money $dirtyValueAsMoney = null): void
+    {
+        $formatter = new DecimalMoneyFormatter(new ISOCurrencies());
+
+        $constraint = $this->createConstraint([
+            ...$options,
+            'message' => 'Constraint Message',
+            'formatterFormat' => Format::DECIMAL,
+        ]);
+
+        $this->validator->validate($dirtyValue, $constraint);
+
+        $dirtyValueAsMoney ??= $dirtyValue;
+
+        self::assertInstanceOf(Money::class, $dirtyValueAsMoney);
+
+        $this->buildViolation('Constraint Message')
+            ->setParameter('{{ value }}', $formatter->format($dirtyValueAsMoney))
+            ->setParameter('{{ compared_value }}', $formatter->format($comparedValue))
+            ->setParameter('{{ compared_value_type }}', $comparedValueType)
+            ->setCode($this->getErrorCode())
+            ->assertRaised();
+    }
+
+    /**
+     * @param 'int'|'float'|'string' $type
+     */
+    private function toMajorUnitScalar(Money $money, string $type): float|int|string
+    {
+        $decimal = new DecimalMoneyFormatter(new ISOCurrencies())->format($money);
+
+        return match ($type) {
+            'int' => (int) $decimal,
+            'float' => (float) $decimal,
+            'string' => (string) (int) $decimal,
+        };
+    }
+
     #[DataProvider('provideComparisonsToNullValueAtPropertyPath')]
     public function testCompareWithNullValueAtPropertyAt(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, bool $isValid): void
     {
-        $constraint = $this->createConstraint(['propertyPath' => 'value']);
+        $constraint = $this->createConstraint(['propertyPath' => 'value', 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]);
         $constraint->message = 'Constraint Message';
 
         $this->setObject($this->createValueObject(null));

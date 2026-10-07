@@ -4,6 +4,7 @@ namespace BabDev\MoneyBundle\Validator\Constraints;
 
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
+use BabDev\MoneyBundle\Format;
 use Money\Currency;
 use Money\Exception\ParserException;
 use Money\Money;
@@ -145,13 +146,19 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             return $value;
         }
 
-        // First try to parse (assuming formatted input) then fall back to treating as a number
-        if (\is_string($value) && str_contains($value, '.')) {
-            try {
-                return $this->parserFactory->createParser($constraint->parserFormat, $constraint->locale, $this->createFactoryOptions($constraint))->parse($value, $currency);
-            } catch (ParserException $exception) {
-                throw new InvalidArgumentException(\sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class), 0, $exception);
+        // Formatted strings are always parsed with the configured parser
+        if (\is_string($value) && 1 !== preg_match('/^-?\d+$/', $value)) {
+            return $this->parse($constraint, $constraint->parserFormat, $value, $currency);
+        }
+
+        $scalarUnit = $constraint->scalarUnit;
+
+        if (null === $scalarUnit) {
+            if (!$this->isZero($value)) {
+                trigger_deprecation('babdev/money-bundle', '3.2', 'Comparing the scalar value "%s" with the "%s" constraint without setting the "scalarUnit" option is deprecated, the value is treated as an amount in minor units. In 4.0, the default will change to major units; set the option to "%s" to keep the current behavior or "%s" to opt in to the new behavior.', $value, get_debug_type($constraint), AbstractMoneyComparison::UNIT_MINOR, AbstractMoneyComparison::UNIT_MAJOR);
             }
+
+            $scalarUnit = AbstractMoneyComparison::UNIT_MINOR;
         }
 
         try {
@@ -160,11 +167,32 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             throw new InvalidArgumentException(\sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Number::class), 0, $exception);
         }
 
+        if (AbstractMoneyComparison::UNIT_MAJOR === $scalarUnit) {
+            return $this->parse($constraint, Format::DECIMAL, (string) $number, $currency);
+        }
+
         try {
             return new Money((string) $number, $currency);
         } catch (\InvalidArgumentException $exception) {
             throw new InvalidArgumentException(\sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class), 0, $exception);
         }
+    }
+
+    /**
+     * @phpstan-param Format::* $format
+     */
+    private function parse(AbstractMoneyComparison $constraint, string $format, string $value, Currency $currency): Money
+    {
+        try {
+            return $this->parserFactory->createParser($format, $constraint->locale, $this->createFactoryOptions($constraint))->parse($value, $currency);
+        } catch (ParserException $exception) {
+            throw new InvalidArgumentException(\sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class), 0, $exception);
+        }
+    }
+
+    private function isZero(float|int|string $value): bool
+    {
+        return \is_string($value) ? 1 !== preg_match('/[1-9]/', $value) : 0.0 === (float) $value;
     }
 
     /**

@@ -48,7 +48,8 @@ The constraints also support the following options to control how values are con
 
 - `currency` - The currency code used when converting a scalar value into a `Money\Money` instance; defaults to the currency of the other value if it is a `Money\Money` instance, otherwise the `babdev_money.default_currency` configuration value
 - `formatterFormat` - The format used to display values in violation messages, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::INTL_MONEY`
-- `parserFormat` - The format used to parse a scalar value into a `Money\Money` instance, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::DECIMAL`
+- `parserFormat` - The format used to parse a formatted string into a `Money\Money` instance, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::DECIMAL`
+- `scalarUnit` - The unit of integer, float, and integer string values, either `AbstractMoneyComparison::UNIT_MINOR` (`minor`) or `AbstractMoneyComparison::UNIT_MAJOR` (`major`); see [Scalar Values](#scalar-values)
 - `fractionDigits` - The number of fraction digits used by the intl formatters and parsers; defaults to 2
 - `groupingUsed` - Whether the intl formatters and parsers use grouping separators; defaults to true
 - `locale` - The locale used by the intl formatters and parsers; defaults to the `kernel.default_locale` parameter
@@ -58,6 +59,24 @@ The constraints also support the following options to control how values are con
 #[MoneyAssert\MoneyGreaterThanOrEqual(value: '10.00', currency: 'EUR', locale: 'de')]
 public Money $price;
 ```
+
+## Scalar Values
+
+Scalar values, for both the `value` option and the value being validated, are converted into a `Money\Money` instance for comparison:
+
+- A formatted string, meaning any string other than an integer string (such as `'10.00'` or `'10,00 €'`), is parsed using the `parserFormat` option and represents an amount in the currency's major unit
+- An integer, float, or integer string (such as `1000` or `'1000'`) represents an amount in the unit set by the `scalarUnit` option:
+    - `minor` - The amount is in the currency's minor unit, so `1000` is $10.00 in US dollars, the same as `new Money(1000, new Currency('USD'))`; floats must be whole numbers
+    - `major` - The amount is in the currency's major unit, so `1000` is $1,000.00 and `10.5` is $10.50 in US dollars
+
+```php
+#[MoneyAssert\MoneyLessThanOrEqual(value: 1000, scalarUnit: AbstractMoneyComparison::UNIT_MAJOR)]
+public Money $price;
+```
+
+<div class="docs-note">Not setting the <code>scalarUnit</code> option when comparing an integer, float, or integer string is deprecated; these values are treated as minor units and trigger a deprecation, and the default will change to major units in 4.0. Set the option to <code>minor</code> to keep the current behavior or <code>major</code> to opt in to the new behavior.</div>
+
+Note that all option values from XML mappings are strings, so `<option name="value">1000</option>` is an integer string and uses the `scalarUnit` option.
 
 ## Currencies
 

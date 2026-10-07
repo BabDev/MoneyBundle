@@ -9,6 +9,9 @@
 - Scalar values now use the currency of the `Money\Money` instance they are compared to when the constraint's `currency` option is not set
 - Add a violation with the new `currencyMismatchMessage` option and `AbstractMoneyComparison::CURRENCY_MISMATCH_ERROR` code when currencies differ
 - Add an English translation for the currency mismatch message in the `validators` translation domain
+- Add a `scalarUnit` option to the money comparison validation constraints to set whether integer, float, and integer string values are amounts in minor or major units
+- Formatted string values for the money comparison validation constraints are now always parsed with the `parserFormat` option
+- Deprecated not setting the `scalarUnit` option when comparing a non-zero integer, float, or integer string value with the money comparison validation constraints; these values are currently treated as minor units, and the default will change to major units in 4.0
 
 ## 3.1.0 (2026-05-12)
 

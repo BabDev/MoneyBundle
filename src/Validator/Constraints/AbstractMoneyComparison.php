@@ -20,6 +20,16 @@ abstract class AbstractMoneyComparison extends Constraint
 {
     public const string CURRENCY_MISMATCH_ERROR = '0d6541c7-4a16-43bf-84bd-894c3bd0bfa1';
 
+    /**
+     * Integer, float, and integer string values represent an amount in the currency's minor unit (i.e. 500 is $5.00).
+     */
+    public const string UNIT_MINOR = 'minor';
+
+    /**
+     * Integer, float, and integer string values represent an amount in the currency's major unit (i.e. 500 is $500.00).
+     */
+    public const string UNIT_MAJOR = 'major';
+
     public string $message;
 
     public string $currencyMismatchMessage = 'This value should be in the same currency as {{ compared_value }}.';
@@ -56,6 +66,15 @@ abstract class AbstractMoneyComparison extends Constraint
     public string|PropertyPathInterface|null $propertyPath = null;
 
     /**
+     * The unit of integer, float, and integer string values; formatted strings are always parsed with the parser format.
+     *
+     * When not set, values are treated as minor units; this default is deprecated and will change to major units in 4.0.
+     *
+     * @var self::UNIT_*|null
+     */
+    public ?string $scalarUnit = null;
+
+    /**
      * @param Money|float|int|numeric-string|null $value                   The value to compare or a set of options
      * @param string|PropertyPathInterface|null   $propertyPath            An optional property path to read
      * @param string[]                            $groups                  An array of validation groups
@@ -66,6 +85,7 @@ abstract class AbstractMoneyComparison extends Constraint
      * @param string|null                         $locale                  The locale used when formatting and parsing values
      * @param string|null                         $style                   The number style used when formatting and parsing values
      * @param string|null                         $currencyMismatchMessage The message used when the compared values have different currencies
+     * @param self::UNIT_*|null                   $scalarUnit              The unit of integer, float, and integer string values
      *
      * @phpstan-param Format::*|null $formatterFormat The format used to display values in violation messages
      * @phpstan-param Format::*|null $parserFormat    The format used to parse scalar values to a Money instance
@@ -85,6 +105,7 @@ abstract class AbstractMoneyComparison extends Constraint
         ?string $locale = null,
         ?string $style = null,
         ?string $currencyMismatchMessage = null,
+        ?string $scalarUnit = null,
     ) {
         parent::__construct(null, $groups, $payload);
 
@@ -99,6 +120,7 @@ abstract class AbstractMoneyComparison extends Constraint
         $this->locale = $locale ?? $this->locale;
         $this->style = $style ?? $this->style;
         $this->currencyMismatchMessage = $currencyMismatchMessage ?? $this->currencyMismatchMessage;
+        $this->scalarUnit = $scalarUnit ?? $this->scalarUnit;
 
         if (null === $this->value && null === $this->propertyPath) {
             throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires either the "value" or "propertyPath" option to be set.', static::class));
@@ -106,6 +128,10 @@ abstract class AbstractMoneyComparison extends Constraint
 
         if (null !== $this->value && null !== $this->propertyPath) {
             throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires only one of the "value" or "propertyPath" options to be set, not both.', static::class));
+        }
+
+        if (null !== $this->scalarUnit && !\in_array($this->scalarUnit, [self::UNIT_MINOR, self::UNIT_MAJOR], true)) {
+            throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires the "scalarUnit" option to be one of "%s" or "%s", "%s" given.', static::class, self::UNIT_MINOR, self::UNIT_MAJOR, $this->scalarUnit));
         }
 
         if (null !== $this->propertyPath && !class_exists(PropertyAccess::class)) {
