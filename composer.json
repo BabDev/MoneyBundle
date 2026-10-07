@@ -50,6 +50,7 @@
         "doctrine/orm": "To use the Money\\Money class with the Doctrine ORM",
         "jms/serializer-bundle": "To use the Money\\Money class with the JMS Serializer",
         "symfony/form": "To use the Money\\Money class with the Symfony Form component",
+        "symfony/property-access": "To use the propertyPath option with the Money\\Money validation constraints",
         "symfony/serializer": "To use the Money\\Money class with the Symfony Serializer",
         "symfony/validator": "To use the Money\\Money class with the Symfony Validator",
         "twig/twig": "To use the Money\\Money class with Twig"

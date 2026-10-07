@@ -3,6 +3,8 @@
 namespace BabDev\MoneyBundle\Tests;
 
 use BabDev\MoneyBundle\BabDevMoneyBundle;
+use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparisonValidator;
+use BabDev\MoneyBundle\Validator\Constraints\MoneyGreaterThanValidator;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -10,7 +12,10 @@ use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\DependencyInjection\CompilerPass\RegisterMappingsPass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 final class BabDevMoneyBundleTest extends TestCase
 {
@@ -66,6 +71,28 @@ final class BabDevMoneyBundleTest extends TestCase
         self::assertContains('Money', array_column(array_column($chainDriver->getMethodCalls(), 1), 1));
     }
 
+    public function testValidatorsCanBeCreatedWithoutThePropertyAccessor(): void
+    {
+        $container = $this->compileContainer();
+
+        $validator = $container->get('money.validator.greater_than');
+
+        self::assertInstanceOf(MoneyGreaterThanValidator::class, $validator);
+        self::assertNull(new \ReflectionProperty(AbstractMoneyComparisonValidator::class, 'propertyAccessor')->getValue($validator));
+    }
+
+    public function testValidatorsAreCreatedWithThePropertyAccessorWhenAvailable(): void
+    {
+        $container = $this->compileContainer(static function (ContainerBuilder $container): void {
+            $container->register('property_accessor', PropertyAccessor::class)->setPublic(true);
+        });
+
+        $validator = $container->get('money.validator.greater_than');
+
+        self::assertInstanceOf(MoneyGreaterThanValidator::class, $validator);
+        self::assertSame($container->get('property_accessor'), new \ReflectionProperty(AbstractMoneyComparisonValidator::class, 'propertyAccessor')->getValue($validator));
+    }
+
     /**
      * @param class-string $bundleClass
      * @param class-string $managerClass
@@ -86,5 +113,43 @@ final class BabDevMoneyBundleTest extends TestCase
                 $pass->process($container);
             }
         }
+    }
+
+    /**
+     * @param (\Closure(ContainerBuilder): void)|null $configure
+     */
+    private function compileContainer(?\Closure $configure = null): ContainerBuilder
+    {
+        $container = new ContainerBuilder();
+        $container->setParameter('kernel.default_locale', 'en');
+        $container->setParameter('kernel.debug', false);
+        $container->setParameter('kernel.environment', 'test');
+        $container->setParameter('kernel.build_dir', sys_get_temp_dir());
+
+        $bundle = new BabDevMoneyBundle();
+        $extension = $bundle->getContainerExtension();
+
+        self::assertNotNull($extension);
+
+        $container->registerExtension($extension);
+        $container->loadFromExtension($extension->getAlias(), []);
+
+        $bundle->build($container);
+
+        if (null !== $configure) {
+            $configure($container);
+        }
+
+        // Validators are private services only referenced by the validator's service locator, make one public so it is kept and checked during compilation
+        $container->addCompilerPass(new class implements CompilerPassInterface {
+            public function process(ContainerBuilder $container): void
+            {
+                $container->getDefinition('money.validator.greater_than')->setPublic(true);
+            }
+        }, PassConfig::TYPE_BEFORE_OPTIMIZATION, -100);
+
+        $container->compile();
+
+        return $container;
     }
 }

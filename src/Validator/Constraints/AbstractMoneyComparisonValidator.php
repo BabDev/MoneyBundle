@@ -15,6 +15,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
+use Symfony\Component\Validator\Exception\LogicException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
@@ -50,7 +51,7 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
             }
 
             try {
-                $comparedValue = $this->getPropertyAccessor()->getValue($object, $path);
+                $comparedValue = $this->getPropertyAccessor($constraint)->getValue($object, $path);
             } catch (NoSuchPropertyException $e) {
                 throw new InvalidArgumentException(\sprintf('Invalid property path "%s" provided to "%s" constraint: ', $path, get_debug_type($constraint)).$e->getMessage(), 0, $e);
             } catch (UninitializedPropertyException) {
@@ -125,9 +126,20 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         }
     }
 
-    private function getPropertyAccessor(): PropertyAccessorInterface
+    /**
+     * @throws LogicException if the property accessor is not available
+     */
+    private function getPropertyAccessor(AbstractMoneyComparison $constraint): PropertyAccessorInterface
     {
-        return $this->propertyAccessor ??= PropertyAccess::createPropertyAccessor();
+        if (null === $this->propertyAccessor) {
+            if (!class_exists(PropertyAccess::class)) {
+                throw new LogicException(\sprintf('The "%s" constraint requires the Symfony PropertyAccess component to use the "propertyPath" option.', get_debug_type($constraint)));
+            }
+
+            $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+        }
+
+        return $this->propertyAccessor;
     }
 
     abstract protected function compareValues(Money $value1, ?Money $value2): bool;
