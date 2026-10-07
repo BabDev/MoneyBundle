@@ -5,6 +5,7 @@ namespace BabDev\MoneyBundle\Form\Type;
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
 use BabDev\MoneyBundle\Form\DataTransformer\MoneyToLocalizedStringTransformer;
+use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Money;
 use Symfony\Component\Form\AbstractType;
@@ -13,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\DataTransformer\NumberToLocalizedStrin
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -59,7 +61,10 @@ final class MoneyType extends AbstractType
                     $options['grouping'], // @phpstan-ignore argument.type
                     $options['rounding_mode'], // @phpstan-ignore argument.type
                     $options['html5'] ? 'en' : null
-                )
+                ),
+                $options['html5'] ? 'en' : null,
+                $options['scale'], // @phpstan-ignore argument.type
+                $options['rounding_mode'], // @phpstan-ignore argument.type
             ))
         ;
     }
@@ -82,7 +87,7 @@ final class MoneyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'scale' => 2,
+            'scale' => null,
             'grouping' => false,
             'rounding_mode' => \NumberFormatter::ROUND_HALFUP,
             'currency' => $this->defaultCurrency,
@@ -105,10 +110,38 @@ final class MoneyType extends AbstractType
             ]
         );
 
-        $resolver->setAllowedTypes('scale', 'int');
+        $resolver->setAllowedTypes('scale', ['null', 'int']);
         $resolver->setAllowedTypes('html5', 'bool');
         $resolver->setAllowedTypes('currency', Currency::class);
         $resolver->setAllowedValues('input', ['float', 'integer', 'string']);
+
+        // The scale defaults to the currency's subunit, and cannot be greater than it as the extra digits would be silently rounded off
+        $resolver->setNormalizer(
+            'scale',
+            static function (Options $options, ?int $value): int {
+                $currency = $options['currency'];
+
+                \assert($currency instanceof Currency);
+
+                $currencies = new ISOCurrencies();
+
+                if (!$currencies->contains($currency)) {
+                    throw new InvalidOptionsException(\sprintf('The "%s" currency is not supported.', $currency->getCode()));
+                }
+
+                $subunit = $currencies->subunitFor($currency);
+
+                if (null === $value) {
+                    return $subunit;
+                }
+
+                if ($value > $subunit) {
+                    throw new InvalidOptionsException(\sprintf('The "scale" option cannot be greater than the number of decimal places used by the "%s" currency (%d), %d given.', $currency->getCode(), $subunit, $value));
+                }
+
+                return $value;
+            }
+        );
 
         $resolver->setNormalizer(
             'grouping',

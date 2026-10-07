@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Intl\Util\IntlTestHelper;
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 
 /**
  * Test class for the MoneyType form.
@@ -177,14 +178,66 @@ final class MoneyTypeTest extends TypeTestCase
         self::assertSame('1.23', $form->getViewData());
     }
 
-    public function testSubmitStringInputWithScale(): void
+    public function testScaleDefaultsToTheCurrencySubunit(): void
     {
-        $form = $this->factory->create(MoneyType::class, null, ['input' => 'string', 'scale' => 3]);
+        $form = $this->factory->create(MoneyType::class, null, ['currency' => new Currency('JPY')]);
+        $form->setData(Money::JPY(1234));
+
+        $view = $form->createView();
+
+        self::assertSame('1234', $view->vars['value']);
+        self::assertSame('numeric', $view->vars['attr']['inputmode']); // @phpstan-ignore-line offsetAccess.nonOffsetAccessible
+    }
+
+    public function testSubmitValueForCurrencyWithThreeDecimalPlaces(): void
+    {
+        $form = $this->factory->create(MoneyType::class, null, ['currency' => new Currency('BHD')]);
         $form->submit('1.234');
 
-        self::assertEquals(Money::USD(123), $form->getData());
-        self::assertEquals(Money::USD(123), $form->getNormData());
-        self::assertSame('1.230', $form->getViewData());
+        self::assertEquals(new Money(1234, new Currency('BHD')), $form->getData());
+        self::assertSame('1.234', $form->getViewData());
+    }
+
+    public function testScaleCannotBeGreaterThanTheCurrencySubunit(): void
+    {
+        $this->expectException(InvalidOptionsException::class);
+        $this->expectExceptionMessage('The "scale" option cannot be greater than the number of decimal places used by the "USD" currency (2), 3 given.');
+
+        $this->factory->create(MoneyType::class, null, ['scale' => 3]);
+    }
+
+    public function testUnsupportedCurrencyIsRejected(): void
+    {
+        $this->expectException(InvalidOptionsException::class);
+        $this->expectExceptionMessage('The "XYZ" currency is not supported.');
+
+        $this->factory->create(MoneyType::class, null, ['currency' => new Currency('XYZ')]);
+    }
+
+    public function testLargestPreciseAmountCanBeSubmitted(): void
+    {
+        $form = $this->factory->create(MoneyType::class);
+        $form->submit('999999999999.99');
+
+        self::assertTrue($form->isSynchronized());
+        self::assertEquals(Money::USD('99999999999999'), $form->getData());
+    }
+
+    public function testAmountsTooLargeToConvertPreciselyAreNotSubmitted(): void
+    {
+        $form = $this->factory->create(MoneyType::class);
+        $form->submit('1000000000000.00');
+
+        self::assertFalse($form->isSynchronized());
+        self::assertNull($form->getData());
+    }
+
+    public function testAmountsTooLargeToConvertPreciselyAreRenderedExactly(): void
+    {
+        $form = $this->factory->create(MoneyType::class);
+        $form->setData(Money::USD('123456789012345678'));
+
+        self::assertSame('1234567890123456.78', $form->createView()->vars['value']);
     }
 
     protected function getExtensions(): array
