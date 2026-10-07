@@ -3,6 +3,7 @@
 namespace BabDev\MoneyBundle\Tests;
 
 use BabDev\MoneyBundle\BabDevMoneyBundle;
+use BabDev\MoneyBundle\DependencyInjection\Compiler\ConfiguredManagerMappingsPass;
 use BabDev\MoneyBundle\Validator\Constraints\AbstractMoneyComparisonValidator;
 use BabDev\MoneyBundle\Validator\Constraints\MoneyGreaterThanValidator;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
@@ -11,7 +12,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\Doctrine\DependencyInjection\CompilerPass\RegisterMappingsPass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,6 +39,28 @@ final class BabDevMoneyBundleTest extends TestCase
         $this->skipIfMissing($bundleClass, $managerClass);
 
         $container = new ContainerBuilder();
+        $container->register($chainDriverId);
+
+        $this->processMappingPasses($container);
+
+        self::assertFalse($container->getDefinition($chainDriverId)->hasMethodCall('addDriver'));
+    }
+
+    /**
+     * DoctrineBundle defines the "doctrine.default_entity_manager" parameter as an empty string when only the DBAL is configured.
+     *
+     * @param class-string     $bundleClass
+     * @param class-string     $managerClass
+     * @param non-empty-string $managerParameter
+     * @param non-empty-string $chainDriverId
+     */
+    #[DataProvider('provideDoctrineMappings')]
+    public function testMappingsAreNotRegisteredWhenTheDoctrineManagerParameterIsEmpty(string $bundleClass, string $managerClass, string $managerParameter, string $chainDriverId): void
+    {
+        $this->skipIfMissing($bundleClass, $managerClass);
+
+        $container = new ContainerBuilder();
+        $container->setParameter($managerParameter, '');
         $container->register($chainDriverId);
 
         $this->processMappingPasses($container);
@@ -109,7 +131,7 @@ final class BabDevMoneyBundleTest extends TestCase
         new BabDevMoneyBundle()->build($container);
 
         foreach ($container->getCompilerPassConfig()->getBeforeOptimizationPasses() as $pass) {
-            if ($pass instanceof RegisterMappingsPass) {
+            if ($pass instanceof ConfiguredManagerMappingsPass) {
                 $pass->process($container);
             }
         }
