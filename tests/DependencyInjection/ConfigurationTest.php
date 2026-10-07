@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\BundleExtension;
+use Symfony\Component\DependencyInjection\Extension\ConfigurationExtensionInterface;
 
 final class ConfigurationTest extends TestCase
 {
@@ -15,7 +15,7 @@ final class ConfigurationTest extends TestCase
     {
         $extension = new BabDevMoneyBundle()->getContainerExtension();
 
-        if (!$extension instanceof BundleExtension) {
+        if (!$extension instanceof ConfigurationExtensionInterface) {
             throw new \RuntimeException('The container extension could not be retrieved from the bundle.');
         }
 
