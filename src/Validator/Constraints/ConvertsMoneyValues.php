@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 /**
  * Converts values to {@see Money} instances for the money validators.
  *
- * The using class must provide the $parserFactory, $defaultCurrency, and $propertyAccessor properties.
+ * The using class must provide the $formatterFactory, $parserFactory, $defaultCurrency, $propertyAccessor, and $currencies properties.
  *
  * @internal
  *
@@ -111,7 +111,7 @@ trait ConvertsMoneyValues
     private function convertValidatedValue(AbstractMoneyComparison|MoneyRange $constraint, Money|float|int|string $value, Currency $currency): ?Money
     {
         try {
-            return $this->ensureMoneyObject($constraint, $value, $currency);
+            $money = $this->ensureMoneyObject($constraint, $value, $currency);
         } catch (InvalidArgumentException) {
             $this->context->buildViolation($constraint->invalidMessage)
                 ->setParameter('{{ value }}', $this->formatValue($value))
@@ -120,6 +120,57 @@ trait ConvertsMoneyValues
 
             return null;
         }
+
+        if ($constraint->rejectExcessFractionDigits && !$value instanceof Money) {
+            $limit = $this->currencies->subunitFor($currency);
+
+            if ($this->wasRounded($constraint, $value, $money, $limit)) {
+                $this->context->buildViolation($constraint->excessFractionDigitsMessage)
+                    ->setParameter('{{ value }}', $this->formatValue($value))
+                    ->setParameter('{{ limit }}', (string) $limit)
+                    ->setPlural($limit)
+                    ->setCode($constraint::TOO_MANY_FRACTION_DIGITS_ERROR)
+                    ->addViolation();
+
+                return null;
+            }
+        }
+
+        return $money;
+    }
+
+    /**
+     * Checks whether parsing a scalar value rounded it to the fraction digits of its currency.
+     */
+    private function wasRounded(AbstractMoneyComparison|MoneyRange $constraint, float|int|string $value, Money $money, int $fractionDigits): bool
+    {
+        if (\is_string($value) && 1 !== preg_match('/^-?\d+$/', $value)) {
+            $format = $constraint->parserFormat;
+        } elseif (\is_float($value) && AbstractMoneyComparison::UNIT_MAJOR === $constraint->scalarUnit) {
+            $format = Format::DECIMAL;
+            $value = (string) Number::fromFloat($value);
+        } else {
+            return false;
+        }
+
+        $formatted = $this->formatterFactory->createFormatter($format, $constraint->locale, ['fraction_digits' => $fractionDigits] + $this->createFactoryOptions($constraint))->format($money);
+
+        return $this->extractSignificantDigits($value) !== $this->extractSignificantDigits($formatted);
+    }
+
+    /**
+     * Extracts the digits of a value, as ASCII digits and without leading and trailing zeros, ignoring any other characters such as signs, separators, and currency symbols.
+     */
+    private function extractSignificantDigits(string $value): string
+    {
+        if (false === preg_match_all('/\p{Nd}/u', $value, $matches)) {
+            return '';
+        }
+
+        // Localized formats may use digits from other scripts
+        $digits = array_map(static fn (string $digit): string => ctype_digit($digit) ? $digit : (string) \IntlChar::charDigitValue($digit), $matches[0]);
+
+        return trim(implode('', $digits), '0');
     }
 
     /**

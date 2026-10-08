@@ -3,6 +3,7 @@
 ## 3.3.0 (Unreleased)
 
 - The money validation constraints now add a violation with the new `invalidMessage` option and `INVALID_VALUE_ERROR` code when the validated value cannot be converted to a `Money\Money` instance
+- Add a `rejectExcessFractionDigits` option to the money validation constraints to add a violation with the new `excessFractionDigitsMessage` option and `TOO_MANY_FRACTION_DIGITS_ERROR` code instead of rounding a validated value with more fraction digits than its currency
 
 ## 3.2.0 (2026-10-07)
 

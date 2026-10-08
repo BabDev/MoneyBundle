@@ -14,6 +14,7 @@ class MoneyGreaterThan extends AbstractMoneyComparison
         self::TOO_LOW_ERROR => 'TOO_LOW_ERROR',
         self::CURRENCY_MISMATCH_ERROR => 'CURRENCY_MISMATCH_ERROR',
         self::INVALID_VALUE_ERROR => 'INVALID_VALUE_ERROR',
+        self::TOO_MANY_FRACTION_DIGITS_ERROR => 'TOO_MANY_FRACTION_DIGITS_ERROR',
     ];
 
     public string $message = 'This value should be greater than {{ compared_value }}.';

@@ -14,6 +14,7 @@ trait MoneyConstraintOptionsTrait
 {
     public const string CURRENCY_MISMATCH_ERROR = '0d6541c7-4a16-43bf-84bd-894c3bd0bfa1';
     public const string INVALID_VALUE_ERROR = 'c81dfe39-220f-43e0-a081-6954dbb97aed';
+    public const string TOO_MANY_FRACTION_DIGITS_ERROR = '3fc371b9-806a-40fb-acda-868bfd97b993';
 
     /**
      * Integer, float, and integer string values represent an amount in the currency's minor unit (i.e. 500 is $5.00).
@@ -27,6 +28,12 @@ trait MoneyConstraintOptionsTrait
 
     public string $currencyMismatchMessage = 'This value should be in the same currency as {{ compared_value }}.';
     public string $invalidMessage = 'This value should be a valid number.';
+    public string $excessFractionDigitsMessage = 'This value should have {{ limit }} decimal place or less.|This value should have {{ limit }} decimal places or less.';
+
+    /**
+     * Whether a validated value with more fraction digits than its currency supports adds a violation instead of being rounded. Trailing zeros are ignored.
+     */
+    public bool $rejectExcessFractionDigits = false;
 
     /**
      * @var non-empty-string|null

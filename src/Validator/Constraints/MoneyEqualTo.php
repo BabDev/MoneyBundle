@@ -13,6 +13,7 @@ class MoneyEqualTo extends AbstractMoneyComparison
     protected const array ERROR_NAMES = [
         self::NOT_EQUAL_ERROR => 'NOT_EQUAL_ERROR',
         self::INVALID_VALUE_ERROR => 'INVALID_VALUE_ERROR',
+        self::TOO_MANY_FRACTION_DIGITS_ERROR => 'TOO_MANY_FRACTION_DIGITS_ERROR',
     ];
 
     public string $message = 'This value should be equal to {{ compared_value }}.';

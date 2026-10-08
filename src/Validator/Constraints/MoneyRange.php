@@ -31,6 +31,7 @@ class MoneyRange extends Constraint
         self::TOO_LOW_ERROR => 'TOO_LOW_ERROR',
         self::CURRENCY_MISMATCH_ERROR => 'CURRENCY_MISMATCH_ERROR',
         self::INVALID_VALUE_ERROR => 'INVALID_VALUE_ERROR',
+        self::TOO_MANY_FRACTION_DIGITS_ERROR => 'TOO_MANY_FRACTION_DIGITS_ERROR',
     ];
 
     public string $notInRangeMessage = 'This value should be between {{ min }} and {{ max }}.';
@@ -52,25 +53,27 @@ class MoneyRange extends Constraint
     public string|PropertyPathInterface|null $maxPropertyPath = null;
 
     /**
-     * @param Money|float|int|numeric-string|null $min                     The minimum value
-     * @param string|PropertyPathInterface|null   $minPropertyPath         A property path to read the minimum value from
-     * @param Money|float|int|numeric-string|null $max                     The maximum value
-     * @param string|PropertyPathInterface|null   $maxPropertyPath         A property path to read the maximum value from
-     * @param string|null                         $notInRangeMessage       The message used when the value is outside of the range and both a minimum and maximum are set
-     * @param string|null                         $minMessage              The message used when the value is less than the minimum and no maximum is set
-     * @param string|null                         $maxMessage              The message used when the value is greater than the maximum and no minimum is set
-     * @param string[]                            $groups                  An array of validation groups
-     * @param mixed                               $payload                 Domain-specific data attached to a constraint
-     * @param non-empty-string|null               $currency                The currency code used when converting scalar values to a Money instance; defaults to the currency of the first Money instance of the value, minimum, and maximum, or the default currency if none are Money instances
-     * @param int<0, max>|null                    $fractionDigits          The number of fraction digits used when formatting values; defaults to the number of fraction digits of the value's currency
-     * @param bool|null                           $groupingUsed            Whether grouping is used when formatting and parsing values
-     * @param string|null                         $locale                  The locale used when formatting and parsing values
-     * @param string|null                         $style                   The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
-     * @param string|null                         $currencyMismatchMessage The message used when the value and a limit have different currencies
-     * @param self::UNIT_*|null                   $scalarUnit              The unit of integer, float, and integer string values
-     * @param non-empty-string|null               $formatterFormat         The format used to display values in violation messages
-     * @param non-empty-string|null               $parserFormat            The format used to parse formatted string values to a Money instance
-     * @param string|null                         $invalidMessage          The message used when the validated value cannot be converted to a Money instance
+     * @param Money|float|int|numeric-string|null $min                         The minimum value
+     * @param string|PropertyPathInterface|null   $minPropertyPath             A property path to read the minimum value from
+     * @param Money|float|int|numeric-string|null $max                         The maximum value
+     * @param string|PropertyPathInterface|null   $maxPropertyPath             A property path to read the maximum value from
+     * @param string|null                         $notInRangeMessage           The message used when the value is outside of the range and both a minimum and maximum are set
+     * @param string|null                         $minMessage                  The message used when the value is less than the minimum and no maximum is set
+     * @param string|null                         $maxMessage                  The message used when the value is greater than the maximum and no minimum is set
+     * @param string[]                            $groups                      An array of validation groups
+     * @param mixed                               $payload                     Domain-specific data attached to a constraint
+     * @param non-empty-string|null               $currency                    The currency code used when converting scalar values to a Money instance; defaults to the currency of the first Money instance of the value, minimum, and maximum, or the default currency if none are Money instances
+     * @param int<0, max>|null                    $fractionDigits              The number of fraction digits used when formatting values; defaults to the number of fraction digits of the value's currency
+     * @param bool|null                           $groupingUsed                Whether grouping is used when formatting and parsing values
+     * @param string|null                         $locale                      The locale used when formatting and parsing values
+     * @param string|null                         $style                       The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
+     * @param string|null                         $currencyMismatchMessage     The message used when the value and a limit have different currencies
+     * @param self::UNIT_*|null                   $scalarUnit                  The unit of integer, float, and integer string values
+     * @param non-empty-string|null               $formatterFormat             The format used to display values in violation messages
+     * @param non-empty-string|null               $parserFormat                The format used to parse formatted string values to a Money instance
+     * @param string|null                         $invalidMessage              The message used when the validated value cannot be converted to a Money instance
+     * @param bool|null                           $rejectExcessFractionDigits  Whether a validated value with more fraction digits than its currency supports adds a violation instead of being rounded
+     * @param string|null                         $excessFractionDigitsMessage The message used when the validated value has more fraction digits than its currency supports
      */
     #[HasNamedArguments]
     public function __construct(
@@ -93,6 +96,8 @@ class MoneyRange extends Constraint
         ?string $currencyMismatchMessage = null,
         ?string $scalarUnit = null,
         ?string $invalidMessage = null,
+        ?bool $rejectExcessFractionDigits = null,
+        ?string $excessFractionDigitsMessage = null,
     ) {
         parent::__construct(null, $groups, $payload);
 
@@ -113,6 +118,8 @@ class MoneyRange extends Constraint
         $this->currencyMismatchMessage = $currencyMismatchMessage ?? $this->currencyMismatchMessage;
         $this->scalarUnit = $scalarUnit ?? $this->scalarUnit;
         $this->invalidMessage = $invalidMessage ?? $this->invalidMessage;
+        $this->rejectExcessFractionDigits = $rejectExcessFractionDigits ?? $this->rejectExcessFractionDigits;
+        $this->excessFractionDigitsMessage = $excessFractionDigitsMessage ?? $this->excessFractionDigitsMessage;
 
         if (null === $this->min && null === $this->minPropertyPath && null === $this->max && null === $this->maxPropertyPath) {
             throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires at least one of the "min", "minPropertyPath", "max", or "maxPropertyPath" options to be set.', static::class));

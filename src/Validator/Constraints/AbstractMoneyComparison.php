@@ -30,20 +30,22 @@ abstract class AbstractMoneyComparison extends Constraint
     public string|PropertyPathInterface|null $propertyPath = null;
 
     /**
-     * @param Money|float|int|numeric-string|null $value                   The value to compare or a set of options
-     * @param string|PropertyPathInterface|null   $propertyPath            An optional property path to read
-     * @param string[]                            $groups                  An array of validation groups
-     * @param mixed                               $payload                 Domain-specific data attached to a constraint
-     * @param non-empty-string|null               $currency                The currency code used when converting scalar values to a Money instance; defaults to the currency of the Money instance being compared to, or the default currency if neither value is a Money instance
-     * @param int<0, max>|null                    $fractionDigits          The number of fraction digits used when formatting and parsing values; defaults to the number of fraction digits of the value's currency
-     * @param bool|null                           $groupingUsed            Whether grouping is used when formatting and parsing values
-     * @param string|null                         $locale                  The locale used when formatting and parsing values
-     * @param string|null                         $style                   The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
-     * @param string|null                         $currencyMismatchMessage The message used when the compared values have different currencies
-     * @param self::UNIT_*|null                   $scalarUnit              The unit of integer, float, and integer string values
-     * @param non-empty-string|null               $formatterFormat         The format used to display values in violation messages
-     * @param non-empty-string|null               $parserFormat            The format used to parse scalar values to a Money instance
-     * @param string|null                         $invalidMessage          The message used when the validated value cannot be converted to a Money instance
+     * @param Money|float|int|numeric-string|null $value                       The value to compare or a set of options
+     * @param string|PropertyPathInterface|null   $propertyPath                An optional property path to read
+     * @param string[]                            $groups                      An array of validation groups
+     * @param mixed                               $payload                     Domain-specific data attached to a constraint
+     * @param non-empty-string|null               $currency                    The currency code used when converting scalar values to a Money instance; defaults to the currency of the Money instance being compared to, or the default currency if neither value is a Money instance
+     * @param int<0, max>|null                    $fractionDigits              The number of fraction digits used when formatting and parsing values; defaults to the number of fraction digits of the value's currency
+     * @param bool|null                           $groupingUsed                Whether grouping is used when formatting and parsing values
+     * @param string|null                         $locale                      The locale used when formatting and parsing values
+     * @param string|null                         $style                       The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
+     * @param string|null                         $currencyMismatchMessage     The message used when the compared values have different currencies
+     * @param self::UNIT_*|null                   $scalarUnit                  The unit of integer, float, and integer string values
+     * @param non-empty-string|null               $formatterFormat             The format used to display values in violation messages
+     * @param non-empty-string|null               $parserFormat                The format used to parse scalar values to a Money instance
+     * @param string|null                         $invalidMessage              The message used when the validated value cannot be converted to a Money instance
+     * @param bool|null                           $rejectExcessFractionDigits  Whether a validated value with more fraction digits than its currency supports adds a violation instead of being rounded
+     * @param string|null                         $excessFractionDigitsMessage The message used when the validated value has more fraction digits than its currency supports
      */
     #[HasNamedArguments]
     public function __construct(
@@ -62,6 +64,8 @@ abstract class AbstractMoneyComparison extends Constraint
         ?string $currencyMismatchMessage = null,
         ?string $scalarUnit = null,
         ?string $invalidMessage = null,
+        ?bool $rejectExcessFractionDigits = null,
+        ?string $excessFractionDigitsMessage = null,
     ) {
         parent::__construct(null, $groups, $payload);
 
@@ -78,6 +82,8 @@ abstract class AbstractMoneyComparison extends Constraint
         $this->currencyMismatchMessage = $currencyMismatchMessage ?? $this->currencyMismatchMessage;
         $this->scalarUnit = $scalarUnit ?? $this->scalarUnit;
         $this->invalidMessage = $invalidMessage ?? $this->invalidMessage;
+        $this->rejectExcessFractionDigits = $rejectExcessFractionDigits ?? $this->rejectExcessFractionDigits;
+        $this->excessFractionDigitsMessage = $excessFractionDigitsMessage ?? $this->excessFractionDigitsMessage;
 
         if (null === $this->value && null === $this->propertyPath) {
             throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires either the "value" or "propertyPath" option to be set.', static::class));

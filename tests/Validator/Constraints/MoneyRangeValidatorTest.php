@@ -261,6 +261,23 @@ final class MoneyRangeValidatorTest extends ConstraintValidatorTestCase
         $this->validator->validate('test', new MoneyRange(maxPropertyPath: 'max'));
     }
 
+    public function testExcessFractionDigitsAddAViolation(): void
+    {
+        $this->validator->validate('18.123', new MoneyRange(min: Money::USD(100), rejectExcessFractionDigits: true, excessFractionDigitsMessage: 'Excess Fraction Digits Message'));
+
+        $this->buildViolation('Excess Fraction Digits Message')
+            ->setParameter('{{ value }}', '"18.123"')
+            ->setParameter('{{ limit }}', '2')
+            ->setPlural(2)
+            ->setCode(MoneyRange::TOO_MANY_FRACTION_DIGITS_ERROR)
+            ->assertRaised();
+    }
+
+    public function testTooManyFractionDigitsErrorHasAName(): void
+    {
+        self::assertSame('TOO_MANY_FRACTION_DIGITS_ERROR', MoneyRange::getErrorName(MoneyRange::TOO_MANY_FRACTION_DIGITS_ERROR));
+    }
+
     public function testInvalidValueErrorHasAName(): void
     {
         self::assertSame('INVALID_VALUE_ERROR', MoneyRange::getErrorName(MoneyRange::INVALID_VALUE_ERROR));

@@ -80,6 +80,26 @@ final class MoneyZeroComparisonConstraintTest extends ConstraintValidatorTestCas
     }
 
     /**
+     * @param class-string<AbstractMoneyComparison>          $constraintClass
+     * @param class-string<AbstractMoneyComparisonValidator> $validatorClass
+     */
+    #[DataProvider('provideConstraints')]
+    public function testExcessFractionDigitsAddAViolation(string $constraintClass, string $validatorClass, string $message): void
+    {
+        $this->validator = new $validatorClass(new FormatterFactory('en'), new ParserFactory('en'), 'USD');
+        $this->validator->initialize($this->context);
+
+        $this->validator->validate('18.123', new $constraintClass(rejectExcessFractionDigits: true, excessFractionDigitsMessage: 'Excess Fraction Digits Message'));
+
+        $this->buildViolation('Excess Fraction Digits Message')
+            ->setParameter('{{ value }}', '"18.123"')
+            ->setParameter('{{ limit }}', '2')
+            ->setPlural(2)
+            ->setCode(AbstractMoneyComparison::TOO_MANY_FRACTION_DIGITS_ERROR)
+            ->assertRaised();
+    }
+
+    /**
      * @return \Generator<string, array{class-string<AbstractMoneyComparison>, class-string<AbstractMoneyComparisonValidator>, string, Money|int|string, string}>
      */
     public static function provideValues(): \Generator

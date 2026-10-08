@@ -4,6 +4,8 @@ namespace BabDev\MoneyBundle\Validator\Constraints;
 
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
+use Money\Currencies;
+use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Money;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
@@ -31,7 +33,8 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
         private readonly FormatterFactoryInterface $formatterFactory,
         private readonly ParserFactoryInterface $parserFactory,
         private readonly string $defaultCurrency,
-        private ?PropertyAccessorInterface $propertyAccessor = null
+        private ?PropertyAccessorInterface $propertyAccessor = null,
+        private readonly Currencies $currencies = new ISOCurrencies(),
     ) {}
 
     public function validate(mixed $value, Constraint $constraint): void

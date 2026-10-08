@@ -62,6 +62,7 @@ public Money $price;
 The constraints support the following extra options, similar to the comparison constraints provided by the Validator component:
 
 - `currencyMismatchMessage` - This is the message that will be shown if the value and the compared value have different currencies, and supports the same parameters as the `message` option
+- `excessFractionDigitsMessage` - This is the message that will be shown if the `rejectExcessFractionDigits` option is enabled and the value being validated has more fraction digits than its currency; supports the `{{ value }}` and `{{ limit }}` parameters
 - `groups` - Defines the validation group(s) this constraint belongs to
 - `invalidMessage` - This is the message that will be shown if the value being validated cannot be converted into a `Money\Money` instance; supports the `{{ value }}` parameter
 - `message` - This is the message that will be shown if the value fails the validation check; messages have the following parameters available:
@@ -77,6 +78,7 @@ The constraints also support the following options to control how values are con
 - `currency` - The currency code used when converting a scalar value into a `Money\Money` instance; defaults to the currency of the other value if it is a `Money\Money` instance, otherwise the `babdev_money.default_currency` configuration value
 - `formatterFormat` - The format used to display values in violation messages, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::INTL_MONEY`
 - `parserFormat` - The format used to parse a formatted string into a `Money\Money` instance, as one of the `BabDev\MoneyBundle\Format` constants; defaults to `Format::DECIMAL`
+- `rejectExcessFractionDigits` - Whether a value being validated with more fraction digits than its currency, such as `'18.123'` in US dollars, adds a violation using the `excessFractionDigitsMessage` option, with the `AbstractMoneyComparison::TOO_MANY_FRACTION_DIGITS_ERROR` code, instead of being rounded; defaults to false
 - `scalarUnit` - The unit of integer, float, and integer string values, either `AbstractMoneyComparison::UNIT_MINOR` (`minor`) or `AbstractMoneyComparison::UNIT_MAJOR` (`major`); see [Scalar Values](#scalar-values)
 - `fractionDigits` - The number of fraction digits used by the intl formatters; defaults to the number of decimal places used by the value's currency
 - `groupingUsed` - Whether the intl formatters and parsers use grouping separators; defaults to true
@@ -116,7 +118,7 @@ Values with different currencies cannot be ordered, so the `MoneyGreaterThan`, `
 
 ## Translations
 
-The default messages for the constraints are translated in the `validators` domain. The `message` defaults reuse the wording of the comparison constraints from the Validator component, and the `invalidMessage` default reuses the wording of the `Range` constraint's `invalidMessage`, so they are translated by the Validator component's own translations. The bundle provides an English translation for the `currencyMismatchMessage` default; to translate it into other languages, add the message to your application's `validators` translation files:
+The default messages for the constraints are translated in the `validators` domain. The `message` defaults reuse the wording of the comparison constraints from the Validator component, and the `invalidMessage` default reuses the wording of the `Range` constraint's `invalidMessage`, so they are translated by the Validator component's own translations. The bundle provides English translations for the `currencyMismatchMessage` and `excessFractionDigitsMessage` defaults; to translate it into other languages, add the message to your application's `validators` translation files:
 
 ```yaml
 # translations/validators.de.yaml

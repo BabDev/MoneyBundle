@@ -6,6 +6,10 @@
                 <source>This value should be in the same currency as {{ compared_value }}.</source>
                 <target>This value should be in the same currency as {{ compared_value }}.</target>
             </trans-unit>
+            <trans-unit id="2">
+                <source>This value should have {{ limit }} decimal place or less.|This value should have {{ limit }} decimal places or less.</source>
+                <target>This value should have {{ limit }} decimal place or less.|This value should have {{ limit }} decimal places or less.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

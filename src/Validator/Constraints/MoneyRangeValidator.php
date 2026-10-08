@@ -4,6 +4,8 @@ namespace BabDev\MoneyBundle\Validator\Constraints;
 
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
+use Money\Currencies;
+use Money\Currencies\ISOCurrencies;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\Exception\UninitializedPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -29,7 +31,8 @@ final class MoneyRangeValidator extends ConstraintValidator
         private readonly FormatterFactoryInterface $formatterFactory,
         private readonly ParserFactoryInterface $parserFactory,
         private readonly string $defaultCurrency,
-        private ?PropertyAccessorInterface $propertyAccessor = null
+        private ?PropertyAccessorInterface $propertyAccessor = null,
+        private readonly Currencies $currencies = new ISOCurrencies(),
     ) {}
 
     public function validate(mixed $value, Constraint $constraint): void

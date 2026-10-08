@@ -14,6 +14,7 @@ use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
@@ -219,6 +220,120 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->validator->validate('test', $this->createConstraint(['value' => 'INVALID', 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
     }
 
+    /**
+     * @return \Generator<string, array{float|string, non-empty-string, array<string, mixed>, string, int}>
+     */
+    public static function provideValuesWithExcessFractionDigits(): \Generator
+    {
+        yield 'formatted string' => ['18.123', 'USD', [], '"18.123"', 2];
+        yield 'formatted string rounded up' => ['18.129', 'USD', [], '"18.129"', 2];
+        yield 'float in major units' => [18.123, 'USD', [], '18.123', 2];
+        yield 'currency without fraction digits' => ['100.5', 'JPY', [], '"100.5"', 0];
+    }
+
+    /**
+     * @return \Generator<string, array{float|string, non-empty-string, array<string, mixed>, string, int}>
+     */
+    public static function provideLocalizedValuesWithExcessFractionDigits(): \Generator
+    {
+        yield 'intl money' => ['$18.123', 'USD', ['parserFormat' => Format::INTL_MONEY, 'locale' => 'en'], '"$18.123"', 2];
+        yield 'intl localized decimal' => ['1.000,129', 'USD', ['parserFormat' => Format::INTL_LOCALIZED_DECIMAL, 'locale' => 'de'], '"1.000,129"', 2];
+        yield 'intl localized decimal with non-ASCII digits' => ['۱۸٫۱۲۳', 'USD', ['parserFormat' => Format::INTL_LOCALIZED_DECIMAL, 'locale' => 'fa'], '"۱۸٫۱۲۳"', 2];
+        yield 'intl money with fraction digits for display' => ['$18.123', 'USD', ['parserFormat' => Format::INTL_MONEY, 'locale' => 'en', 'fractionDigits' => 0], '"$18.123"', 2];
+    }
+
+    /**
+     * @param non-empty-string     $currency
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('provideValuesWithExcessFractionDigits')]
+    public function testExcessFractionDigitsAddAViolation(float|string $value, string $currency, array $options, string $formattedValue, int $limit): void
+    {
+        $constraint = $this->createConstraint(['value' => new Money(500, new Currency($currency)), 'scalarUnit' => AbstractMoneyComparison::UNIT_MAJOR, 'rejectExcessFractionDigits' => true, 'excessFractionDigitsMessage' => 'Excess Fraction Digits Message', ...$options]);
+
+        $this->validator->validate($value, $constraint);
+
+        $this->buildViolation('Excess Fraction Digits Message')
+            ->setParameter('{{ value }}', $formattedValue)
+            ->setParameter('{{ limit }}', (string) $limit)
+            ->setPlural($limit)
+            ->setCode(AbstractMoneyComparison::TOO_MANY_FRACTION_DIGITS_ERROR)
+            ->assertRaised();
+    }
+
+    /**
+     * @param non-empty-string     $currency
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('provideLocalizedValuesWithExcessFractionDigits')]
+    #[RequiresPhpExtension('intl')]
+    public function testLocalizedExcessFractionDigitsAddAViolation(float|string $value, string $currency, array $options, string $formattedValue, int $limit): void
+    {
+        $this->testExcessFractionDigitsAddAViolation($value, $currency, $options, $formattedValue, $limit);
+    }
+
+    /**
+     * @return \Generator<string, array{Money|float|int|string, array<string, mixed>}>
+     */
+    public static function provideValuesWithoutExcessFractionDigits(): \Generator
+    {
+        yield 'formatted string' => ['18.12', []];
+        yield 'formatted string with trailing zeros' => ['18.1200', []];
+        yield 'formatted string with leading zeros' => ['0018.12', []];
+        yield 'float in major units' => [18.1, ['scalarUnit' => AbstractMoneyComparison::UNIT_MAJOR]];
+        yield 'integer in minor units' => [1812, ['scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]];
+        yield 'integer string in minor units' => ['1812', ['scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]];
+        yield 'Money instance' => [Money::USD(1812), []];
+    }
+
+    /**
+     * @return \Generator<string, array{Money|float|int|string, array<string, mixed>}>
+     */
+    public static function provideLocalizedValuesWithoutExcessFractionDigits(): \Generator
+    {
+        yield 'intl money' => ['$1,000.10', ['parserFormat' => Format::INTL_MONEY, 'locale' => 'en']];
+        yield 'intl money with fraction digits for display' => ['$18.12', ['parserFormat' => Format::INTL_MONEY, 'locale' => 'en', 'fractionDigits' => 0]];
+        yield 'intl localized decimal' => ['1.000,1', ['parserFormat' => Format::INTL_LOCALIZED_DECIMAL, 'locale' => 'de']];
+        yield 'intl localized decimal with non-ASCII digits' => ['۱۸۱٫۲۳۰', ['parserFormat' => Format::INTL_LOCALIZED_DECIMAL, 'locale' => 'fa']];
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('provideValuesWithoutExcessFractionDigits')]
+    public function testValuesWithoutExcessFractionDigitsAreCompared(Money|float|int|string $value, array $options): void
+    {
+        $this->validator->validate($value, $this->createConstraint(['value' => Money::USD(500), 'rejectExcessFractionDigits' => true, ...$options]));
+
+        $codes = array_map(static fn (ConstraintViolationInterface $violation): ?string => $violation->getCode(), iterator_to_array($this->context->getViolations()));
+
+        self::assertNotContains(AbstractMoneyComparison::TOO_MANY_FRACTION_DIGITS_ERROR, $codes);
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    #[DataProvider('provideLocalizedValuesWithoutExcessFractionDigits')]
+    #[RequiresPhpExtension('intl')]
+    public function testLocalizedValuesWithoutExcessFractionDigitsAreCompared(Money|float|int|string $value, array $options): void
+    {
+        $this->testValuesWithoutExcessFractionDigitsAreCompared($value, $options);
+    }
+
+    public function testExcessFractionDigitsAreAllowedByDefault(): void
+    {
+        $this->validator->validate('18.123', $this->createConstraint(['value' => Money::USD(500)]));
+
+        $codes = array_map(static fn (ConstraintViolationInterface $violation): ?string => $violation->getCode(), iterator_to_array($this->context->getViolations()));
+
+        self::assertNotContains(AbstractMoneyComparison::TOO_MANY_FRACTION_DIGITS_ERROR, $codes);
+    }
+
+    public function testTooManyFractionDigitsErrorHasAName(): void
+    {
+        self::assertSame('TOO_MANY_FRACTION_DIGITS_ERROR', $this->createConstraint(['value' => 0])::getErrorName(AbstractMoneyComparison::TOO_MANY_FRACTION_DIGITS_ERROR));
+    }
+
     public function testInvalidValueErrorHasAName(): void
     {
         self::assertSame('INVALID_VALUE_ERROR', $this->createConstraint(['value' => 0])::getErrorName(AbstractMoneyComparison::INVALID_VALUE_ERROR));
@@ -272,6 +387,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
             'locale' => 'de',
             'style' => FormatterFactoryInterface::STYLE_DECIMAL,
             'invalidMessage' => 'Invalid Message',
+            'excessFractionDigitsMessage' => 'Excess Fraction Digits Message',
         ]);
 
         self::assertSame('EUR', $constraint->currency);
@@ -282,6 +398,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         self::assertSame('de', $constraint->locale);
         self::assertSame(FormatterFactoryInterface::STYLE_DECIMAL, $constraint->style);
         self::assertSame('Invalid Message', $constraint->invalidMessage);
+        self::assertSame('Excess Fraction Digits Message', $constraint->excessFractionDigitsMessage);
     }
 
     public function testNamedArgumentOptionsAreUsedForValidation(): void

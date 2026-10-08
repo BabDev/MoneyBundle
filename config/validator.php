@@ -19,6 +19,7 @@ return static function (ContainerConfigurator $container): void {
                 service('money.factory.parser'),
                 param('babdev_money.default_currency'),
                 service('property_accessor')->nullOnInvalid(),
+                service('money.currencies'),
             ])
 
         ->set('money.validator.equal_to', MoneyEqualToValidator::class)
