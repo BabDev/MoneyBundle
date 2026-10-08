@@ -62,6 +62,24 @@ final class MoneyZeroComparisonConstraintTest extends ConstraintValidatorTestCas
     }
 
     /**
+     * @param class-string<AbstractMoneyComparison>          $constraintClass
+     * @param class-string<AbstractMoneyComparisonValidator> $validatorClass
+     */
+    #[DataProvider('provideConstraints')]
+    public function testUnconvertibleValuesAddAViolation(string $constraintClass, string $validatorClass, string $message): void
+    {
+        $this->validator = new $validatorClass(new FormatterFactory('en'), new ParserFactory('en'), 'USD');
+        $this->validator->initialize($this->context);
+
+        $this->validator->validate('test', new $constraintClass(invalidMessage: 'Invalid Message'));
+
+        $this->buildViolation('Invalid Message')
+            ->setParameter('{{ value }}', '"test"')
+            ->setCode(AbstractMoneyComparison::INVALID_VALUE_ERROR)
+            ->assertRaised();
+    }
+
+    /**
      * @return \Generator<string, array{class-string<AbstractMoneyComparison>, class-string<AbstractMoneyComparisonValidator>, string, Money|int|string, string}>
      */
     public static function provideValues(): \Generator

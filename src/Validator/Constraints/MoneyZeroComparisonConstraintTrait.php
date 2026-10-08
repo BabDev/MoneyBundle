@@ -27,6 +27,7 @@ trait MoneyZeroComparisonConstraintTrait
      * @param string|null           $style           The number style used when formatting and parsing values with the intl formats, either "currency" or "decimal"; defaults to "decimal" for the "intl_localized_decimal" format and "currency" for the "intl_money" format
      * @param non-empty-string|null $formatterFormat The format used to display values in violation messages
      * @param non-empty-string|null $parserFormat    The format used to parse formatted string values to a Money instance
+     * @param string|null           $invalidMessage  The message used when the validated value cannot be converted to a Money instance
      */
     #[HasNamedArguments]
     public function __construct(
@@ -39,6 +40,7 @@ trait MoneyZeroComparisonConstraintTrait
         ?bool $groupingUsed = null,
         ?string $locale = null,
         ?string $style = null,
+        ?string $invalidMessage = null,
     ) {
         parent::__construct(
             value: 0,
@@ -52,6 +54,7 @@ trait MoneyZeroComparisonConstraintTrait
             locale: $locale,
             style: $style,
             scalarUnit: self::UNIT_MINOR,
+            invalidMessage: $invalidMessage,
         );
     }
 

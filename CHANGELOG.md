@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.0 (Unreleased)
+
+- The money validation constraints now add a violation with the new `invalidMessage` option and `INVALID_VALUE_ERROR` code when the validated value cannot be converted to a `Money\Money` instance
+
 ## 3.2.0 (2026-10-07)
 
 - Restore the ability to configure the `currency`, `formatterFormat`, `parserFormat`, `fractionDigits`, `groupingUsed`, `locale`, and `style` options for the money comparison validation constraints, which were not accepted as named arguments after the options array was removed in 3.0

@@ -43,6 +43,7 @@ abstract class AbstractMoneyComparison extends Constraint
      * @param self::UNIT_*|null                   $scalarUnit              The unit of integer, float, and integer string values
      * @param non-empty-string|null               $formatterFormat         The format used to display values in violation messages
      * @param non-empty-string|null               $parserFormat            The format used to parse scalar values to a Money instance
+     * @param string|null                         $invalidMessage          The message used when the validated value cannot be converted to a Money instance
      */
     #[HasNamedArguments]
     public function __construct(
@@ -60,6 +61,7 @@ abstract class AbstractMoneyComparison extends Constraint
         ?string $style = null,
         ?string $currencyMismatchMessage = null,
         ?string $scalarUnit = null,
+        ?string $invalidMessage = null,
     ) {
         parent::__construct(null, $groups, $payload);
 
@@ -75,6 +77,7 @@ abstract class AbstractMoneyComparison extends Constraint
         $this->style = $style ?? $this->style;
         $this->currencyMismatchMessage = $currencyMismatchMessage ?? $this->currencyMismatchMessage;
         $this->scalarUnit = $scalarUnit ?? $this->scalarUnit;
+        $this->invalidMessage = $invalidMessage ?? $this->invalidMessage;
 
         if (null === $this->value && null === $this->propertyPath) {
             throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires either the "value" or "propertyPath" option to be set.', static::class));

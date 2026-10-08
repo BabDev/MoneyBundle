@@ -30,6 +30,7 @@ class MoneyRange extends Constraint
         self::TOO_HIGH_ERROR => 'TOO_HIGH_ERROR',
         self::TOO_LOW_ERROR => 'TOO_LOW_ERROR',
         self::CURRENCY_MISMATCH_ERROR => 'CURRENCY_MISMATCH_ERROR',
+        self::INVALID_VALUE_ERROR => 'INVALID_VALUE_ERROR',
     ];
 
     public string $notInRangeMessage = 'This value should be between {{ min }} and {{ max }}.';
@@ -69,6 +70,7 @@ class MoneyRange extends Constraint
      * @param self::UNIT_*|null                   $scalarUnit              The unit of integer, float, and integer string values
      * @param non-empty-string|null               $formatterFormat         The format used to display values in violation messages
      * @param non-empty-string|null               $parserFormat            The format used to parse formatted string values to a Money instance
+     * @param string|null                         $invalidMessage          The message used when the validated value cannot be converted to a Money instance
      */
     #[HasNamedArguments]
     public function __construct(
@@ -90,6 +92,7 @@ class MoneyRange extends Constraint
         ?string $style = null,
         ?string $currencyMismatchMessage = null,
         ?string $scalarUnit = null,
+        ?string $invalidMessage = null,
     ) {
         parent::__construct(null, $groups, $payload);
 
@@ -109,6 +112,7 @@ class MoneyRange extends Constraint
         $this->style = $style ?? $this->style;
         $this->currencyMismatchMessage = $currencyMismatchMessage ?? $this->currencyMismatchMessage;
         $this->scalarUnit = $scalarUnit ?? $this->scalarUnit;
+        $this->invalidMessage = $invalidMessage ?? $this->invalidMessage;
 
         if (null === $this->min && null === $this->minPropertyPath && null === $this->max && null === $this->maxPropertyPath) {
             throw new ConstraintDefinitionException(\sprintf('The "%s" constraint requires at least one of the "min", "minPropertyPath", "max", or "maxPropertyPath" options to be set.', static::class));

@@ -239,6 +239,33 @@ final class MoneyRangeValidatorTest extends ConstraintValidatorTestCase
         $this->validator->validate(['amount' => 500], new MoneyRange(min: Money::USD(100)));
     }
 
+    public function testUnconvertibleValuesAddAViolation(): void
+    {
+        $this->validator->validate('test', new MoneyRange(min: Money::USD(100), invalidMessage: 'Invalid Message'));
+
+        $this->buildViolation('Invalid Message')
+            ->setParameter('{{ value }}', '"test"')
+            ->setCode(MoneyRange::INVALID_VALUE_ERROR)
+            ->assertRaised();
+    }
+
+    public function testUnconvertibleLimitThrowsWhenTheValidatedValueIsAlsoUnconvertible(): void
+    {
+        $this->setObject(new class {
+            public string $max = 'INVALID';
+        });
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Money::class));
+
+        $this->validator->validate('test', new MoneyRange(maxPropertyPath: 'max'));
+    }
+
+    public function testInvalidValueErrorHasAName(): void
+    {
+        self::assertSame('INVALID_VALUE_ERROR', MoneyRange::getErrorName(MoneyRange::INVALID_VALUE_ERROR));
+    }
+
     public function testUnsupportedLimitsFromAPropertyPathAreRejected(): void
     {
         $this->setObject(new class {

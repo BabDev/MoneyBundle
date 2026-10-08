@@ -12,6 +12,7 @@ class MoneyNotEqualTo extends AbstractMoneyComparison
 
     protected const array ERROR_NAMES = [
         self::IS_EQUAL_ERROR => 'IS_EQUAL_ERROR',
+        self::INVALID_VALUE_ERROR => 'INVALID_VALUE_ERROR',
     ];
 
     public string $message = 'This value should not be equal to {{ compared_value }}.';

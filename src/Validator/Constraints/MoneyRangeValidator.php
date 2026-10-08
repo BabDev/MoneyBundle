@@ -4,7 +4,6 @@ namespace BabDev\MoneyBundle\Validator\Constraints;
 
 use BabDev\MoneyBundle\Factory\FormatterFactoryInterface;
 use BabDev\MoneyBundle\Factory\ParserFactoryInterface;
-use Money\Money;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\Exception\UninitializedPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -49,13 +48,13 @@ final class MoneyRangeValidator extends ConstraintValidator
 
         $currency = $this->resolveCurrency($constraint, $value, $min, $max);
 
-        $moneyValue = $this->ensureMoneyObject($constraint, $value, $currency);
-
-        // Since we validated $value !== null, we must have a Money object now
-        \assert($moneyValue instanceof Money);
-
+        // The limits are converted first so an invalid constraint definition always throws, even when the validated value is invalid
         $minValue = $this->ensureMoneyObject($constraint, $min, $currency);
         $maxValue = $this->ensureMoneyObject($constraint, $max, $currency);
+
+        if (null === $moneyValue = $this->convertValidatedValue($constraint, $value, $currency)) {
+            return;
+        }
 
         $formatter = $this->formatterFactory->createFormatter($constraint->formatterFormat, $constraint->locale, $this->createFactoryOptions($constraint));
 

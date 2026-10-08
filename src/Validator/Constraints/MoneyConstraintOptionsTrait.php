@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 trait MoneyConstraintOptionsTrait
 {
     public const string CURRENCY_MISMATCH_ERROR = '0d6541c7-4a16-43bf-84bd-894c3bd0bfa1';
+    public const string INVALID_VALUE_ERROR = 'c81dfe39-220f-43e0-a081-6954dbb97aed';
 
     /**
      * Integer, float, and integer string values represent an amount in the currency's minor unit (i.e. 500 is $5.00).
@@ -25,6 +26,7 @@ trait MoneyConstraintOptionsTrait
     public const string UNIT_MAJOR = 'major';
 
     public string $currencyMismatchMessage = 'This value should be in the same currency as {{ compared_value }}.';
+    public string $invalidMessage = 'This value should be a valid number.';
 
     /**
      * @var non-empty-string|null

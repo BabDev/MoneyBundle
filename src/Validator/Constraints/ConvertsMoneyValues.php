@@ -10,6 +10,7 @@ use Money\Number;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
+use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\LogicException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
@@ -20,6 +21,8 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
  * The using class must provide the $parserFactory, $defaultCurrency, and $propertyAccessor properties.
  *
  * @internal
+ *
+ * @phpstan-require-extends ConstraintValidator
  */
 trait ConvertsMoneyValues
 {
@@ -57,6 +60,10 @@ trait ConvertsMoneyValues
 
     /**
      * @param Money|float|int|string|null $value Formatted strings are parsed with the constraint's parser format
+     *
+     * @return ($value is null ? null : Money)
+     *
+     * @throws InvalidArgumentException if the value cannot be converted
      */
     private function ensureMoneyObject(AbstractMoneyComparison|MoneyRange $constraint, Money|float|int|string|null $value, Currency $currency): ?Money
     {
@@ -93,6 +100,25 @@ trait ConvertsMoneyValues
             return new Money((string) $number, $currency);
         } catch (\InvalidArgumentException $exception) {
             throw new InvalidArgumentException(\sprintf('Could not convert value "%s" to a "%s" instance for comparison.', $value, Money::class), 0, $exception);
+        }
+    }
+
+    /**
+     * Converts the validated value to a {@see Money} instance, adding a violation using the constraint's invalid message if it cannot be converted.
+     *
+     * @return Money|null The converted value, or null if a violation was added
+     */
+    private function convertValidatedValue(AbstractMoneyComparison|MoneyRange $constraint, Money|float|int|string $value, Currency $currency): ?Money
+    {
+        try {
+            return $this->ensureMoneyObject($constraint, $value, $currency);
+        } catch (InvalidArgumentException) {
+            $this->context->buildViolation($constraint->invalidMessage)
+                ->setParameter('{{ value }}', $this->formatValue($value))
+                ->setCode($constraint::INVALID_VALUE_ERROR)
+                ->addViolation();
+
+            return null;
         }
     }
 

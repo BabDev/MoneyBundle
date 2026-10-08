@@ -63,6 +63,7 @@ The constraints support the following extra options, similar to the comparison c
 
 - `currencyMismatchMessage` - This is the message that will be shown if the value and the compared value have different currencies, and supports the same parameters as the `message` option
 - `groups` - Defines the validation group(s) this constraint belongs to
+- `invalidMessage` - This is the message that will be shown if the value being validated cannot be converted into a `Money\Money` instance; supports the `{{ value }}` parameter
 - `message` - This is the message that will be shown if the value fails the validation check; messages have the following parameters available:
     - `{{ compared_value }}` - The value being compared to
     - `{{ compared_value_type }}` - The expected value type
@@ -103,6 +104,8 @@ public Money $price;
 
 <div class="docs-note">Not setting the <code>scalarUnit</code> option when comparing an integer, float, or integer string is deprecated; these values are treated as minor units and trigger a deprecation, and the default will change to major units in 4.0. Set the option to <code>minor</code> to keep the current behavior or <code>major</code> to opt in to the new behavior.</div>
 
+A value being validated which cannot be converted, such as `'test'` or a fractional float in minor units, adds a violation using the `invalidMessage` option, with the `AbstractMoneyComparison::INVALID_VALUE_ERROR` code (`MoneyRange::INVALID_VALUE_ERROR` for the `MoneyRange` constraint).
+
 Note that all option values from XML mappings are strings, so `<option name="value">1000</option>` is an integer string and uses the `scalarUnit` option.
 
 ## Currencies
@@ -113,7 +116,7 @@ Values with different currencies cannot be ordered, so the `MoneyGreaterThan`, `
 
 ## Translations
 
-The default messages for the constraints are translated in the `validators` domain. The `message` defaults reuse the wording of the comparison constraints from the Validator component, so they are translated by the Validator component's own translations. The bundle provides an English translation for the `currencyMismatchMessage` default; to translate it into other languages, add the message to your application's `validators` translation files:
+The default messages for the constraints are translated in the `validators` domain. The `message` defaults reuse the wording of the comparison constraints from the Validator component, and the `invalidMessage` default reuses the wording of the `Range` constraint's `invalidMessage`, so they are translated by the Validator component's own translations. The bundle provides an English translation for the `currencyMismatchMessage` default; to translate it into other languages, add the message to your application's `validators` translation files:
 
 ```yaml
 # translations/validators.de.yaml

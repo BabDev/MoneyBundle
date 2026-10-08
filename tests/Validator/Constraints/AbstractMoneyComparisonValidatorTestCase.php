@@ -187,6 +187,43 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         $this->validator->validate(500, $this->createConstraint(['value' => 500.4925, 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
     }
 
+    /**
+     * @return \Generator<string, array{float|string, string}>
+     */
+    public static function provideUnconvertibleValues(): \Generator
+    {
+        yield 'non-numeric string' => ['test', '"test"'];
+        yield 'badly formatted string' => ['.', '"."'];
+        yield 'fractional float in minor units' => [2.5, '2.5'];
+        yield 'infinite float' => [\INF, 'INF'];
+    }
+
+    #[DataProvider('provideUnconvertibleValues')]
+    public function testUnconvertibleValuesAddAViolation(float|string $value, string $formattedValue): void
+    {
+        $constraint = $this->createConstraint(['value' => Money::USD(500), 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR, 'invalidMessage' => 'Invalid Message']);
+
+        $this->validator->validate($value, $constraint);
+
+        $this->buildViolation('Invalid Message')
+            ->setParameter('{{ value }}', $formattedValue)
+            ->setCode(AbstractMoneyComparison::INVALID_VALUE_ERROR)
+            ->assertRaised();
+    }
+
+    public function testUnconvertibleComparedValueThrowsWhenTheValidatedValueIsAlsoUnconvertible(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf('Could not convert value "INVALID" to a "%s" instance for comparison.', Money::class));
+
+        $this->validator->validate('test', $this->createConstraint(['value' => 'INVALID', 'scalarUnit' => AbstractMoneyComparison::UNIT_MINOR]));
+    }
+
+    public function testInvalidValueErrorHasAName(): void
+    {
+        self::assertSame('INVALID_VALUE_ERROR', $this->createConstraint(['value' => 0])::getErrorName(AbstractMoneyComparison::INVALID_VALUE_ERROR));
+    }
+
     #[DataProvider('provideInvalidComparisons')]
     public function testInvalidComparisonToValue(Money|float|int|string|null $dirtyValue, string $dirtyValueAsString, Money|float|int|string|null $comparedValue, string $comparedValueString, string $comparedValueType): void
     {
@@ -234,6 +271,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
             'groupingUsed' => false,
             'locale' => 'de',
             'style' => FormatterFactoryInterface::STYLE_DECIMAL,
+            'invalidMessage' => 'Invalid Message',
         ]);
 
         self::assertSame('EUR', $constraint->currency);
@@ -243,6 +281,7 @@ abstract class AbstractMoneyComparisonValidatorTestCase extends ConstraintValida
         self::assertFalse($constraint->groupingUsed);
         self::assertSame('de', $constraint->locale);
         self::assertSame(FormatterFactoryInterface::STYLE_DECIMAL, $constraint->style);
+        self::assertSame('Invalid Message', $constraint->invalidMessage);
     }
 
     public function testNamedArgumentOptionsAreUsedForValidation(): void

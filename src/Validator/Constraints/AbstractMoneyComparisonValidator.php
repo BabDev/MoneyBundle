@@ -64,12 +64,12 @@ abstract class AbstractMoneyComparisonValidator extends ConstraintValidator
 
         $currency = $this->resolveCurrency($constraint, $value, $comparedValue);
 
-        $firstValue = $this->ensureMoneyObject($constraint, $value, $currency);
-
-        // Since we validated $value !== null, we must have a Money object now
-        \assert($firstValue instanceof Money);
-
+        // The compared value is converted first so an invalid constraint definition always throws, even when the validated value is invalid
         $secondValue = $this->ensureMoneyObject($constraint, $comparedValue, $currency);
+
+        if (null === $firstValue = $this->convertValidatedValue($constraint, $value, $currency)) {
+            return;
+        }
 
         if (null !== $secondValue && $this->requiresSameCurrency() && !$firstValue->isSameCurrency($secondValue)) {
             $this->addViolation($constraint, $constraint->currencyMismatchMessage, AbstractMoneyComparison::CURRENCY_MISMATCH_ERROR, $firstValue, $secondValue, $comparedValue, $path);
