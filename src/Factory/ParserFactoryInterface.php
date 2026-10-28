@@ -7,6 +7,9 @@ use BabDev\MoneyBundle\Factory\Exception\UnsupportedFormatException;
 use BabDev\MoneyBundle\Format;
 use Money\MoneyParser;
 
+/**
+ * Creates the Money parser for a format and locale.
+ */
 interface ParserFactoryInterface
 {
     public const string STYLE_CURRENCY = 'currency';
