@@ -31,6 +31,13 @@ jobs:
             can-fail: false
             has-jms: false
             has-mongodb: false
+          - php: '8.5'
+            symfony: '8.2.*@beta'
+            composer-flags: '--prefer-stable'
+            extensions: 'curl, iconv, mbstring, mongodb, pdo, pdo_sqlite, sqlite, zip'
+            can-fail: true
+            has-jms: true
+            has-mongodb: true
 
     name: "PHP ${{ matrix.php }}${{ matrix.has-jms == false && ' - Without JMS Serializer' || '' }}${{ matrix.has-mongodb == false && ' - Without MongoDB' || '' }} - Symfony ${{ matrix.symfony }}${{ matrix.composer-flags != '' && format(' - Composer {0}', matrix.composer-flags) || '' }}"
 
