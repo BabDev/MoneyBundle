@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Extension\Core\Type\BoundsType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
@@ -148,6 +149,22 @@ final class BundleIntegrationTest extends KernelTestCase
 
         self::assertInstanceOf(ValidatorInterface::class, $validator);
         self::assertCount(1, $validator->validate(new Invoice(Money::USD(-100))));
+    }
+
+    public function testBoundsTypeComparesMoneyBounds(): void
+    {
+        self::skipIfMissing(BoundsType::class);
+
+        $this->bootTestKernel('framework');
+
+        $formFactory = self::getContainer()->get('test.form.factory');
+
+        self::assertInstanceOf(FormFactoryInterface::class, $formFactory);
+
+        $form = $formFactory->create(BoundsType::class, null, ['type' => MoneyType::class, 'compare' => true]);
+        $form->submit(['from' => '5.50', 'to' => '1.00']);
+
+        self::assertCount(1, $form->get('from')->getErrors());
     }
 
     public function testTwigExtensionIsRegistered(): void

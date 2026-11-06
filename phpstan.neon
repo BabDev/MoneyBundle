@@ -10,3 +10,9 @@ parameters:
   ignoreErrors:
     -
       identifier: missingType.iterableValue
+    -
+      identifiers:
+        - argument.type
+        - class.notFound
+      message: '#\bBoundsType\b#'
+      reportUnmatched: false

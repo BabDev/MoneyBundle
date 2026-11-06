@@ -119,7 +119,7 @@ Only the type is guessed; options such as `currency` are not, so fields for amou
 
 ## Price Ranges With The `BoundsType`
 
-Symfony 8.2 introduced the `BoundsType` form type, which renders a lower and an upper bound using the same inner type. The `MoneyType` can be used as the inner type, however the `compare` option cannot order `Money\Money` instances by itself; to check that the lower bound is not greater than the upper bound, pass a callable comparing the two amounts:
+Symfony 8.2 introduced the `BoundsType` form type, which renders a lower and an upper bound using the same inner type. The `MoneyType` can be used as the inner type, and when the `compare` option is set to `true`, the bundle checks that the lower bound is not greater than the upper bound by comparing the two `Money\Money` instances.
 
 ```php
 <?php
@@ -127,7 +127,6 @@ Symfony 8.2 introduced the `BoundsType` form type, which renders a lower and an 
 namespace App\Form;
 
 use BabDev\MoneyBundle\Form\Type\MoneyType;
-use Money\Money;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BoundsType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -142,7 +141,7 @@ final class ProductFilterForm extends AbstractType
                 BoundsType::class,
                 [
                     'type' => MoneyType::class,
-                    'compare' => static fn (Money $from, Money $to): int => $from->compare($to),
+                    'compare' => true,
                 ]
             )
         ;
@@ -150,4 +149,6 @@ final class ProductFilterForm extends AbstractType
 }
 ```
 
-Both bounds use the same `currency` option by default. If you set a different currency for each bound with the `from_options` and `to_options` options, `Money::compare()` will throw a `Money\Exception\CurrencyMismatchException`.
+This only applies when the `type` option is the bundle's `MoneyType`; a callable passed to the `compare` option is always used as is. For your own form type using the `MoneyType` as its parent, pass a callable comparing the two amounts, such as `static fn (Money $from, Money $to): int => $from->compare($to)`.
+
+Both bounds use the same `currency` option by default. If you set a different currency for each bound with the `from_options` and `to_options` options, the bounds cannot be compared and a `Money\Exception\CurrencyMismatchException` is thrown when the form is submitted.
