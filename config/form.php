@@ -2,6 +2,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use BabDev\MoneyBundle\Form\MoneyTypeGuesser;
 use BabDev\MoneyBundle\Form\Type\MoneyType;
 
 return static function (ContainerConfigurator $container): void {
@@ -14,5 +15,8 @@ return static function (ContainerConfigurator $container): void {
                 service('money.currencies'),
             ])
             ->tag('form.type')
+
+        ->set('money.form.type_guesser', MoneyTypeGuesser::class)
+            ->tag('form.type_guesser')
     ;
 };

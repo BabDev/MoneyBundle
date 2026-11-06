@@ -17,7 +17,9 @@ use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -95,6 +97,18 @@ final class BundleIntegrationTest extends KernelTestCase
         }
     }
 
+    /**
+     * @return FormTypeInterface<mixed>
+     */
+    private static function getGuessedInvoiceTotalType(FormFactoryInterface $formFactory): FormTypeInterface
+    {
+        return $formFactory->createBuilder(FormType::class, new Invoice(Money::USD(100)))
+            ->add('total')
+            ->get('total')
+            ->getType()
+            ->getInnerType();
+    }
+
     public function testServicesAreRegisteredWithTheFramework(): void
     {
         $this->bootTestKernel('framework');
@@ -110,6 +124,7 @@ final class BundleIntegrationTest extends KernelTestCase
 
         self::assertInstanceOf(FormFactoryInterface::class, $formFactory);
         self::assertInstanceOf(MoneyType::class, $formFactory->create(MoneyType::class)->getConfig()->getType()->getInnerType());
+        self::assertInstanceOf(MoneyType::class, self::getGuessedInvoiceTotalType($formFactory));
 
         // Denormalization is checked as the JsonSerializable normalizer would normalize a Money instance the same way
         $denormalizer = $container->get('serializer');
@@ -196,6 +211,12 @@ final class BundleIntegrationTest extends KernelTestCase
 
         self::assertInstanceOf(Invoice::class, $loaded);
         self::assertEquals(Money::JPY(1234), $loaded->total);
+
+        // The money type guesser is preferred over the Doctrine ORM type guesser, which does not guess embeddables
+        $formFactory = self::getContainer()->get('test.form.factory');
+
+        self::assertInstanceOf(FormFactoryInterface::class, $formFactory);
+        self::assertInstanceOf(MoneyType::class, self::getGuessedInvoiceTotalType($formFactory));
     }
 
     #[RequiresPhpExtension('mongodb')]

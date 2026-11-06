@@ -35,6 +35,7 @@ final class BabDevMoneyExtensionTest extends AbstractExtensionTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('money.factory.parser', 1, new Reference('money.currencies'));
         $this->assertContainerBuilderHasServiceDefinitionWithArgument('money.form.type.money', 3, new Reference('money.currencies'));
         $this->assertContainerBuilderHasService('money.form.type.money');
+        $this->assertContainerBuilderHasServiceDefinitionWithTag('money.form.type_guesser', 'form.type_guesser');
         $this->assertContainerBuilderHasService('money.serializer.normalizer');
         $this->assertContainerBuilderHasService('money.validator.greater_than');
         $this->assertContainerBuilderHasService('money.validator.range');

@@ -89,3 +89,65 @@ The `MoneyType` form type largely accepts the same options as the form type from
 - `rounding_mode` - If a submitted number needs to be rounded (based on the `scale` option), you have several configurable options for that rounding. This should be one of the `NumberFormatter::ROUNDING_*` constants and defaults to `NumberFormatter::ROUND_HALFUP`.
 - `html5` - If set to true, the HTML input will be rendered as a native HTML5 number input. This should be a boolean value and defaults to false.
 - `scale` - The number of decimal places for the amount. This should be an integer and defaults to the number of decimal places used by the currency (for example, 2 for USD and 0 for JPY). It cannot be greater than the number of decimal places used by the currency, as the extra digits could not be stored in a `Money\Money` instance; it can be lower to round amounts to fewer decimal places.
+
+## Type Guessing
+
+The bundle registers a form type guesser which uses the `MoneyType` form type for properties declared with the `Money\Money` type. This allows you to add these fields without specifying a type, and makes `Money\Money` properties work with the `#[AsFormType]` and `#[FormField]` attributes introduced in Symfony 8.2.
+
+```php
+<?php
+
+namespace App\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+final class ProductForm extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('name')
+            // Guessed as a MoneyType field when the `price` property is declared as `Money $price` or `?Money $price`
+            ->add('price')
+        ;
+    }
+}
+```
+
+Only the type is guessed; options such as `currency` are not, so fields for amounts in a currency other than the default currency still need their `currency` option set. Properties declared with a union type, such as `Money|int`, are not guessed.
+
+## Price Ranges With The `BoundsType`
+
+Symfony 8.2 introduced the `BoundsType` form type, which renders a lower and an upper bound using the same inner type. The `MoneyType` can be used as the inner type, however the `compare` option cannot order `Money\Money` instances by itself; to check that the lower bound is not greater than the upper bound, pass a callable comparing the two amounts:
+
+```php
+<?php
+
+namespace App\Form;
+
+use BabDev\MoneyBundle\Form\Type\MoneyType;
+use Money\Money;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\BoundsType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+final class ProductFilterForm extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add(
+                'price',
+                BoundsType::class,
+                [
+                    'type' => MoneyType::class,
+                    'compare' => static fn (Money $from, Money $to): int => $from->compare($to),
+                ]
+            )
+        ;
+    }
+}
+```
+
+Both bounds use the same `currency` option by default. If you set a different currency for each bound with the `from_options` and `to_options` options, `Money::compare()` will throw a `Money\Exception\CurrencyMismatchException`.
